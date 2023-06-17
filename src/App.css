@@ -1,38 +1,100 @@
-.App {
-  text-align: center;
+html {
+  margin: 0, 0, 0, 0;
+  background-color: #fefefe;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.nav-vertical {
+  height: 100% !important;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/*Encabezado */
+.encabezado {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  width: 100%;
+  height: 80px;
+  background-color: #6e959c;
+}
+
+.logo {
+  height: 81px;
+  width: 196px;
+}
+
+/* Menu vertical */
+.vertical-navbar {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-left: 0;
+}
+
+.custom-toggle {
+  margin-top: 1rem;
+  align-self: center;
+}
+
+/*Logo tex tec*/
+.logo-textec{
+    height: auto;
+    width: 300px;
+}
+
+/*Contenido*/
+
+.contenido{
+  background-color: #f4f4f4;
+}
+
+/*Inicio*/
+
+.dashboard{
+  padding-top: 20px;
+}
+
+.titulo-encabezado{
+  font-family: 'Montserrat, sans-serif';
+  margin: 1rem;
+  font-weight: 700;
+}
+
+.information{
+  display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.card-body{
+  height: 110px;
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 16px;
+  margin: 1rem;
+}
+
+.card-title{
+  font-family: 'Montserrat, sans-serif';
   color: white;
+  font-size: 25px;
+  font-weight: 700;
 }
 
-.App-link {
-  color: #61dafb;
+.card-number{
+  font-family: 'Montserrat, sans-serif';
+  color: white;
+  font-size: 20px;
+  font-weight: 400 ;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.container-logo{  
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  height: 50vh;
 }
