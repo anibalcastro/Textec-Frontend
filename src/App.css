@@ -1,12 +1,7 @@
 html {
   margin: 0, 0, 0, 0;
-  background-color: #fefefe;
 }
-
-.nav-vertical {
-  height: 100% !important;
-}
-
+/***************************************************/
 /*Encabezado */
 .encabezado {
   display: flex;
@@ -22,6 +17,7 @@ html {
   width: 196px;
 }
 
+/***************************************************/
 /* Menu vertical */
 .vertical-navbar {
   height: 100vh;
@@ -37,37 +33,43 @@ html {
 }
 
 /*Logo tex tec*/
-.logo-textec{
-    height: auto;
-    width: 300px;
+.logo-textec {
+  height: auto;
+  width: 300px;
 }
 
+/***************************************************/
 /*Contenido*/
 
-.contenido{
+.contenido {
   background-color: #f4f4f4;
 }
 
+/***************************************************/
 /*Inicio*/
 
-.dashboard{
+.dashboard,
+.mediciones {
   padding-top: 20px;
 }
 
-.titulo-encabezado{
-  font-family: 'Montserrat, sans-serif';
+/*Titulo de las pantallas*/
+.titulo-encabezado {
+  font-family: "Montserrat, sans-serif";
   margin: 1rem;
   font-weight: 700;
 }
 
-.information{
+/*Contenedor de las tarjetas de la pantalla de inicio*/
+.information {
   display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
 }
 
-.card-body{
+/*Cuerpo de las tarjetas*/
+.card-body {
   height: 110px;
   width: 150px;
   display: flex;
@@ -78,23 +80,103 @@ html {
   margin: 1rem;
 }
 
-.card-title{
-  font-family: 'Montserrat, sans-serif';
+/*Titulo de las tarjetas*/
+.card-title {
+  font-family: "Montserrat, sans-serif";
   color: white;
   font-size: 25px;
   font-weight: 700;
 }
 
-.card-number{
-  font-family: 'Montserrat, sans-serif';
+/*Numero de la tarjeta*/
+.card-number {
+  font-family: "Montserrat, sans-serif";
   color: white;
   font-size: 20px;
-  font-weight: 400 ;
+  font-weight: 400;
 }
 
-.container-logo{  
+/*Contenedor del logo*/
+.container-logo {
   display: flex;
   justify-content: center;
   align-items: end;
   height: 50vh;
+}
+
+/***************************************************/
+/*Mediciones*/
+
+.division {
+  background-color: #6e959c;
+  height: 2px;
+}
+
+.mediciones-filtro {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.btn-registrar {
+  background-color: #6e959c;
+  color: white;
+  width: 120px;
+  height: 40px;
+  border-radius: 15px;
+  font-family: "Montserrat, sans-serif";
+  font-size: 20px;
+}
+
+.btn-observar{
+  background-color: #6e959c;
+  color: white;
+  width: 100px;
+  height: 25px;
+  border-radius: 15px;
+  font-family: "Montserrat, sans-serif";
+  font-size: 15px;
+  text-align: center;
+}
+
+.container-filtro{
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filtro-mediciones{
+  width: 400px;
+  height: auto;
+  font-family: "Montserrat, sans-serif";
+}
+
+.boton-mediciones{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+
+
+.tabla-medidas {
+  margin-top: 20px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.tabla-medidas th, .tabla-medidas td {
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.tabla-medidas th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.tabla-medidas tr:nth-child(even) {
+  background-color: #f9f9f9;
 }

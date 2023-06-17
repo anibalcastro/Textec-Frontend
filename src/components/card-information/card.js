@@ -1,6 +1,6 @@
 import React from "react";
 
-const card_information = (props) => {
+const Card_information = (props) => {
   const { titulo, numero, color } = props;
 
   return (
@@ -13,4 +13,4 @@ const card_information = (props) => {
   );
 };
 
-export default card_information;
+export default Card_information;
