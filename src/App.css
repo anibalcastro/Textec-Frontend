@@ -49,7 +49,7 @@ html {
 /*Inicio*/
 
 .dashboard,
-.mediciones {
+.mediciones, .modulos, .registro, .detalle-cliente-contenedor{
   padding-top: 20px;
 }
 
@@ -125,7 +125,8 @@ html {
   height: 40px;
   border-radius: 15px;
   font-family: "Montserrat, sans-serif";
-  font-size: 20px;
+  font-size: medium ;
+  border: #6e959c;
 }
 
 .btn-observar{
@@ -135,8 +136,9 @@ html {
   height: 25px;
   border-radius: 15px;
   font-family: "Montserrat, sans-serif";
-  font-size: 15px;
+  font-size: medium;
   text-align: center;
+  border: #6e959c;
 }
 
 .container-filtro{
@@ -165,6 +167,7 @@ html {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  font-family: "Montserrat, sans-serif";
 }
 
 .tabla-medidas th, .tabla-medidas td {
@@ -179,4 +182,148 @@ html {
 
 .tabla-medidas tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+.link-nombre {
+  text-decoration: none;
+}
+
+/*Nuevos modulos*/
+.textech{
+  font-family: "Montserrat, sans-serif";
+  font-size: medium;
+}
+
+.btn-regresar{
+  color: white;
+  border: #6e959c;
+  background-color: #6e959c;
+  font-family: "Montserrat, sans-serif";
+  border-radius: 20px;
+  width: 100px;
+  height: 25px;
+}
+
+/*Login*/
+.login{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 100px;
+  padding: 20px;
+  background-color: #6e959c;
+  width: 500px;
+  height: 350px;
+  border-radius: 15px;
+}
+
+.form-login{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.icono-textech{
+  height: auto;
+  width: 80px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+.btn-ingresar{
+  background-color: white;
+  color: #6e959c;
+  width: 120px;
+  height: 40px;
+  border-radius: 15px;
+  font-family: "Montserrat, sans-serif";
+  font-size: medium ;
+  border: white;
+}
+
+.label-input{
+  font-family: "Montserrat, sans-serif";
+  font-size: larger;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding-bottom: 10px;
+  color: white;
+}
+
+#username, #password{
+  width: 350px;
+  text-align: center;
+  
+}
+
+/*Registro Clientes*/
+
+.form-contenedor{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap-reverse;
+  font-family: 'Montserrat, sans serif';
+}
+
+.form-registro-clientes, .detalle-clientes {
+  display: grid;
+  gap: 10px;
+  margin: 1rem;
+}
+
+.div-inp {
+  display: flex;
+  align-items: center;
+}
+
+.div-inp label {
+  width: 150px;
+}
+
+.div-inp input,
+.div-inp textarea {
+  width: 320px;
+}
+
+.img-contenedor{
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.botones-contenedor{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+.isologo{
+  height: auto;
+  width: 150px;
+}
+
+
+/*Detalle Cliente*/
+.contenedor-card-mediciones{
+  width: fit-content;
+}
+
+.mediciones-card{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  flex-wrap: wrap;
 }

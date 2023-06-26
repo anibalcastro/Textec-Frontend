@@ -24,7 +24,7 @@ const Filtro = ({ datos }) => {
           type="text"
           value={filtro}
           onChange={handleFiltroChange}
-          placeholder="Buscar medición"
+          placeholder="Buscar Cliente"
         />
       </div>
 
@@ -34,7 +34,8 @@ const Filtro = ({ datos }) => {
             <th>#</th>
             <th>Nombre Completo</th>
             <th>Cédula</th>
-            <th>Prenda</th>
+            <th>Empresa</th>
+            <th>Departamento</th>
           </tr>
         </thead>
         <tbody>
@@ -42,10 +43,12 @@ const Filtro = ({ datos }) => {
             <tr key={index}>
               <td>{dato.identificador}</td>
               <td >
-                <Link className="link-nombre" to={`mediciones/${dato.identificador}`}>{dato.nombre}</Link>
+                <Link className="link-nombre" to={`/clientes/${dato.identificador}`}>{dato.nombre}</Link>
               </td>
+
               <td>{dato.cedula}</td>
-              <td>{dato.prenda}</td>
+              <td>{dato.empresa}</td>
+              <td>{dato.departamento}</td>
             </tr>
           ))}
         </tbody>

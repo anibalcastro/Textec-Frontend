@@ -13,7 +13,7 @@ export default function dashboard() {
 
           <Card titulo="Pendientes" numero="5" color="#94744C" />
 
-          <Card titulo="En proceso" numero="5" color="#6d949c" />
+          <Card titulo="En Proceso" numero="5" color="#6d949c" />
 
           <Card titulo="Entregados" numero="5" color="#94744C" />
 
