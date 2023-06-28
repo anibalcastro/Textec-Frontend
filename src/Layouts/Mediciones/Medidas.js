@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom';
 
-import Filtro from "../components/filtro-mediciones/Filtro-mediciones";
+import Filtro from "../../components/filtro-mediciones/Filtro-mediciones";
 
 
 const mediciones = () => {
@@ -71,7 +71,7 @@ const mediciones = () => {
                 <hr className="division"></hr>
 
                 <div className="container mediciones-filtro">
-                    <Link to='/mediciones/registrar'>
+                    <Link to='/mediciones/registro'>
                         <button className="btn-registrar">Registrar</button>
                     </Link>
                 </div>

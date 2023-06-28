@@ -42,7 +42,7 @@ const Filtro = ({ datos }) => {
             <tr key={index}>
               <td>{dato.identificador}</td>
               <td >
-                <Link className="link-nombre" to={`mediciones/${dato.identificador}`}>{dato.nombre}</Link>
+                <Link className="link-nombre" to={`/mediciones/${dato.identificador}`}>{dato.nombre}</Link>
               </td>
               <td>{dato.cedula}</td>
               <td>{dato.prenda}</td>

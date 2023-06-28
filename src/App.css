@@ -271,6 +271,10 @@ html {
   font-family: 'Montserrat, sans serif';
 }
 
+.opciones-medidas{
+  display: contents;
+}
+
 .form-registro-clientes, .detalle-clientes {
   display: grid;
   gap: 10px;
@@ -287,7 +291,12 @@ html {
 }
 
 .div-inp input,
-.div-inp textarea {
+.div-inp select {
+  width: 320px;
+  height: 24px ;
+}
+
+textarea{
   width: 320px;
 }
 
@@ -326,4 +335,19 @@ html {
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
+}
+
+/*Detalle Medicion*/
+.resultado-medida{
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.lista-mediciones{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat, sans-serif';
+  font-size: larger;
+  flex-wrap: nowrap;
 }
