@@ -50,13 +50,16 @@ const Login = () => {
           console.log("Si entra al success");
           Cookies.set("jwtToken", token, { expires: 7 });
 
-          Swal.fire(
-            'Bienvenido!',
-            'Has iniciado sesión en Textec!',
-            'success'
-          )
-
           navigate('/inicio');
+          window.location.reload();
+         
+         /*
+          Swal.fire(
+            'Success!',
+            'Bienvenido has iniciado sesión exitosamente!',
+            'success'
+          ) 
+          */
           
         } else {
             Swal.fire(

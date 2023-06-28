@@ -3,6 +3,8 @@ import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
 import VerticalNavbar from "./components/nav/Nav";
 import "./App.css";
+import Swal from 'sweetalert2';
+
 
 
 import Encabezado from "./components/header/Header";
@@ -19,20 +21,57 @@ import ModificarMedicion from "./Layouts/Mediciones/ModificarMedicion";
 import Login from "./Layouts/Login";
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
+import { useEffect } from "react";
 
 function App() {
 
   const token = Cookies.get("jwtToken"); 
 
-  const validarToken = (token) => {
-    if(token){
-      return true;
-    }
-    else{
-      return false;
-    }
-  };
+  useEffect(() => {
+    console.log(token)
 
+   const intervaloValidacion = setInterval(validarToken(token), 6000); // Validar el token cada 1 minuto (60000 milisegundos)
+
+    return () => {
+      clearInterval(intervaloValidacion); // Limpiar el intervalo cuando el componente se desmonte
+    };
+  }, []);
+
+  const validarToken = (token) => {
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        //console.log('Decode ',decodedToken);
+        const currentTime = Date.now() / 1000; // Tiempo actual en segundos
+  
+        // Verifica si el token ha expirado
+        if (decodedToken.exp < currentTime) {
+          // El token ha expirado, requerir autenticación
+          console.log('Token expiró')
+          return false;
+        }
+  
+        // Verifica si el token contiene los datos necesarios para la autenticación
+        // Por ejemplo, puedes verificar si contiene un identificador de usuario
+  
+        // Si el token pasa todas las validaciones, devuelve true
+        Swal.fire(
+          'Bienvenido!',
+          'Has iniciado sesión en Textec!',
+          'success'
+        )
+        return true;
+      } catch (error) {
+        // Error al decodificar el token
+        console.log(`error ${error}`)
+        return false;
+      }
+    }
+  
+    // Si no hay token, requerir autenticación
+    return false;
+  };
+  
   const mostrarContenido = validarToken(token);
 
   return (

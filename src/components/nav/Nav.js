@@ -1,9 +1,15 @@
 import React from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
+import Cookies from "js-cookie";
 
 const VerticalNavbar = () => {
   const location = useLocation();
+
+  const cerrarSesion = () => {
+    Cookies.remove('jwtToken'); // Elimina la cookie 'jwtToken'
+    window.location.replace('/login');
+  }
 
   return (
     <Navbar bg="white" expand="lg" className="vertical-navbar">
@@ -45,7 +51,7 @@ const VerticalNavbar = () => {
               Reportes
             </Nav.Link>
 
-            <Nav.Link as={NavLink} to="/salir" className={location.pathname === '/salir' ? 'active' : ''}>
+            <Nav.Link as={NavLink} onClick={cerrarSesion} to="/" className={location.pathname === '/' ? 'active' : ''}>
               Salir 
             </Nav.Link>
 

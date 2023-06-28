@@ -3,6 +3,7 @@ import Logo from "../Images/Logos/Logo Textech.jpg";
 import Card from "../components/card-information/card";
 
 export default function dashboard() {
+  
   return (
     <React.Fragment>
       <div className="container dashboard">

@@ -1,29 +1,94 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Logo from '../../Images/Logos/Icono.jpg'
-
+import { Link, useNavigate } from "react-router-dom";
+import Logo from "../../Images/Logos/Icono.jpg";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 const RegistroCliente = () => {
-  const [cliente, setCliente] = useState({
-    nombre: "",
-    cedula: "",
-    correo: "",
-    Empresa: "",
-    Departamento: "",
-    Observaciones: "",
-  });
+  const [cliente, setCliente] = useState([]);
+
+  const navigate = useNavigate();
+
+  const token = Cookies.get("jwtToken");
 
   const handleInputChange = (event) => {
-    setCliente(event.target.value);
+    const { name, value } = event.target;
+    setCliente({ ...cliente, [name]: value });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Aquí puedes realizar la lógica de autenticación con los datos del formulario
-    // por ejemplo, enviar una solicitud al servidor para verificar las credenciales
 
-    // Restablecer los campos del formulario después de enviar
+    if (cliente.nombre !== undefined || cliente.apellido1 !== undefined || cliente.apellido2 !== undefined || cliente.cedula !== undefined || cliente.telefono !== undefined || cliente.empresa !== undefined || cliente.departamento !== undefined || cliente.observaciones !== undefined) {
+      peticionApi();
+      limpiarEstado();
+    } else {
+      // La variable es undefined
+      // Puedes manejar el caso de undefined aquí
+      Swal.fire(
+        "Error!",
+        "Debes llenar los campos correspondientes",
+        "error"
+      );
+    }
   };
+
+  const limpiarEstado = () => {
+    setCliente("");
+  }
+
+  const peticionApi = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var formdata = new FormData();
+    formdata.append("nombre", cliente.nombre);
+    formdata.append("apellido1", cliente.apellido1);
+    formdata.append("apellido2", cliente.apellido2);
+    formdata.append("cedula", cliente.cedula);
+    formdata.append("telefono", cliente.telefono);
+    formdata.append("empresa", cliente.empresa);
+    formdata.append("departamento", cliente.departamento);
+    formdata.append("comentarios", cliente.observaciones);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("http://127.0.0.1:8000/api/v1/clientes/registrar", requestOptions)
+      .then((response) => response.json())
+      .then((responseData) => {
+        console.log(responseData);
+        const { data, mensaje } = responseData;
+        const nombreCompleto =
+          cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
+
+
+        if (data) {
+          // Cliente creado con éxito
+
+          Swal.fire(
+            "Cliente creado con éxito!",
+            `Se ha a registrado a ${nombreCompleto}!`,
+            "success"
+          );
+
+          navigate("/clientes");
+        } else {
+          // Error al crear el cliente
+          Swal.fire(
+            "Error al crear cliente!",
+            "Verificar que todos los campos estén llenos",
+            "error"
+          );
+        }
+      })
+      .catch((error) => console.log("error", error));
+
+  }
 
   return (
     <React.Fragment>
@@ -34,33 +99,104 @@ const RegistroCliente = () => {
         <div className="container form-contenedor">
           <form className="form-registro-clientes" onSubmit={handleSubmit}>
             <div className="div-inp">
-              <label htmlFor="username">Nombre completo:</label>
-              <input type="text" id="nombre" autoComplete="nombre" />
+              <label htmlFor="username">Nombre:</label>
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="nombre"
+                id="nombre"
+                autoComplete="nombre"
+              />
+            </div>
+            <div className="div-inp">
+              <label htmlFor="username">Apellido1:</label>
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="apellido1"
+                id="nombre"
+                autoComplete="nombre"
+              />
+            </div>
+            <div className="div-inp">
+              <label htmlFor="username">Apellido2:</label>
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="apellido2"
+                id="nombre"
+                autoComplete="nombre"
+              />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Cédula:</label>
-              <input type="text" id="cedula" autoComplete="current-password" />
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="cedula"
+                id="cedula"
+                autoComplete="current-password"
+              />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Correo electronico:</label>
-              <input type="text" id="cedula" autoComplete="current-password" />
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="correo"
+                id="cedula"
+                autoComplete="current-password"
+              />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Telefono:</label>
-              <input type="text" id="cedula" autoComplete="current-password" />
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="telefono"
+                id="cedula"
+                autoComplete="current-password"
+              />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Empresa:</label>
-              <input type="text" id="cedula" autoComplete="current-password" />
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="empresa"
+                id="cedula"
+                autoComplete="current-password"
+              />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Departamento:</label>
-              <input type="text" id="cedula" autoComplete="current-password" />
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="departemento"
+                id="cedula"
+                autoComplete="current-password"
+              />
             </div>
 
             <div className="div-inp">
               <label htmlFor="password">Observaciones:</label>
-              <textarea id="txtArea" rows="5" cols="60"></textarea>
+              <textarea
+                onChange={handleInputChange}
+                id="txtArea"
+                name="observaciones"
+                rows="5"
+                cols="60"
+              ></textarea>
+            </div>
+
+            <div className="container botones-contenedor">
+              <button className="btn-registrar" type="submit">
+                Registrar
+              </button>
+              <Link to="/clientes">
+                <button className="btn-registrar">Regresar</button>
+              </Link>
             </div>
           </form>
 
@@ -68,17 +204,6 @@ const RegistroCliente = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-
-        <div className="container botones-contenedor">
-            <button className="btn-registrar" type="submit">
-              Registrar
-            </button>
-            <Link to='/clientes'>
-            <button className="btn-registrar" type="submit">
-              Regresar
-            </button>
-            </Link>
-          </div>
       </div>
     </React.Fragment>
   );

@@ -9,12 +9,13 @@ const Filtro = ({ datos }) => {
   };
 
   const filtrarDatos = () => {
-    // Aplica el filtro a los datos
-    const datosFiltrados = datos.filter((dato) =>
-      dato.nombre.toLowerCase().includes(filtro.toLowerCase())
-    );
+    const datosFiltrados = datos.filter(dato => {
+      const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
+      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+    });
     return datosFiltrados;
   };
+  
 
   return (
     <React.Fragment>
@@ -40,10 +41,11 @@ const Filtro = ({ datos }) => {
         </thead>
         <tbody>
           {filtrarDatos().map((dato, index) => (
+            
             <tr key={index}>
               <td>{dato.identificador}</td>
               <td >
-                <Link className="link-nombre" to={`/clientes/${dato.identificador}`}>{dato.nombre}</Link>
+                <Link className="link-nombre" to={`/clientes/${dato.identificador}`}>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
               </td>
 
               <td>{dato.cedula}</td>
