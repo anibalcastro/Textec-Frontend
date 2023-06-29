@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from 'sweetalert2';
+import 'sweetalert2/dist/sweetalert2.css';
+
 
 const Filtro = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
@@ -15,6 +18,18 @@ const Filtro = ({ datos }) => {
     });
     return datosFiltrados;
   };
+
+  let contador = 0
+
+  if (!datos || datos.length === 0) {
+    Swal.fire({
+      title: 'Cargando los datos...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+  }
   
 
   return (
@@ -43,9 +58,9 @@ const Filtro = ({ datos }) => {
           {filtrarDatos().map((dato, index) => (
             
             <tr key={index}>
-              <td>{dato.identificador}</td>
+              <td>{contador+=1}</td>
               <td >
-                <Link className="link-nombre" to={`/clientes/${dato.identificador}`}>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
+                <Link className="link-nombre" to={`/clientes/${dato.id}`}>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
               </td>
 
               <td>{dato.cedula}</td>

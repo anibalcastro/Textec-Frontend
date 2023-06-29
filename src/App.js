@@ -55,11 +55,6 @@ function App() {
         // Por ejemplo, puedes verificar si contiene un identificador de usuario
   
         // Si el token pasa todas las validaciones, devuelve true
-        Swal.fire(
-          'Bienvenido!',
-          'Has iniciado sesión en Textec!',
-          'success'
-        )
         return true;
       } catch (error) {
         // Error al decodificar el token

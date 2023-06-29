@@ -8,6 +8,7 @@ const VerticalNavbar = () => {
 
   const cerrarSesion = () => {
     Cookies.remove('jwtToken'); // Elimina la cookie 'jwtToken'
+    localStorage.clear();
     window.location.replace('/login');
   }
 

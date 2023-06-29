@@ -46,6 +46,7 @@ const RegistroCliente = () => {
     formdata.append("apellido1", cliente.apellido1);
     formdata.append("apellido2", cliente.apellido2);
     formdata.append("cedula", cliente.cedula);
+    formdata.append("email", cliente.correo);
     formdata.append("telefono", cliente.telefono);
     formdata.append("empresa", cliente.empresa);
     formdata.append("departamento", cliente.departamento);
@@ -74,9 +75,16 @@ const RegistroCliente = () => {
             "Cliente creado con éxito!",
             `Se ha a registrado a ${nombreCompleto}!`,
             "success"
-          );
+          ).then((result) => {
+            if (result.isConfirmed) {
+              // El usuario hizo clic en el botón "OK"
+              navigate("/clientes");
+            } else {
+              // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
+              // Realiza alguna otra acción o maneja el caso en consecuencia
+            }
+          });
 
-          navigate("/clientes");
         } else {
           // Error al crear el cliente
           Swal.fire(
@@ -173,7 +181,7 @@ const RegistroCliente = () => {
               <input
                 onChange={handleInputChange}
                 type="text"
-                name="departemento"
+                name="departamento"
                 id="cedula"
                 autoComplete="current-password"
               />

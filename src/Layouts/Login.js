@@ -44,23 +44,21 @@ const Login = () => {
       .then((result) => {
         console.log(result);
 
-        const { token, mensaje } = result; // Desestructurar las propiedades del resultado
+        const { token, status } = result; // Desestructurar las propiedades del resultado
 
-        if (mensaje == "Success") {
-          console.log("Si entra al success");
+        if (status == 200) {
           Cookies.set("jwtToken", token, { expires: 7 });
-
-          navigate('/inicio');
-          window.location.reload();
-         
-         /*
+       
           Swal.fire(
-            'Success!',
+            'Inicio de sesión!',
             'Bienvenido has iniciado sesión exitosamente!',
             'success'
-          ) 
-          */
-          
+          ).then(result => {
+            if (result.isConfirmed){
+              navigate('/inicio');
+              window.location.reload();
+            }
+          })
         } else {
             Swal.fire(
                 'Error!',
@@ -88,6 +86,7 @@ const Login = () => {
               value={username}
               onChange={handleUsernameChange}
               autoComplete="username"
+              required
             />
           </div>
           <div className="label-input">
@@ -98,6 +97,7 @@ const Login = () => {
               value={password}
               onChange={handlePasswordChange}
               autoComplete="current-password"
+              required
             />
           </div>
           <button className="btn-ingresar" type="submit">

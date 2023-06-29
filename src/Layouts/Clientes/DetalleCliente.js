@@ -4,30 +4,37 @@ import Logo from "../../Images/Logos/Icono.jpg";
 import CardMediciones from "../../components/card-mediciones/Card-Mediciones";
 
 const DetalleCliente = () => {
-  let [datos, setDatos] = useState([]);
+  let [cliente, setCliente] = useState([]);
   let [mediciones, setMediciones] = useState([]);
 
   let userId = useParams();
 
   useEffect(() => {
-    obtenerInformacion(userId);
+    obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
   }, []);
 
-  const obtenerInformacion = (userId) => {
-    let array = {
-      id: 1,
-      nombre: "Anibal Jafeth Castro Ponce",
-      cedula: 208110305,
-      correo: "anibalcastro1515@gmail.com",
-      telefono: "85424471",
-      empresa: "Soluciones Empresariales",
-      departamento: "Departamento TI",
-      Observaciones: "Puede llegar a retirar los paquetes sin pago previo.",
-    };
+  const obtenerInformacionCliente = (parametro) => {
+    let datos = localStorage.getItem('data');
+    datos = JSON.parse(datos);
 
-    setDatos(array);
-  };
+    //console.log(parametro.userId);
+
+    let encontrado = false;
+
+    datos.forEach((item, i) => {
+      //console.log(parseInt(item.id));
+      if (parseInt(item.id) === parseInt(parametro.userId)) {
+        setCliente(item);
+        encontrado = true;
+      }
+    });
+    
+    if (!encontrado) {
+      console.log('No se ha encontrado');
+    }
+  } 
+  
 
   const obtenerMediciones = (userId) => {
     let array = [
@@ -59,7 +66,7 @@ const DetalleCliente = () => {
   return (
     <React.Fragment>
       <div className="container detalle-cliente-contenedor">
-        <h2 className="titulo-encabezado">{datos.nombre}</h2>
+        <h2 className="titulo-encabezado">{`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}</h2>
         <hr className="division"></hr>
 
         <div className="container form-contenedor">
@@ -70,7 +77,7 @@ const DetalleCliente = () => {
                 type="text"
                 id="cedula"
                 autoComplete="current-password"
-                value={datos.cedula}
+                value={cliente.cedula}
                 disabled
               />
             </div>
@@ -80,7 +87,7 @@ const DetalleCliente = () => {
                 type="text"
                 id="correo"
                 autoComplete="current-password"
-                value={datos.correo}
+                value={cliente.email}
                 disabled
               />
             </div>
@@ -89,20 +96,20 @@ const DetalleCliente = () => {
               <input
                 type="text"
                 id="telefono"
-                value={datos.telefono}
+                value={cliente.telefono}
                 disabled
               />
             </div>
             <div className="div-inp">
               <label htmlFor="empresa">Empresa:</label>
-              <input type="text" id="empresa" value={datos.empresa} disabled />
+              <input type="text" id="empresa" value={cliente.empresa} disabled />
             </div>
             <div className="div-inp">
               <label htmlFor="departamento">Departamento:</label>
               <input
                 type="text"
                 id="departamento"
-                value={datos.departamento}
+                value={cliente.departamento}
                 disabled
               />
             </div>
@@ -114,7 +121,7 @@ const DetalleCliente = () => {
                 rows="5"
                 cols="60"
                 style={{ resize: "none" }}
-                value={datos.Observaciones}
+                value={cliente.comentarios}
                 disabled
               ></textarea>
             </div>
@@ -149,7 +156,7 @@ const DetalleCliente = () => {
             <button className="btn-registrar">Regresar</button>
           </Link>
 
-          <Link to={`/clientes/editar/${datos.id}`}>
+          <Link to={`/clientes/editar/${cliente.id}`}>
             <button className="btn-registrar">Editar</button>
           </Link>
         </div>

@@ -12,7 +12,7 @@ const Clientes = () => {
   useEffect(() => {
     setTimeout(() => {
       solicitudClientesApi();
-    }, 2000);
+    }, 1000);
   }, []);
 
   const solicitudClientesApi = () => {
@@ -28,12 +28,13 @@ const Clientes = () => {
     fetch("http://127.0.0.1:8000/api/v1/clientes", requestOptions)
       .then(response => response.json())
       .then(result => {
-        console.log(result);
+        //console.log(result);
         if (result.hasOwnProperty("data")) {
           const { data } = result;
           setListaClientes(data);
+          localStorage.setItem('data', JSON.stringify(data));
         } else {
-          console.log("La respuesta de la API no contiene la propiedad 'data'");
+          //console.log("La respuesta de la API no contiene la propiedad 'data'");
           // Mostrar mensaje de error o realizar otra acción
         }
       })
