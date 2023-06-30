@@ -13,6 +13,7 @@ const Clientes = () => {
     setTimeout(() => {
       solicitudClientesApi();
     }, 1000);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listaClientes]);
 
   const solicitudClientesApi = () => {

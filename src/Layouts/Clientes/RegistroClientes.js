@@ -68,7 +68,7 @@ const RegistroCliente = () => {
           cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
 
 
-        if (status == 200) {
+        if (parseInt(status) === 200) {
           // Cliente creado con éxito
 
           Swal.fire(

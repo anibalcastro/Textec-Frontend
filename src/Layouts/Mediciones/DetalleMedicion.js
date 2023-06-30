@@ -35,7 +35,7 @@ const DetalleMedicion = () => {
 
     mediciones.forEach((item, i) => {
       if (parseInt(item.id) === parseInt(parametro.idDetalle)) {
-        console.log(item);
+        //console.log(item);
         setPrenda(item.articulo);
         setMedicion(item);
       }

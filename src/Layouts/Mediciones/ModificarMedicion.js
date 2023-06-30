@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../Images/Logos/Icono.jpg";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import Cookies from "js-cookie";
 
 const ModificarMedicion = () => {
     const [prenda, setPrenda] = useState("");
-    const [idCliente, setIdCliente] = useState("");
     const [nombreCliente, setNombreCliente] = useState("");
     const [mediciones, setMediciones] = useState([]);
 
     const idDetalle = useParams();
+    const navigate = useNavigate();
+    const token = Cookies.get("jwtToken");
 
     useEffect(() => {
-       obtenetInformacionMedidas(idDetalle)
+        obtenetInformacionMedidas(idDetalle);
+
+        return () => {
+            // Restablecer los estados a sus valores iniciales
+            setPrenda("");
+            setNombreCliente("");
+            setMediciones([]);
+        };
     }, [idDetalle]);
 
     /**Lista de mediciones superiores */
@@ -34,33 +44,116 @@ const ModificarMedicion = () => {
     const handleInputChange = (event) => {
         const { name, value } = event.target;
         setMediciones({ ...mediciones, [name]: value });
-    };
+      };      
 
     const handleSubmit = (event) => {
         event.preventDefault();
         // Aquí puedes realizar la lógica de autenticación con los datos del formulario
         // por ejemplo, enviar una solicitud al servidor para verificar las credenciales
+        console.log(mediciones);
 
         // Restablecer los campos del formulario después de enviar
+        modificarMedicion();
     };
 
-    
+
+    const modificarMedicion = () => {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+        var formdata = new FormData();
+
+        formdata.append("id_cliente", mediciones.id_cliente);
+        formdata.append("articulo", mediciones.articulo);
+        formdata.append("fecha", mediciones.fecha);
+        formdata.append("observaciones", mediciones.observaciones);
+        formdata.append("espalda_superior", mediciones.espalda_superior);
+        formdata.append("talle_espalda_superior", mediciones.talle_espalda_superior);
+        formdata.append("talle_frente_superior", mediciones.talle_frente_superior);
+        formdata.append("busto_superior", mediciones.busto_superior);
+        formdata.append("cintura_superior", mediciones.cintura_superior);
+        formdata.append("cadera_superior", mediciones.cadera_superior);
+        formdata.append("alto_pinza_superior", mediciones.alto_pinza_superior);
+        formdata.append("largo_manga_corta_superior", mediciones.largo_manga_corta_superior);
+        formdata.append("largo_manga_larga_superior", mediciones.largo_manga_larga_superior);
+        formdata.append("ancho_manga_corta_superior", mediciones.ancho_manga_corta_superior);
+        formdata.append("ancho_manga_larga_superior", mediciones.ancho_manga_larga_superior);
+        formdata.append("largo_total_superior", mediciones.largo_total_superior);
+        formdata.append("talla", mediciones.talla);
+        formdata.append("largo_inferior", mediciones.largo_inferior);
+        formdata.append("cintura_inferior", mediciones.cintura_inferior);
+        formdata.append("cadera_inferior", mediciones.cadera_inferior);
+        formdata.append("pierna_inferior", mediciones.pierna_inferior);
+        formdata.append("rodilla_inferior", mediciones.rodilla_inferior);
+        formdata.append("ruedo_inferior", mediciones.ruedo_inferior);
+        formdata.append("tiro_inferior", mediciones.tiro_inferior);
+        
+
+
+        var requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: formdata,
+            redirect: 'follow'
+        };
+
+        fetch(
+            `http://127.0.0.1:8000/api/v1/mediciones/editar/${idDetalle.medicionId}`,
+            requestOptions
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result);
+                const status = result.status;
+                console.log(status);
+
+                if (status === 200) {
+                    //console.log()
+
+                    // Cliente creado con éxito
+                    Swal.fire(
+                        "Medición modificada con éxito!",
+                        `Se ha a registrado!`,
+                        "success"
+                    ).then((result) => {
+                        if (result.isConfirmed) {
+                            // El usuario hizo clic en el botón "OK"
+                            navigate("/mediciones");
+                        } else {
+                            // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
+                            // Realiza alguna otra acción o maneja el caso en consecuencia
+                        }
+                    });
+                } else {
+                    // Error al crear
+                    Swal.fire(
+                        "Error al modificar la medición!",
+                        "Vuelva a intentarlo luego!",
+                        "error"
+                    );
+                }
+            })
+            .catch((error) => console.log("error", error));
+
+    };
 
     const obtenetInformacionMedidas = (parametro) => {
-        let mediciones = localStorage.getItem('medidas');
+        let mediciones = localStorage.getItem("medidas");
         mediciones = JSON.parse(mediciones);
-    
+
         mediciones.forEach((item, i) => {
-          if (parseInt(item.id) === parseInt(parametro.idDetalle)) {
-            console.log(item);
-            setIdCliente(item.id_cliente);
-            setPrenda(item.articulo);
-            setNombreCliente(`${item.nombre} ${item.apellido1} ${item.apellido2}`)
-            setMediciones(item);
-          }
+            //console.log(parametro.medicionId);
+
+            if (parseInt(item.id) === parseInt(parametro.medicionId)) {
+                setMediciones(item);
+
+                setPrenda(item.articulo);
+                let nombreCompleto = `${item.nombre} ${item.apellido1} ${item.apellido2}`;
+                setNombreCliente(nombreCompleto);
+
+                //console.log(mediciones);
+            }
         });
-    
-      }
+    };
 
     return (
         <React.Fragment>
@@ -71,12 +164,22 @@ const ModificarMedicion = () => {
                     <form className="form-registro-clientes" onSubmit={handleSubmit}>
                         <div className="div-inp">
                             <label htmlFor="text">Cliente:</label>
-                            <input name="nombre" type="text" defaultValue={nombreCliente} disabled></input>
+                            <input
+                                name="nombre"
+                                type="text"
+                                defaultValue={nombreCliente}
+                                disabled
+                            ></input>
                         </div>
 
                         <div className="div-inp">
                             <label htmlFor="text">Prenda:</label>
-                            <input name="nombre" type="text" defaultValue={prenda} disabled></input>
+                            <input
+                                name="nombre"
+                                type="text"
+                                defaultValue={prenda}
+                                disabled
+                            ></input>
                         </div>
 
                         <hr className="division"></hr>
@@ -88,7 +191,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="espalda"
-                                        name="espalda"
+                                        name="espalda_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.espalda_superior}
@@ -99,7 +202,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cedula"
-                                        name="talle_espalda"
+                                        name="talle_espalda_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.talle_espalda_superior}
@@ -110,7 +213,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cedula"
-                                        name="talle_frente"
+                                        name="talle_frente_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.talle_frente_superior}
@@ -121,7 +224,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cedula"
-                                        name="busto"
+                                        name="busto_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.busto_superior}
@@ -132,7 +235,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cedula"
-                                        name="cintura"
+                                        name="cintura_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.cintura_superior}
@@ -143,7 +246,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cadera"
-                                        name="cadera"
+                                        name="cadera_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.cadera_superior}
@@ -154,7 +257,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="largo_manga_corta"
-                                        name="largo_manga_corta"
+                                        name="largo_manga_corta_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.largo_manga_corta_superior}
@@ -165,7 +268,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="largo_manga_larga"
-                                        name="largo_manga_larga"
+                                        name="largo_manga_larga_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.largo_manga_larga_superior}
@@ -176,7 +279,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="ancho_manga_corta"
-                                        name="ancho_manga_corta"
+                                        name="ancho_manga_corta_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.ancho_manga_corta_superior}
@@ -187,7 +290,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="ancho_manga_larga"
-                                        name="ancho_manga_larga"
+                                        name="ancho_manga_larga_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.ancho_manga_larga_superior}
@@ -198,7 +301,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="largo_total"
-                                        name="largo_total"
+                                        name="largo_total_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.largo_total_superior}
@@ -209,7 +312,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="alto_pinza"
-                                        name="alto_pinza"
+                                        name="alto_pinza_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.alto_pinza_superior}
@@ -249,7 +352,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="largo"
-                                        name="largo"
+                                        name="largo_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.largo_inferior}
@@ -260,7 +363,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cintura"
-                                        name="cintura"
+                                        name="cintura_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.cintura_inferior}
@@ -271,7 +374,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="cadera"
-                                        name="cadera"
+                                        name="cadera_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.cadera_inferior}
@@ -282,7 +385,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="pierna"
-                                        name="pierna"
+                                        name="pierna_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.pierna_inferior}
@@ -293,7 +396,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="rodilla"
-                                        name="rodilla"
+                                        name="rodilla_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.rodilla_inferior}
@@ -304,7 +407,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="ruedo"
-                                        name="ruedo"
+                                        name="ruedo_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.ruedo_inferior}
@@ -315,7 +418,7 @@ const ModificarMedicion = () => {
                                     <input
                                         type="number"
                                         id="tiro"
-                                        name="tiro"
+                                        name="tiro_inferior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
                                         defaultValue={mediciones.tiro_inferior}

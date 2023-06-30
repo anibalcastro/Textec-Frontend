@@ -12,6 +12,7 @@ const DetalleCliente = () => {
   useEffect(() => {
     obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const obtenerInformacionCliente = (parametro) => {
@@ -43,7 +44,7 @@ const DetalleCliente = () => {
     let arrayMedicionesUsuario = [];
 
     medidas.forEach((item, i) => {
-      if(item.id_cliente == parametro.userId){
+      if(item.id_cliente === parametro.userId){
         console.log(item);
         arrayMedicionesUsuario.push(item);
       }

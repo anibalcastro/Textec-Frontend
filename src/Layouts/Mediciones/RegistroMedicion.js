@@ -110,7 +110,7 @@ const RegistroMedicion = () => {
                 const status = result.status;
                 //console.log(status);
 
-                if (status == 200) {
+                if (parseInt(status) === 200) {
                     //console.log()
 
                     // Cliente creado con éxito

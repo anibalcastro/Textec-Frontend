@@ -27,14 +27,14 @@ function App() {
   const token = Cookies.get("jwtToken"); 
 
   useEffect(() => {
-    console.log(token)
+    //console.log(token)
 
    const intervaloValidacion = setInterval(validarToken(token), 6000); // Validar el token cada 1 minuto (60000 milisegundos)
 
     return () => {
       clearInterval(intervaloValidacion); // Limpiar el intervalo cuando el componente se desmonte
     };
-  }, []);
+  }, [token]);
 
   const validarToken = (token) => {
     if (token) {

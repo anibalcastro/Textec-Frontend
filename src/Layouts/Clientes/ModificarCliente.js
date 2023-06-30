@@ -10,10 +10,8 @@ const ModificarCliente = () => {
 
   const [cliente, setCliente] = useState([]);
 
-  //Capturar el identificador de la URL 
-  let { userId } = useParams();
-  //Obtener el token
-  const token = Cookies.get("jwtToken");
+  let { userId } = useParams(); //Capturar el identificador de la URL 
+  const token = Cookies.get("jwtToken"); //Obtener el token
 
   const navigate = useNavigate();
 
@@ -57,7 +55,7 @@ const ModificarCliente = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log(cliente);
+    //console.log(cliente);
 
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
@@ -86,7 +84,7 @@ const ModificarCliente = () => {
         console.log(result);
         let status = result.status;
 
-        if (status == 200) {
+        if (parseInt(status) === 200) {
 
           const nombreCompleto =
             cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
