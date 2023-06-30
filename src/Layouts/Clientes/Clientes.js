@@ -13,7 +13,7 @@ const Clientes = () => {
     setTimeout(() => {
       solicitudClientesApi();
     }, 1000);
-  }, []);
+  }, [listaClientes]);
 
   const solicitudClientesApi = () => {
     var myHeaders = new Headers();

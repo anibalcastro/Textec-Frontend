@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
 import VerticalNavbar from "./components/nav/Nav";
 import "./App.css";
-import Swal from 'sweetalert2';
 
 
 

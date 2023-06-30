@@ -63,12 +63,12 @@ const RegistroCliente = () => {
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
-        const { data, mensaje } = responseData;
+        const { status } = responseData;
         const nombreCompleto =
           cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
 
 
-        if (data) {
+        if (status == 200) {
           // Cliente creado con éxito
 
           Swal.fire(

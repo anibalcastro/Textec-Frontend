@@ -12,7 +12,7 @@ const DetalleCliente = () => {
   useEffect(() => {
     obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
-  }, []);
+  }, [userId]);
 
   const obtenerInformacionCliente = (parametro) => {
     let datos = localStorage.getItem('data');
@@ -36,31 +36,21 @@ const DetalleCliente = () => {
   } 
   
 
-  const obtenerMediciones = (userId) => {
-    let array = [
-      {
-        id: 1,
-        prenda: "Camisa",
-        fecha: "21/06/2023",
-      },
-      {
-        id: 2,
-        prenda: "Jacket",
-        fecha: "21/06/2023",
-      },
-      {
-        id: 3,
-        prenda: "Pantalón",
-        fecha: "21/06/2023",
-      },
-      {
-        id: 4,
-        prenda: "Short",
-        fecha: "21/06/2023",
-      },
-    ];
+  const obtenerMediciones = (parametro) => {
+    let medidas = localStorage.getItem('medidas');
+    medidas = JSON.parse(medidas);
 
-    setMediciones(array);
+    let arrayMedicionesUsuario = [];
+
+    medidas.forEach((item, i) => {
+      if(item.id_cliente == parametro.userId){
+        console.log(item);
+        arrayMedicionesUsuario.push(item);
+      }
+    });
+
+    setMediciones(arrayMedicionesUsuario);
+    console.log(mediciones);
   };
 
   return (
@@ -138,9 +128,10 @@ const DetalleCliente = () => {
           <h2 className="titulo-encabezado">Mediciones</h2>
 
           <div className="container mediciones-card">
+
             {Object.entries(mediciones).map(([key, value]) => (
               <CardMediciones
-                articulo={value.prenda}
+                articulo={value.articulo}
                 fecha={value.fecha}
                 color="#6d949c"
                 id={value.id}

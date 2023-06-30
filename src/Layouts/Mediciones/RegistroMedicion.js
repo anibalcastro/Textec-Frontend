@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../Images/Logos/Icono.jpg";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const RegistroMedicion = () => {
     const [prenda, setPrenda] = useState("");
     const [idCliente, setIdCliente] = useState("");
     const [mediciones, setMediciones] = useState([]);
+    const [cliente, setCliente] = useState([]);
+    const navigate = useNavigate();
+    const token = Cookies.get("jwtToken");
 
     useEffect(() => {
-        console.log(mediciones);
+        obtenerInformacion();
+        //console.log(mediciones);
     }, [mediciones]);
 
     /**Lista de mediciones superiores */
@@ -42,10 +49,107 @@ const RegistroMedicion = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Aquí puedes realizar la lógica de autenticación con los datos del formulario
-        // por ejemplo, enviar una solicitud al servidor para verificar las credenciales
+        registrarMedicion();    
+    };
 
-        // Restablecer los campos del formulario después de enviar
+    const registrarMedicion = () => {
+        const date = new Date();
+        const anno = date.getFullYear();
+        const mes = String(date.getMonth() + 1).padStart(2, "0");
+        const dia = String(date.getDate()).padStart(2, "0");
+
+        const fecha = `${anno}-${mes}-${dia}`;
+
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+        var formdata = new FormData();
+
+        formdata.append("id_cliente", idCliente);
+        formdata.append("articulo", prenda);
+        formdata.append("fecha", fecha);
+        formdata.append("observaciones", mediciones.observaciones);
+        formdata.append("talla", mediciones.talla);
+
+        if (medicionesSuperior.includes(prenda)) {
+            formdata.append("espalda_superior", mediciones.espalda);
+            formdata.append("talle_espalda_superior",mediciones.talle_espalda);
+            formdata.append("talle_frente_superior",mediciones.talle_frente);
+            formdata.append("busto_superior", mediciones.busto);
+            formdata.append("cintura_superior", mediciones.cintura);
+            formdata.append("cadera_superior", mediciones.cadera);
+            formdata.append("ancho_manga_corta_superior", mediciones.ancho_manga_corta);
+            formdata.append("ancho_manga_larga_superior", mediciones.ancho_manga_larga);
+            formdata.append("largo_manga_corta_superior", mediciones.largo_manga_corta);
+            formdata.append("largo_manga_larga_superior", mediciones.largo_manga_larga);
+            formdata.append("largo_total_superior", mediciones.largo_total);
+            formdata.append("alto_pinza_superior", mediciones.alto_pinza);
+        } else {
+            formdata.append("largo_inferior", mediciones.largo);
+            formdata.append("cintura_inferior", mediciones.cintura)
+            formdata.append("cadera_inferior", mediciones.cadera)
+            formdata.append("pierna_inferior", mediciones.pierna);
+            formdata.append("rodilla_inferior", mediciones.rodilla);
+            formdata.append("ruedo_inferior", mediciones.ruedo);
+            formdata.append("tiro_inferior", mediciones.tiro);
+        }
+
+        var requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: formdata,
+            redirect: "follow",
+        };
+
+        //console.log(`Mediciones data ${formdata}`)
+
+        
+        fetch("http://127.0.0.1:8000/api/v1/mediciones/registrar", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                //console.log(result);
+                const status = result.status;
+                //console.log(status);
+
+                if (status == 200) {
+                    //console.log()
+
+                    // Cliente creado con éxito
+                    Swal.fire(
+                      "Medición creada con éxito!",
+                      `Se ha a registrado!`,
+                      "success"
+                    ).then((result) => {
+                      if (result.isConfirmed) {
+                        // El usuario hizo clic en el botón "OK"
+                        navigate("/mediciones");
+                      } else {
+                        // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
+                        // Realiza alguna otra acción o maneja el caso en consecuencia
+                      }
+                    });
+          
+                  } else {
+                    // Error al crear 
+                    Swal.fire(
+                      "Error al registrar la medición!",
+                      "Existe un articulo ya asignado a ese usuario",
+                      "error"
+                    );
+
+                    const form = document.getElementById("form-registro-medicion");
+                    form.reset();
+                  }
+
+            })
+            .catch((error) => console.log("error", error));
+            
+    };
+
+    const obtenerInformacion = () => {
+        let datos = localStorage.getItem("data");
+        datos = JSON.parse(datos);
+
+        setCliente(datos);
     };
 
     return (
@@ -54,7 +158,7 @@ const RegistroMedicion = () => {
                 <h2 className="titulo-encabezado">Registro de mediciones</h2>
                 <hr className="division"></hr>
                 <div className="container form-contenedor">
-                    <form className="form-registro-clientes" onSubmit={handleSubmit}>
+                    <form className="form-registro-clientes" id="form-registro-medicion" onSubmit={handleSubmit}>
                         <div className="div-inp">
                             <label htmlFor="text">Cliente:</label>
                             <select
@@ -63,10 +167,14 @@ const RegistroMedicion = () => {
                                 autoComplete="nombre"
                                 onChange={handleNameChange}
                             >
-                                <option value="" disabled hidden>Selecione una opción</option>
-                                <option value="1"> Anibal Castro Ponce</option>
-                                <option value="2"> Fabricio Castro Ponce</option>
-                                <option value="3"> Allison Brenes Ledezma</option>
+                                <option value="" hidden>
+                                    Selecione una opción
+                                </option>
+                                {cliente.map((cliente) => (
+                                    <option key={cliente.id} value={cliente.id}>
+                                        {`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}
+                                    </option>
+                                ))}
                             </select>
                         </div>
 

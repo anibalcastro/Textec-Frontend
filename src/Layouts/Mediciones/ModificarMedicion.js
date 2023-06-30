@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../Images/Logos/Icono.jpg";
+import { useParams } from "react-router-dom";
 
 const ModificarMedicion = () => {
     const [prenda, setPrenda] = useState("");
@@ -7,11 +8,11 @@ const ModificarMedicion = () => {
     const [nombreCliente, setNombreCliente] = useState("");
     const [mediciones, setMediciones] = useState([]);
 
+    const idDetalle = useParams();
+
     useEffect(() => {
-       setIdCliente(1)
-       setNombreCliente("Anibal Jafeth CastrO Ponce")
-       setPrenda('Camisa')
-    }, [mediciones]);
+       obtenetInformacionMedidas(idDetalle)
+    }, [idDetalle]);
 
     /**Lista de mediciones superiores */
     const medicionesSuperior = [
@@ -35,10 +36,6 @@ const ModificarMedicion = () => {
         setMediciones({ ...mediciones, [name]: value });
     };
 
-    const handleOptionChange = (event) => {
-        setPrenda(event.target.value);
-    };
-
     const handleSubmit = (event) => {
         event.preventDefault();
         // Aquí puedes realizar la lógica de autenticación con los datos del formulario
@@ -46,6 +43,24 @@ const ModificarMedicion = () => {
 
         // Restablecer los campos del formulario después de enviar
     };
+
+    
+
+    const obtenetInformacionMedidas = (parametro) => {
+        let mediciones = localStorage.getItem('medidas');
+        mediciones = JSON.parse(mediciones);
+    
+        mediciones.forEach((item, i) => {
+          if (parseInt(item.id) === parseInt(parametro.idDetalle)) {
+            console.log(item);
+            setIdCliente(item.id_cliente);
+            setPrenda(item.articulo);
+            setNombreCliente(`${item.nombre} ${item.apellido1} ${item.apellido2}`)
+            setMediciones(item);
+          }
+        });
+    
+      }
 
     return (
         <React.Fragment>
@@ -56,31 +71,12 @@ const ModificarMedicion = () => {
                     <form className="form-registro-clientes" onSubmit={handleSubmit}>
                         <div className="div-inp">
                             <label htmlFor="text">Cliente:</label>
-                            <input name="nombre" type="text" value={nombreCliente} disabled></input>
+                            <input name="nombre" type="text" defaultValue={nombreCliente} disabled></input>
                         </div>
 
                         <div className="div-inp">
                             <label htmlFor="text">Prenda:</label>
-                            <select
-                                value={prenda}
-                                id="prenda"
-                                autoComplete="prenda"
-                                onChange={handleOptionChange}
-                            >
-                                <option value="" disabled hidden>
-                                    Selecione una opción
-                                </option>
-                                <option value="Camisa">Camisa</option>
-                                <option value="Gabacha">Gabacha</option>
-                                <option value="Camiseta">Camiseta</option>
-                                <option value="Jacket">Jacket</option>
-                                <option value="Chaleco">Chaleco</option>
-                                <option value="Gabacha medica">Gabacha medica</option>
-
-                                <option value="Pantalon">Pantalon</option>
-                                <option value="Enagua">Enagua</option>
-                                <option value="Short">Short</option>
-                            </select>
+                            <input name="nombre" type="text" defaultValue={prenda} disabled></input>
                         </div>
 
                         <hr className="division"></hr>
@@ -95,7 +91,7 @@ const ModificarMedicion = () => {
                                         name="espalda"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.espalda}
+                                        defaultValue={mediciones.espalda_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -106,7 +102,7 @@ const ModificarMedicion = () => {
                                         name="talle_espalda"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.talle_espalda}
+                                        defaultValue={mediciones.talle_espalda_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -117,7 +113,7 @@ const ModificarMedicion = () => {
                                         name="talle_frente"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.talle_frente}
+                                        defaultValue={mediciones.talle_frente_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -128,7 +124,7 @@ const ModificarMedicion = () => {
                                         name="busto"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.busto}
+                                        defaultValue={mediciones.busto_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -139,7 +135,7 @@ const ModificarMedicion = () => {
                                         name="cintura"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.cintura}
+                                        defaultValue={mediciones.cintura_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -150,7 +146,7 @@ const ModificarMedicion = () => {
                                         name="cadera"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.cadera}
+                                        defaultValue={mediciones.cadera_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -161,7 +157,7 @@ const ModificarMedicion = () => {
                                         name="largo_manga_corta"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.largo_manga_corta}
+                                        defaultValue={mediciones.largo_manga_corta_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -172,7 +168,7 @@ const ModificarMedicion = () => {
                                         name="largo_manga_larga"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.largo_manga_larga}
+                                        defaultValue={mediciones.largo_manga_larga_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -183,7 +179,7 @@ const ModificarMedicion = () => {
                                         name="ancho_manga_corta"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.ancho_manga_corta}
+                                        defaultValue={mediciones.ancho_manga_corta_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -194,7 +190,7 @@ const ModificarMedicion = () => {
                                         name="ancho_manga_larga"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.ancho_manga_larga}
+                                        defaultValue={mediciones.ancho_manga_larga_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -205,7 +201,7 @@ const ModificarMedicion = () => {
                                         name="largo_total"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.largo_total}
+                                        defaultValue={mediciones.largo_total_superior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -216,7 +212,7 @@ const ModificarMedicion = () => {
                                         name="alto_pinza"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.alto_pinza}
+                                        defaultValue={mediciones.alto_pinza_superior}
                                     />
                                 </div>
 
@@ -228,7 +224,7 @@ const ModificarMedicion = () => {
                                         name="talla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.talla}
+                                        defaultValue={mediciones.talla}
                                     />
                                 </div>
 
@@ -240,7 +236,7 @@ const ModificarMedicion = () => {
                                         rows="5"
                                         cols="60"
                                         onChange={handleInputChange}
-                                        value={mediciones.talla}
+                                        defaultValue={mediciones.observaciones}
                                     ></textarea>
                                 </div>
                             </div>
@@ -256,7 +252,7 @@ const ModificarMedicion = () => {
                                         name="largo"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.largo}
+                                        defaultValue={mediciones.largo_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -267,7 +263,7 @@ const ModificarMedicion = () => {
                                         name="cintura"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.cintura}
+                                        defaultValue={mediciones.cintura_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -278,7 +274,7 @@ const ModificarMedicion = () => {
                                         name="cadera"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.cadera}
+                                        defaultValue={mediciones.cadera_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -289,7 +285,7 @@ const ModificarMedicion = () => {
                                         name="pierna"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.pierna}
+                                        defaultValue={mediciones.pierna_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -300,7 +296,7 @@ const ModificarMedicion = () => {
                                         name="rodilla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.rodilla}
+                                        defaultValue={mediciones.rodilla_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -311,7 +307,7 @@ const ModificarMedicion = () => {
                                         name="ruedo"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.ruedo}
+                                        defaultValue={mediciones.ruedo_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -322,7 +318,7 @@ const ModificarMedicion = () => {
                                         name="tiro"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.tiro}
+                                        defaultValue={mediciones.tiro_inferior}
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -333,7 +329,7 @@ const ModificarMedicion = () => {
                                         name="talla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        value={mediciones.talla}
+                                        defaultValue={mediciones.talla}
                                     />
                                 </div>
 
@@ -345,7 +341,7 @@ const ModificarMedicion = () => {
                                         rows="5"
                                         cols="60"
                                         onChange={handleInputChange}
-                                        value={mediciones.observaciones}
+                                        defaultValue={mediciones.observaciones}
                                     ></textarea>
                                 </div>
                             </div>

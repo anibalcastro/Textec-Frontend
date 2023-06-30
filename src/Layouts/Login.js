@@ -46,6 +46,7 @@ const Login = () => {
 
         const { token, status } = result; // Desestructurar las propiedades del resultado
 
+        // eslint-disable-next-line eqeqeq
         if (status == 200) {
           Cookies.set("jwtToken", token, { expires: 7 });
        

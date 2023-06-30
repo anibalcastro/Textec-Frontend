@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Filtro = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
@@ -9,12 +10,25 @@ const Filtro = ({ datos }) => {
   };
 
   const filtrarDatos = () => {
-    // Aplica el filtro a los datos
-    const datosFiltrados = datos.filter((dato) =>
-      dato.nombre.toLowerCase().includes(filtro.toLowerCase())
-    );
+    const datosFiltrados = datos.filter(dato => {
+      const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
+      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+    });
     return datosFiltrados;
   };
+
+
+  if (!datos || datos.length === 0) {
+    Swal.fire({
+      title: 'Cargando los datos...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+  }
+
+  let iterador = 0; 
 
   return (
     <React.Fragment>
@@ -40,12 +54,12 @@ const Filtro = ({ datos }) => {
         <tbody>
           {filtrarDatos().map((dato, index) => (
             <tr key={index}>
-              <td>{dato.identificador}</td>
+              <td>{iterador+=1}</td>
               <td >
-                <Link className="link-nombre" to={`/mediciones/${dato.identificador}`}>{dato.nombre}</Link>
+                <Link className="link-nombre" to={`/mediciones/${dato.id}`}>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
               </td>
               <td>{dato.cedula}</td>
-              <td>{dato.prenda}</td>
+              <td>{dato.articulo}</td>
             </tr>
           ))}
         </tbody>
