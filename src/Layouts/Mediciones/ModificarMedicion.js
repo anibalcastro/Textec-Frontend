@@ -97,7 +97,7 @@ const ModificarMedicion = () => {
         };
 
         fetch(
-            `http://127.0.0.1:8000/api/v1/mediciones/editar/${idDetalle.medicionId}`,
+            `https://api.textechsolutionscr.com/api/v1/mediciones/editar/${idDetalle.medicionId}`,
             requestOptions
         )
             .then((response) => response.json())

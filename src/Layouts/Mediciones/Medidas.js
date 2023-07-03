@@ -25,7 +25,7 @@ const Mediciones = () => {
       redirect: 'follow'
     };
 
-    fetch("http://127.0.0.1:8000/api/v1/mediciones/clientes", requestOptions)
+    fetch("https://api.textechsolutionscr.com/api/v1/mediciones/clientes", requestOptions)
       .then(response => response.json())
       .then(result => {
         if (result.hasOwnProperty("data")) {

@@ -7,7 +7,7 @@ const Card_information = (props) => {
   return (
     <React.Fragment>
     <div className="container contenedor-card-mediciones">
-    <Link to={`/cliente/mediciones/${id}`} style={{ textDecoration: 'none' }} >
+    <Link to={`/mediciones/${id}`} style={{ textDecoration: 'none' }} >
       <div className="card-body" style={{ background: color }}>
         <h5 className="card-title">{articulo}</h5>
         <p className="card-number">{fecha}</p>

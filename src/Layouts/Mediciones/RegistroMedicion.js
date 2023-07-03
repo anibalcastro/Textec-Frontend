@@ -103,7 +103,7 @@ const RegistroMedicion = () => {
         //console.log(`Mediciones data ${formdata}`)
 
         
-        fetch("http://127.0.0.1:8000/api/v1/mediciones/registrar", requestOptions)
+        fetch("https://api.textechsolutionscr.com/api/v1/mediciones/registrar", requestOptions)
             .then((response) => response.json())
             .then((result) => {
                 //console.log(result);
@@ -214,6 +214,7 @@ const RegistroMedicion = () => {
                                         name="espalda"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -224,6 +225,7 @@ const RegistroMedicion = () => {
                                         name="talle_espalda"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -234,6 +236,7 @@ const RegistroMedicion = () => {
                                         name="talle_frente"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -244,6 +247,7 @@ const RegistroMedicion = () => {
                                         name="busto"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -254,6 +258,7 @@ const RegistroMedicion = () => {
                                         name="cintura"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -264,6 +269,7 @@ const RegistroMedicion = () => {
                                         name="cadera"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -274,6 +280,7 @@ const RegistroMedicion = () => {
                                         name="largo_manga_corta"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -284,6 +291,7 @@ const RegistroMedicion = () => {
                                         name="largo_manga_larga"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -294,6 +302,7 @@ const RegistroMedicion = () => {
                                         name="ancho_manga_corta"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -304,6 +313,7 @@ const RegistroMedicion = () => {
                                         name="ancho_manga_larga"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -314,6 +324,7 @@ const RegistroMedicion = () => {
                                         name="largo_total"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -324,6 +335,7 @@ const RegistroMedicion = () => {
                                         name="alto_pinza"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
 
@@ -335,6 +347,7 @@ const RegistroMedicion = () => {
                                         name="talla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
 
@@ -346,6 +359,7 @@ const RegistroMedicion = () => {
                                         rows="5"
                                         cols="60"
                                         onChange={handleInputChange}
+                                        required
                                     ></textarea>
                                 </div>
                             </div>
@@ -361,6 +375,7 @@ const RegistroMedicion = () => {
                                         name="largo"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -371,6 +386,7 @@ const RegistroMedicion = () => {
                                         name="cintura"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -381,6 +397,7 @@ const RegistroMedicion = () => {
                                         name="cadera"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -391,6 +408,7 @@ const RegistroMedicion = () => {
                                         name="pierna"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -401,6 +419,7 @@ const RegistroMedicion = () => {
                                         name="rodilla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -411,6 +430,7 @@ const RegistroMedicion = () => {
                                         name="ruedo"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -421,6 +441,7 @@ const RegistroMedicion = () => {
                                         name="tiro"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
                                 <div className="div-inp">
@@ -431,6 +452,7 @@ const RegistroMedicion = () => {
                                         name="talla"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
+                                        required
                                     />
                                 </div>
 
@@ -442,6 +464,7 @@ const RegistroMedicion = () => {
                                         rows="5"
                                         cols="60"
                                         onChange={handleInputChange}
+                                        required
                                     ></textarea>
                                 </div>
                             </div>

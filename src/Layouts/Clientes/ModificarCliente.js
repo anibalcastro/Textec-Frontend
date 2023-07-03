@@ -78,7 +78,7 @@ const ModificarCliente = () => {
       redirect: 'follow'
     };
 
-    fetch(`http://127.0.0.1:8000/api/v1/clientes/editar/${userId}`, requestOptions)
+    fetch(`https://api.textechsolutionscr.com/api/v1/clientes/editar/${userId}`, requestOptions)
       .then(response => response.json())
       .then(result => {
         console.log(result);

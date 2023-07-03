@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Logo from "../../Images/Logos/Icono.jpg";
 import Cookies from "js-cookie";
@@ -6,6 +6,11 @@ import Swal from "sweetalert2";
 
 const RegistroCliente = () => {
   const [cliente, setCliente] = useState([]);
+  const [usuarios, setUsuarios] = useState([]);
+
+  useEffect(() => {
+    setUsuarios(obtenerUsuarios());
+  },[])
 
   const navigate = useNavigate();
 
@@ -15,6 +20,35 @@ const RegistroCliente = () => {
     const { name, value } = event.target;
     setCliente({ ...cliente, [name]: value });
   };
+
+  const obtenerUsuarios = () => {
+    let datosUsuarios = localStorage.getItem('data');
+    return JSON.parse(datosUsuarios);
+  }
+ 
+  const handleInputChangeCedula = (event) => {
+    const valorCedula = event.target.value;
+    
+    const usuarioExistente = usuarios.find(usuario => usuario.cedula == valorCedula);
+
+    if (usuarioExistente) {
+      const inputElement = document.getElementById('cedula');
+      if (inputElement) {
+        inputElement.value = '';
+      }
+
+      Swal.fire(
+        "Error!",
+        "La cédula que dijitaste ya existe en la base de datos",
+        "error"
+      );
+    } else {
+      const { name, value } = event.target;
+      setCliente({ ...cliente, [name]: value });
+    }
+
+
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -59,7 +93,7 @@ const RegistroCliente = () => {
       redirect: "follow",
     };
 
-    fetch("http://127.0.0.1:8000/api/v1/clientes/registrar", requestOptions)
+    fetch("https://api.textechsolutionscr.com/api/v1/clientes/registrar", requestOptions)
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
@@ -114,6 +148,7 @@ const RegistroCliente = () => {
                 name="nombre"
                 id="nombre"
                 autoComplete="nombre"
+                required
               />
             </div>
             <div className="div-inp">
@@ -124,6 +159,7 @@ const RegistroCliente = () => {
                 name="apellido1"
                 id="nombre"
                 autoComplete="nombre"
+                required
               />
             </div>
             <div className="div-inp">
@@ -134,16 +170,18 @@ const RegistroCliente = () => {
                 name="apellido2"
                 id="nombre"
                 autoComplete="nombre"
+                required
               />
             </div>
             <div className="div-inp">
               <label htmlFor="password">Cédula:</label>
               <input
-                onChange={handleInputChange}
+                onChange={handleInputChangeCedula}
                 type="text"
                 name="cedula"
                 id="cedula"
                 autoComplete="current-password"
+                required
               />
             </div>
             <div className="div-inp">
@@ -154,6 +192,7 @@ const RegistroCliente = () => {
                 name="correo"
                 id="cedula"
                 autoComplete="current-password"
+                required
               />
             </div>
             <div className="div-inp">
@@ -164,6 +203,7 @@ const RegistroCliente = () => {
                 name="telefono"
                 id="cedula"
                 autoComplete="current-password"
+                required
               />
             </div>
             <div className="div-inp">
@@ -174,6 +214,7 @@ const RegistroCliente = () => {
                 name="empresa"
                 id="cedula"
                 autoComplete="current-password"
+                required
               />
             </div>
             <div className="div-inp">
@@ -184,6 +225,7 @@ const RegistroCliente = () => {
                 name="departamento"
                 id="cedula"
                 autoComplete="current-password"
+                required
               />
             </div>
 

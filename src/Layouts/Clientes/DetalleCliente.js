@@ -2,17 +2,18 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import Logo from "../../Images/Logos/Icono.jpg";
 import CardMediciones from "../../components/card-mediciones/Card-Mediciones";
+import Cookies from "js-cookie";
 
 const DetalleCliente = () => {
   let [cliente, setCliente] = useState([]);
   let [mediciones, setMediciones] = useState([]);
-
+  const token = Cookies.get("jwtToken");
   let userId = useParams();
 
   useEffect(() => {
     obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const obtenerInformacionCliente = (parametro) => {
@@ -30,29 +31,47 @@ const DetalleCliente = () => {
         encontrado = true;
       }
     });
-    
+
     if (!encontrado) {
       console.log('No se ha encontrado');
     }
-  } 
-  
+  }
+
 
   const obtenerMediciones = (parametro) => {
-    let medidas = localStorage.getItem('medidas');
-    medidas = JSON.parse(medidas);
+    let medidas = JSON.parse(localStorage.getItem('medidas')) || [];
 
-    let arrayMedicionesUsuario = [];
+    if (medidas.length > 0) {
+      const arrayMedicionesUsuario = medidas.filter(item => item.id_cliente == parametro.userId);
+      setMediciones(arrayMedicionesUsuario);
+    } else {
+      const myHeaders = new Headers({
+        "Authorization": `Bearer ${token}`
+      });
 
-    medidas.forEach((item, i) => {
-      if(item.id_cliente === parametro.userId){
-        console.log(item);
-        arrayMedicionesUsuario.push(item);
-      }
-    });
+      const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
 
-    setMediciones(arrayMedicionesUsuario);
-    console.log(mediciones);
-  };
+      fetch("https://api.textechsolutionscr.com/api/v1/mediciones/clientes", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          if (result.hasOwnProperty("data")) {
+            const { data } = result;
+            localStorage.setItem('medidas', JSON.stringify(data));
+            const arrayMedicionesUsuario = data.filter(item => item.id_cliente == parametro.userId);
+            setMediciones(arrayMedicionesUsuario);
+          } else {
+            // Mostrar mensaje de error o realizar otra acción
+          }
+        })
+        .catch(error => console.log('error', error));
+    }
+
+
+  }
 
   return (
     <React.Fragment>
