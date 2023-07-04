@@ -32,6 +32,7 @@ const ModificarMedicion = () => {
         "Jacket",
         "Chaleco",
         "Gabacha medica",
+        "Vestido"
     ];
 
     /**Lista de mediciones inferiores */

@@ -78,7 +78,7 @@ function App() {
         {mostrarContenido ? (
           <div className="container-fluid">
             <div className="row">
-              <div className="col-md-2">
+              <div id="menuVertical" className="col-md-2">
                 <VerticalNavbar />
               </div>
               <div className="contenido col-md-10">

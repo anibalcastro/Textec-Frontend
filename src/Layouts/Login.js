@@ -56,7 +56,7 @@ const Login = () => {
             'success'
           ).then(result => {
             if (result.isConfirmed){
-              navigate('/inicio');
+              navigate('/');
               window.location.reload();
             }
           })

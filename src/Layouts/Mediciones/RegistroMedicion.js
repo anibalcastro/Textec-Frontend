@@ -25,6 +25,7 @@ const RegistroMedicion = () => {
         "Jacket",
         "Chaleco",
         "Gabacha medica",
+        "Vestido"
     ];
 
     /**Lista de mediciones inferiores */
@@ -195,6 +196,7 @@ const RegistroMedicion = () => {
                                 <option value="Jacket">Jacket</option>
                                 <option value="Chaleco">Chaleco</option>
                                 <option value="Gabacha medica">Gabacha medica</option>
+                                <option value="Vestido">Vestido</option>
 
                                 <option value="Pantalon">Pantalon</option>
                                 <option value="Enagua">Enagua</option>
