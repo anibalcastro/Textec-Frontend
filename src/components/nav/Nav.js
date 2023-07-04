@@ -1,15 +1,17 @@
 import React from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from "js-cookie";
 
 const VerticalNavbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const cerrarSesion = () => {
     Cookies.remove('jwtToken'); // Elimina la cookie 'jwtToken'
     localStorage.clear();
-    window.location.replace('/login');
+    navigate('/');
+    window.location.replace('/');
   }
 
   return (

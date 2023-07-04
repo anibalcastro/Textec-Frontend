@@ -15,7 +15,8 @@ const DetalleMedicion = () => {
     "Camiseta",
     "Jacket",
     "Chaleco",
-    "Gabacha medica"];
+    "Gabacha medica",
+    "Vestido"];
 
   /**Lista de mediciones inferiores */
   const medicionesInferior = ["Short", "Pantalon", "Enagua"];
@@ -149,7 +150,7 @@ const DetalleMedicion = () => {
                     id="ancho_manga_corta"
                     name="ancho_manga_corta"
                     autoComplete="current-text"
-                    value={`${medicion.ancho_manga_corta_superior}`}
+                    value={`${medicion.ancho_manga_corta_superior} cm`}
                     disabled
                   />
                 </div>
