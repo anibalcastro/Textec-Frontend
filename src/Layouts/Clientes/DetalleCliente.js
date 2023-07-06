@@ -42,8 +42,10 @@ const DetalleCliente = () => {
     let medidas = JSON.parse(localStorage.getItem('medidas')) || [];
 
     if (medidas.length > 0) {
+      //console.log(parametro.userId);
       const arrayMedicionesUsuario = medidas.filter(item => item.id_cliente == parametro.userId);
       setMediciones(arrayMedicionesUsuario);
+      //console.log(mediciones);
     } else {
       const myHeaders = new Headers({
         "Authorization": `Bearer ${token}`
@@ -63,6 +65,7 @@ const DetalleCliente = () => {
             localStorage.setItem('medidas', JSON.stringify(data));
             const arrayMedicionesUsuario = data.filter(item => item.id_cliente == parametro.userId);
             setMediciones(arrayMedicionesUsuario);
+            console.log(mediciones);
           } else {
             // Mostrar mensaje de error o realizar otra acción
           }

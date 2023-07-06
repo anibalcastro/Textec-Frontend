@@ -52,10 +52,14 @@ const Login = () => {
        
           Swal.fire(
             'Inicio de sesión!',
-            'Bienvenido has iniciado sesión exitosamente!',
+            'Bienvenido!',
             'success'
           ).then(result => {
             if (result.isConfirmed){
+              navigate('/');
+              window.location.reload();
+            }
+            else{
               navigate('/');
               window.location.reload();
             }
@@ -63,7 +67,7 @@ const Login = () => {
         } else {
             Swal.fire(
                 'Error!',
-                'Correo electonico o contraseña incorrecta!',
+                'Correo electrónico o contraseña incorrecta!',
                 'error'
               )
         }

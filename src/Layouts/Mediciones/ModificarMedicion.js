@@ -122,6 +122,7 @@ const ModificarMedicion = () => {
                         } else {
                             // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
                             // Realiza alguna otra acción o maneja el caso en consecuencia
+                            navigate("/mediciones");
                         }
                     });
                 } else {

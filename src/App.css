@@ -70,8 +70,8 @@ html {
 
 /*Cuerpo de las tarjetas*/
 .card-body {
-  height: 110px;
-  width: 150px;
+  height: 115px;
+  width: 210PX;
   display: flex;
   align-items: center;
   justify-content: center;

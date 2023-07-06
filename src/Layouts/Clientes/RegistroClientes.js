@@ -84,7 +84,7 @@ const RegistroCliente = () => {
     formdata.append("telefono", cliente.telefono);
     formdata.append("empresa", cliente.empresa);
     formdata.append("departamento", cliente.departamento);
-    formdata.append("comentarios", cliente.observaciones);
+    formdata.append("comentarios", cliente.observaciones || 'NA');
 
     var requestOptions = {
       method: "POST",

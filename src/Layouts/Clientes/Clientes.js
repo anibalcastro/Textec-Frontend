@@ -5,31 +5,26 @@ import Cookies from "js-cookie";
 import Filtro from "../../components/filtro-clientes/Filtro-clientes";
 
 const Clientes = () => {
-  const [listaClientes, setListaClientes] = useState([]); // Cambiado el nombre de la variable del estado
-
+  const [listaClientes, setListaClientes] = useState([]);
   const token = Cookies.get("jwtToken");
-
+  
   useEffect(() => {
-    setTimeout(() => {
-      solicitudClientesApi();
-    }, 1000);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listaClientes]);
-
-  const solicitudClientesApi = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    var requestOptions = {
-      method: 'GET',
-      headers: myHeaders,
-      redirect: 'follow'
-    };
-
-    fetch("https://api.textechsolutionscr.com/api/v1/clientes", requestOptions)
-      .then(response => response.json())
-      .then(result => {
-        //console.log(result);
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  
+    const solicitudClientesApi = async () => {
+      try {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+  
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+  
+        const response = await fetch("https://api.textechsolutionscr.com/api/v1/clientes", requestOptions);
+        const result = await response.json();
+  
         if (result.hasOwnProperty("data")) {
           const { data } = result;
           setListaClientes(data);
@@ -38,10 +33,22 @@ const Clientes = () => {
           //console.log("La respuesta de la API no contiene la propiedad 'data'");
           // Mostrar mensaje de error o realizar otra acción
         }
-      })
-      .catch(error => console.log('error', error));
-  }
-
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+  
+    const fetchData = async () => {
+      await delay(1000);
+      await solicitudClientesApi();
+    };
+  
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+  
+  // Rest of your code...
+  
   return (
     <React.Fragment>
       <div className="container mediciones">
