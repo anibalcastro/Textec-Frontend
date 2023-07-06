@@ -20,14 +20,51 @@ import ModificarMedicion from "./Layouts/Mediciones/ModificarMedicion";
 import Login from "./Layouts/Login";
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
 
   const token = Cookies.get("jwtToken"); 
+  const [listaClientes, setListaClientes] = useState([]);
 
   useEffect(() => {
     //console.log(token)
+    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  
+    const solicitudClientesApi = async () => {
+      try {
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+  
+        var requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow'
+        };
+  
+        const response = await fetch("https://api.textechsolutionscr.com/api/v1/clientes", requestOptions);
+        const result = await response.json();
+  
+        if (result.hasOwnProperty("data")) {
+          const { data } = result;
+          setListaClientes(data);
+          localStorage.setItem('data', JSON.stringify(data));
+        } else {
+          //console.log("La respuesta de la API no contiene la propiedad 'data'");
+          // Mostrar mensaje de error o realizar otra acción
+        }
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+  
+    const fetchData = async () => {
+      await delay(1000);
+      await solicitudClientesApi();
+    };
+  
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
 
    const intervaloValidacion = setInterval(validarToken(token), 6000); // Validar el token cada 1 minuto (60000 milisegundos)
 
@@ -111,7 +148,7 @@ function App() {
                   <Route
                     exact
                     path="/mediciones/registro"
-                    element={<RegistroMedicion />}
+                    element={<RegistroMedicion clientes={listaClientes} />}
                   />
                   <Route
                     exact

@@ -4,12 +4,13 @@ import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const RegistroMedicion = () => {
+const RegistroMedicion = ({clientes}) => {
   const [prenda, setPrenda] = useState("");
   const [idCliente, setIdCliente] = useState("");
   const [mediciones, setMediciones] = useState({});
   const [cliente, setCliente] = useState([]);
   const [arrayMediciones, setArrayMediciones] = useState([]);
+  const [filtro, setFiltro] = useState("");
 
   const navigate = useNavigate();
   const token = Cookies.get("jwtToken");
@@ -439,6 +440,18 @@ const RegistroMedicion = () => {
     }
   };
 
+  const handleInputFiltroClientes = (event) => {
+    setFiltro(event.target.value);
+  }
+
+  const filtrarClientes = (event) => {
+    const datosFiltrados = clientes.filter(dato => {
+      const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
+      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+    });
+    return datosFiltrados;
+  }
+
   return (
     <React.Fragment>
       <div className="container registro-medicion">
@@ -450,6 +463,13 @@ const RegistroMedicion = () => {
             id="form-registro-medicion"
             onSubmit={handleSubmit}
           >
+            
+            <div className="div-inp">
+              <label htmlFor="text">Buscar cliente:</label>
+              <input className="buscarTexto" onChange={handleInputFiltroClientes} name="filtro" type="text" placeholder="Escriba el nombre"></input>
+            </div>
+
+
             <div className="div-inp">
               <label htmlFor="text">Cliente:</label>
               <select
@@ -462,8 +482,8 @@ const RegistroMedicion = () => {
                 <option value="" hidden>
                   Selecione una opción
                 </option>
-                {cliente.map((cliente) => (
-                  <option key={cliente.id} value={cliente.id}>
+                {filtrarClientes().map((cliente, index) => (
+                  <option key={index} value={cliente.id}>
                     {`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}
                   </option>
                 ))}
