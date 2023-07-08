@@ -44,11 +44,13 @@ const Login = () => {
       .then((result) => {
         console.log(result);
 
-        const { token, status } = result; // Desestructurar las propiedades del resultado
+        const { token, status, role } = result; // Desestructurar las propiedades del resultado
 
         // eslint-disable-next-line eqeqeq
         if (status == 200) {
           Cookies.set("jwtToken", token, { expires: 7 });
+          Cookies.set("role", role, { expires: 7 });
+
        
           Swal.fire(
             'Inicio de sesión!',

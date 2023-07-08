@@ -1,86 +1,162 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Logo from "../../Images/Logos/Icono.jpg";
 import CardMediciones from "../../components/card-mediciones/Card-Mediciones";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 const DetalleCliente = () => {
-  let [cliente, setCliente] = useState([]);
-  let [mediciones, setMediciones] = useState([]);
+  const [cliente, setCliente] = useState({});
+  const [mediciones, setMediciones] = useState([]);
   const token = Cookies.get("jwtToken");
-  let userId = useParams();
+  const role = Cookies.get("role");
+  const { userId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const obtenerInformacionCliente = (parametro) => {
-    let datos = localStorage.getItem('data');
+    let datos = localStorage.getItem("data");
     datos = JSON.parse(datos);
-
-    //console.log(parametro.userId);
 
     let encontrado = false;
 
-    datos.forEach((item, i) => {
-      //console.log(parseInt(item.id));
-      if (parseInt(item.id) === parseInt(parametro.userId)) {
+    datos.forEach((item) => {
+      if (parseInt(item.id) === parseInt(parametro)) {
         setCliente(item);
         encontrado = true;
       }
     });
 
     if (!encontrado) {
-      console.log('No se ha encontrado');
+      console.log("No se ha encontrado");
     }
-  }
-
+  };
 
   const obtenerMediciones = (parametro) => {
-    let medidas = JSON.parse(localStorage.getItem('medidas')) || [];
+    let medidas = JSON.parse(localStorage.getItem("medidas")) || [];
 
     if (medidas.length > 0) {
-      //console.log(parametro.userId);
-      const arrayMedicionesUsuario = medidas.filter(item => item.id_cliente == parametro.userId);
+      const arrayMedicionesUsuario = medidas.filter(
+        (item) => item.id_cliente === parametro
+      );
       setMediciones(arrayMedicionesUsuario);
-      //console.log(mediciones);
     } else {
       const myHeaders = new Headers({
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       });
 
       const requestOptions = {
-        method: 'GET',
+        method: "GET",
         headers: myHeaders,
-        redirect: 'follow'
+        redirect: "follow",
       };
 
-      fetch("https://api.textechsolutionscr.com/api/v1/mediciones/clientes", requestOptions)
-        .then(response => response.json())
-        .then(result => {
+      fetch(
+        "https://api.textechsolutionscr.com/api/v1/mediciones/clientes",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
           if (result.hasOwnProperty("data")) {
             const { data } = result;
-            localStorage.setItem('medidas', JSON.stringify(data));
-            const arrayMedicionesUsuario = data.filter(item => item.id_cliente == parametro.userId);
+            localStorage.setItem("medidas", JSON.stringify(data));
+            const arrayMedicionesUsuario = data.filter(
+              (item) => item.id_cliente === parametro
+            );
             setMediciones(arrayMedicionesUsuario);
             console.log(mediciones);
           } else {
             // Mostrar mensaje de error o realizar otra acción
           }
         })
-        .catch(error => console.log('error', error));
+        .catch((error) => console.log("error", error));
     }
+  };
 
+  const peticionEliminar = (idCliente) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-  }
+    const requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/clientes/eliminar/${idCliente}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { status } = result;
+        console.log(status);
+
+        if (status === 200) {
+          Swal.fire({
+            title: "Cliente eliminado!",
+            text: "Se ha eliminado permanentemente",
+            icon: "success",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/clientes");
+            } else {
+              navigate("/clientes");
+            }
+          });
+        } else {
+          Swal.fire({
+            title: "Ha ocurrido un error!",
+            text: "Por favor intentarlo luego",
+            icon: "error",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/clientes");
+            } else {
+              navigate("/clientes");
+            }
+          });
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const eliminarCliente = () => {
+    Swal.fire({
+      title: "¿Desea eliminar el cliente?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        peticionEliminar(userId);
+      } else {
+        Swal.fire({
+          title: "Se ha cancelado!",
+          text: "No se eliminará el cliente",
+          icon: "info",
+        });
+      }
+    });
+  };
+
+  const validarRol = (role) => {
+    return role === "Admin";
+  };
+
+  const permisos = validarRol(role);
 
   return (
     <React.Fragment>
       <div className="container detalle-cliente-contenedor">
         <h2 className="titulo-encabezado">{`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}</h2>
-        <hr className="division"></hr>
+        <hr className="division" />
 
         <div className="container form-contenedor">
           <div className="detalle-clientes">
@@ -88,7 +164,7 @@ const DetalleCliente = () => {
               <label htmlFor="cedula">Cédula:</label>
               <input
                 type="text"
-                id="cedula"
+id="cedula"
                 autoComplete="current-password"
                 value={cliente.cedula}
                 disabled
@@ -145,25 +221,25 @@ const DetalleCliente = () => {
           </div>
         </div>
 
-        <hr className="division"></hr>
+        <hr className="division" />
 
         <div className="container mediciones-cliente-contenedor">
           <h2 className="titulo-encabezado">Mediciones</h2>
 
           <div className="container mediciones-card">
-
-            {Object.entries(mediciones).map(([key, value]) => (
+            {mediciones.map((medicion) => (
               <CardMediciones
-                articulo={value.articulo}
-                fecha={value.fecha}
+                key={medicion.id}
+                articulo={medicion.articulo}
+                fecha={medicion.fecha}
                 color="#6d949c"
-                id={value.id}
+                id={medicion.id}
               />
             ))}
           </div>
         </div>
 
-        <hr className="division"></hr>
+        <hr className="division" />
 
         <div className="container botones-contenedor">
           <Link to="/clientes">
@@ -173,6 +249,12 @@ const DetalleCliente = () => {
           <Link to={`/clientes/editar/${cliente.id}`}>
             <button className="btn-registrar">Editar</button>
           </Link>
+
+          {permisos && (
+            <button className="btn-registrar" onClick={eliminarCliente}>
+              Eliminar
+            </button>
+          )}
         </div>
       </div>
     </React.Fragment>

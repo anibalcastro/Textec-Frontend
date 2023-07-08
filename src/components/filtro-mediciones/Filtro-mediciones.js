@@ -47,7 +47,6 @@ const Filtro = ({ datos }) => {
             <th>#</th>
             <th>Nombre Completo</th>
             <th>Cédula</th>
-            <th>Prenda</th>
           </tr>
         </thead>
         <tbody>
@@ -59,11 +58,10 @@ const Filtro = ({ datos }) => {
                 <td>
                   <Link
                     className="link-nombre"
-                    to={`/mediciones/${dato.id}`}
+                    to={`/mediciones/cliente/${dato.id}`}
                   >{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
                 </td>
                 <td>{dato.cedula}</td>
-                <td>{dato.articulo}</td>
               </tr>
             ))}
         </tbody>

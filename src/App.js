@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
-import VerticalNavbar from "./components/nav/Nav";
+import MenuAdmin from "./components/nav-admin/nav-admin";
+import MenuColaborador from "./components/nav-colaborador/nav-colaborador";
 import "./App.css";
 
 
@@ -16,7 +17,9 @@ import DetalleCliente from "./Layouts/Clientes/DetalleCliente";
 import Medidas from "./Layouts/Mediciones/Medidas";
 import DetalleMedicion from "./Layouts/Mediciones/DetalleMedicion";
 import RegistroMedicion from "./Layouts/Mediciones/RegistroMedicion";
+import RegistroMedicionCliente from "./Layouts/Mediciones/RegistroMedicionCliente";
 import ModificarMedicion from "./Layouts/Mediciones/ModificarMedicion";
+import DetalleClienteMediciones from "./Layouts/Mediciones/DetalleClienteMedicion";
 import Login from "./Layouts/Login";
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
@@ -25,6 +28,7 @@ import { useEffect, useState } from "react";
 function App() {
 
   const token = Cookies.get("jwtToken"); 
+  const role = Cookies.get("role");
   const [listaClientes, setListaClientes] = useState([]);
 
   useEffect(() => {
@@ -102,8 +106,20 @@ function App() {
     // Si no hay token, requerir autenticación
     return false;
   };
+
+  
+  const validarRole = (role) => {
+    let Admin = false;
+
+    if (role === "Admin"){
+      Admin = true;
+    }
+
+    return Admin
+  }
   
   const mostrarContenido = validarToken(token);
+  const menu = validarRole(role);
 
   return (
     <Router>
@@ -116,7 +132,7 @@ function App() {
           <div className="container-fluid">
             <div className="row">
               <div id="menuVertical" className="col-md-2">
-                <VerticalNavbar />
+                {menu ? (<MenuAdmin />) : (<MenuColaborador />)}
               </div>
               <div className="contenido col-md-10">
                 <Routes>
@@ -155,6 +171,10 @@ function App() {
                     path="/mediciones/editar/:medicionId"
                     element={<ModificarMedicion />}
                   />
+                  
+                  <Route exact path="/mediciones/cliente/:userId" element={<DetalleClienteMediciones />} />
+                  <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
+
                   <Route exact path="/orden" element={<NuevosModulos />} />
                   <Route exact path="/arreglos" element={<NuevosModulos />} />
                   <Route exact path="/articulos" element={<NuevosModulos />} />

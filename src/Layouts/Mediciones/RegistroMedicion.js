@@ -3,21 +3,26 @@ import Logo from "../../Images/Logos/Icono.jpg";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import FormMedicionesInferior from '../../components/forms/medicionesInferior';
+import FormMedicionesSuperior from '../../components/forms/medicioneSuperior';
 
-const RegistroMedicion = ({clientes}) => {
-  const [prenda, setPrenda] = useState("");
-  const [idCliente, setIdCliente] = useState("");
-  const [mediciones, setMediciones] = useState({});
+const RegistroMedicion = ({ clientes }) => {
+  const [prenda, setPrenda] = useState(""); //Almacena la prenda seleccionada
+  const [idCliente, setIdCliente] = useState(""); //Almacena el id del cliente a quien se le asignará la medición.
+  const [mediciones, setMediciones] = useState({}); //Almacena las mediciones 
   const [cliente, setCliente] = useState([]);
-  const [arrayMediciones, setArrayMediciones] = useState([]);
-  const [filtro, setFiltro] = useState("");
+  const [arrayMediciones, setArrayMediciones] = useState([]); //Almacena las mediciones que se encuentran en cola.
+  const [filtro, setFiltro] = useState(""); //Almacena el valor ingresado en el campo filtro.
 
   const navigate = useNavigate();
   const token = Cookies.get("jwtToken");
 
   useEffect(() => {
     obtenerInformacion();
-    console.log(arrayMediciones);
+    obtenerMedidasAgregar();
+    let data = obtenerMediciones();
+    validarExistenciaProducto(idCliente, prenda, data);
+    //console.log(arrayMediciones);
   }, [mediciones]);
 
   /**Lista de mediciones superiores */
@@ -38,52 +43,87 @@ const RegistroMedicion = ({clientes}) => {
   const prendaSuperior = medicionesSuperior.includes(prenda);
   const prendaInferior = medicionesInferior.includes(prenda);
 
+  /**
+   * Funcion para limpiar los estados de registro mediciones.
+   */
   const limpiarEstados = () => {
     setPrenda("");
     setIdCliente("");
     setArrayMediciones([]);
   }
 
+  /**
+   * Captura y almacena en el estado mediciones, el nombre del input y su valor respectivo.
+   * @param {*} event 
+   */
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setMediciones({ ...mediciones, [name]: value });
   };
 
+  /**
+   * Obtiene y almacena la prenda del cliente seleccionado en estado {prenda}.
+   * @param {*} event 
+   */
   const handleOptionChange = (event) => {
     let prendaSeleccionada = event.target.value;
 
     let dataMediciones = obtenerMediciones();
+    if (!validarExistenciaProducto(idCliente, prendaSeleccionada, dataMediciones)){
+      setPrenda(prendaSeleccionada)
+    }
+    else{
+      limpiarCampos();
+    }
+  };
+
+  const validarExistenciaProducto = (idCliente, seleccionPrenda, dataMediciones) => {
     const medicionesExisten = dataMediciones.find(
       (item) =>
         parseInt(item.id_cliente) == idCliente &&
-        item.articulo == prendaSeleccionada
+        item.articulo == seleccionPrenda
     );
 
     if (medicionesExisten) {
       Swal.fire({
         title: "Error!",
-        text: `Ya existe la medición de ${prendaSeleccionada} para el cliente seleccionado`,
+        text: `Ya existe la medición de ${seleccionPrenda} para el cliente seleccionado`,
         icon: "error",
       });
-    } else {
-      setPrenda(prendaSeleccionada);
-    }
-  };
 
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Obtiene mediciones almacenadas en el LS
+   */
   const obtenerMediciones = () => {
     let mediciones = localStorage.getItem("medidas");
     return JSON.parse(mediciones);
   };
 
+  /**
+   * Obtiene y almacena el id del cliente seleccionado en estado {idCliente}.
+   * @param {*} event 
+   */
   const handleNameChange = (event) => {
     setIdCliente(event.target.value);
   };
 
+  /**
+   * Funcion para enviar las peticiones al API
+   */
   const handleSubmit = (event) => {
     event.preventDefault();
-    registrarMedicion();
+    agregarOtraMedida();
   };
 
+  /**
+   * Obtiene fecha actusal
+   */
   const obtenerFecha = () => {
     const date = new Date();
     const anno = date.getFullYear();
@@ -98,217 +138,141 @@ const RegistroMedicion = ({clientes}) => {
   /**
    * Registra las mediciones y hace las solicitudes al api
    */
-  const registrarMedicion = () => {
+  const registrarMedicion = async () => {
+
+    Swal.fire({
+      title: 'Espere unos segundos',
+      icon: 'info',
+      showConfirmButton: false,
+      timer: 10000 // Duración en milisegundos (10 segundos)
+    });
+
+
     let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
+    let totalRegistros = datos.length;
     let registrosEnviados = 0;
+    let registrosFallidos = [];
 
-    if (datos) {
-      let totalRegistros = datos.length;
+    try {
+        for (let i = 0; i < totalRegistros; i++) {
+            let nuevoRegistro = datos[i];
+            let fecha = obtenerFecha();
+            let formdata = new FormData();
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
 
-      if (idCliente !== "") {
-        let nuevoRegistro = {
-          idCliente: idCliente,
-          prenda: prenda,
-          mediciones: mediciones,
-        };
 
-        datos.push(nuevoRegistro);
-      }
+            // ... código para construir el formData
+            formdata.append("id_cliente", nuevoRegistro.idCliente);
+            formdata.append("articulo", nuevoRegistro.prenda);
+            formdata.append("fecha", fecha);
+            formdata.append(
+                "observaciones",
+                nuevoRegistro.mediciones.observaciones || "NA"
+            );
+            formdata.append("talla", nuevoRegistro.mediciones.talla);
+            formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
 
-      datos.forEach((registro) => {
-        let nuevoRegistro = registro;
+            if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
+                // Agregar las demás append() correspondientes a las mediciones superiores
+                formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
+                formdata.append(
+                    "talle_espalda_superior",
+                    nuevoRegistro.mediciones.talle_espalda
+                );
+                formdata.append(
+                    "talle_frente_superior",
+                    nuevoRegistro.mediciones.talle_frente
+                );
+                formdata.append("busto_superior", nuevoRegistro.mediciones.busto);
+                formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura);
+                formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera);
+                formdata.append(
+                    "ancho_manga_corta_superior",
+                    nuevoRegistro.mediciones.ancho_manga_corta
+                );
+                formdata.append(
+                    "ancho_manga_larga_superior",
+                    nuevoRegistro.mediciones.ancho_manga_larga
+                );
+                formdata.append(
+                    "largo_manga_corta_superior",
+                    nuevoRegistro.mediciones.largo_manga_corta
+                );
+                formdata.append(
+                    "largo_manga_larga_superior",
+                    nuevoRegistro.mediciones.largo_manga_larga
+                );
+                formdata.append(
+                    "largo_total_superior",
+                    nuevoRegistro.mediciones.largo_total
+                );
+                formdata.append(
+                    "alto_pinza_superior",
+                    nuevoRegistro.mediciones.alto_pinza
+                );
+            } else {
+                // Agregar las demás append() correspondientes a las mediciones inferiores
+                formdata.append("largo_inferior", nuevoRegistro.mediciones.largo);
+                formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura);
+                formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera);
+                formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna);
+                formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
+                formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
+                formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
+            }
 
-        //console.log(nuevoRegistro);
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formdata,
+                redirect: "follow",
+            };
 
-        let fecha = obtenerFecha();
+            const response = await fetch(
+                "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
+                requestOptions
+            );
 
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `Bearer ${token}`);
-        var formdata = new FormData();
-
-        formdata.append("id_cliente", nuevoRegistro.idCliente);
-        formdata.append("articulo", nuevoRegistro.prenda);
-        formdata.append("fecha", fecha);
-        formdata.append(
-          "observaciones",
-          nuevoRegistro.mediciones.observaciones || "NA"
-        );
-        formdata.append("talla", nuevoRegistro.mediciones.talla);
-
-        if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
-          // Agregar las demás append() correspondientes a las mediciones superiores
-          formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
-          formdata.append(
-            "talle_espalda_superior",
-            nuevoRegistro.mediciones.talle_espalda
-          );
-          formdata.append(
-            "talle_frente_superior",
-            nuevoRegistro.mediciones.talle_frente
-          );
-          formdata.append("busto_superior", nuevoRegistro.mediciones.busto);
-          formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura);
-          formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera);
-          formdata.append(
-            "ancho_manga_corta_superior",
-            nuevoRegistro.mediciones.ancho_manga_corta
-          );
-          formdata.append(
-            "ancho_manga_larga_superior",
-            nuevoRegistro.mediciones.ancho_manga_larga
-          );
-          formdata.append(
-            "largo_manga_corta_superior",
-            nuevoRegistro.mediciones.largo_manga_corta
-          );
-          formdata.append(
-            "largo_manga_larga_superior",
-            nuevoRegistro.mediciones.largo_manga_larga
-          );
-          formdata.append(
-            "largo_total_superior",
-            nuevoRegistro.mediciones.largo_total
-          );
-          formdata.append(
-            "alto_pinza_superior",
-            nuevoRegistro.mediciones.alto_pinza
-          );
-        } else {
-          // Agregar las demás append() correspondientes a las mediciones inferiores
-          formdata.append("largo_inferior", nuevoRegistro.mediciones.largo);
-          formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura);
-          formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera);
-          formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna);
-          formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
-          formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
-          formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
-        }
-
-        var requestOptions = {
-          method: "POST",
-          headers: myHeaders,
-          body: formdata,
-          redirect: "follow",
-        };
-
-        fetch(
-          "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
-          requestOptions
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            //console.log(result);
+            const result = await response.json();
             const status = result.status;
 
             if (parseInt(status) === 200) {
-              registrosEnviados++;
+                registrosEnviados++;
+            } else {
+                registrosFallidos.push(nuevoRegistro);
             }
+        }
 
-            // Verificar si todos los registros han sido enviados
-            if (registrosEnviados === totalRegistros) {
-              if (registrosEnviados === totalRegistros) {
-                Swal.fire(
-                  "Mediciones creadas con éxito!",
-                  `Se han registrado todas las mediciones.`,
-                  "success"
-                ).then((result) => {
-                  if (result.isConfirmed) {
-                    localStorage.removeItem("nuevosRegistros");
-                    limpiarEstados();
-                    setMediciones([]);
-                    limpiarCampos();
-                    navigate("/mediciones");
-                  }
-                  else{
-                    localStorage.removeItem("nuevosRegistros");
-                    limpiarEstados();
-                    setMediciones([]);
-                    limpiarCampos();
-                    navigate("/mediciones");
-                  }
-                });
-              } else {
-                Swal.fire(
-                  "Error al registrar las mediciones!",
-                  "Ha ocurrido un error al enviar las mediciones.",
-                  "error"
-                );
-              }
-            }
-          })
-          .catch((error) => console.log("error", error));
-      });
-    } else {
-      let fecha = obtenerFecha();
-
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer ${token}`);
-      var formdata = new FormData();
-
-      formdata.append("id_cliente", idCliente);
-      formdata.append("articulo", prenda);
-      formdata.append("fecha", fecha);
-      formdata.append("observaciones", mediciones.observaciones || "NA");
-      formdata.append("talla", mediciones.talla);
-
-      if (medicionesSuperior.includes(prenda)) {
-        // Agregar las demás append() correspondientes a las mediciones superiores
-        formdata.append("espalda_superior", mediciones.espalda);
-        formdata.append("talle_espalda_superior", mediciones.talle_espalda);
-        formdata.append("talle_frente_superior", mediciones.talle_frente);
-        formdata.append("busto_superior", mediciones.busto);
-        formdata.append("cintura_superior", mediciones.cintura);
-        formdata.append("cadera_superior", mediciones.cadera);
-        formdata.append(
-          "ancho_manga_corta_superior",
-          mediciones.ancho_manga_corta
-        );
-        formdata.append(
-          "ancho_manga_larga_superior",
-          mediciones.ancho_manga_larga
-        );
-        formdata.append(
-          "largo_manga_corta_superior",
-          mediciones.largo_manga_corta
-        );
-        formdata.append(
-          "largo_manga_larga_superior",
-          mediciones.largo_manga_larga
-        );
-        formdata.append("largo_total_superior", mediciones.largo_total);
-        formdata.append("alto_pinza_superior", mediciones.alto_pinza);
-      } else {
-        // Agregar las demás append() correspondientes a las mediciones inferiores
-        formdata.append("largo_inferior", mediciones.largo);
-        formdata.append("cintura_inferior", mediciones.cintura);
-        formdata.append("cadera_inferior", mediciones.cadera);
-        formdata.append("pierna_inferior", mediciones.pierna);
-        formdata.append("rodilla_inferior", mediciones.rodilla);
-        formdata.append("ruedo_inferior", mediciones.ruedo);
-        formdata.append("tiro_inferior", mediciones.tiro);
-      }
-
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-
-      fetch(
-        "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          //console.log(result);
-          const status = result.status;
-
-          if (parseInt(status) === 200) {
+        if (registrosEnviados === totalRegistros) {
             Swal.fire(
-              "Mediciones creadas con éxito!",
-              `Se han registrado todas las mediciones.`,
-              "success"
+                "Mediciones creadas con éxito!",
+                `Se han registrado todas las mediciones.`,
+                "success"
+              ).then((result) => {
+                if (result.isConfirmed) {
+                  localStorage.removeItem("nuevosRegistros");
+                  limpiarEstados();
+                  setMediciones([]);
+                  limpiarCampos();
+                  navigate("/mediciones");
+                }
+                else {
+                  localStorage.removeItem("nuevosRegistros");
+                  limpiarEstados();
+                  setMediciones([]);
+                  limpiarCampos();
+                  navigate("/mediciones");
+                }
+              });
+        } else {
+            // Algunos registros no se han enviado correctamente
+            Swal.fire(
+              "Hubo fallas al guardar algunas mediciones!",
+              `${registrosFallidos}`,
+              "info"
             ).then((result) => {
               if (result.isConfirmed) {
                 localStorage.removeItem("nuevosRegistros");
@@ -317,7 +281,7 @@ const RegistroMedicion = ({clientes}) => {
                 limpiarCampos();
                 navigate("/mediciones");
               }
-              else{
+              else {
                 localStorage.removeItem("nuevosRegistros");
                 limpiarEstados();
                 setMediciones([]);
@@ -325,54 +289,84 @@ const RegistroMedicion = ({clientes}) => {
                 navigate("/mediciones");
               }
             });
-          } else {
-            Swal.fire(
-              "Error al registrar las mediciones!",
-              "Ha ocurrido un error al enviar las mediciones.",
-              "error"
-            );
-          }
-        });
+            console.log("Registros fallidos:", registrosFallidos);
+            // ...
+        }
+    } catch (error) {
+        console.log("error", error);
     }
-  };
+};
 
   /**
    * Funcion para agregar una medida
    */
   const agregarOtraMedida = () => {
-    const datosCliente = cliente.find(
-      (cliente) => parseInt(cliente.id) === parseInt(idCliente)
-    );
-    const nombreCliente = `${datosCliente.nombre} ${datosCliente.apellido1} ${datosCliente.apellido2}`;
-    let nuevoRegistro = {
-      idCliente: idCliente,
-      nombre: nombreCliente,
-      prenda: prenda,
-      mediciones: mediciones,
-    };
+    let cantidadAtributos = medicionesSuperior.includes(prenda) ? 15 : 10;
+    console.log(cantidadAtributos);
 
-    let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
+    if (idCliente && prenda && Object.keys(mediciones).length >= cantidadAtributos) {
+      const datosCliente = cliente.find(
+        (cliente) => parseInt(cliente.id) === parseInt(idCliente)
+      );
+      const nombreCliente = `${datosCliente.nombre} ${datosCliente.apellido1} ${datosCliente.apellido2}`;
+      let nuevoRegistro = {
+        idCliente: idCliente,
+        nombre: nombreCliente,
+        prenda: prenda,
+        mediciones: mediciones,
+      };
 
-    if (!datos) {
-      console.log(arrayMediciones);
-      localStorage.setItem("nuevosRegistros", JSON.stringify([nuevoRegistro]));
-      console.log(arrayMediciones);
-      setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
+      let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
+
+      if (!datos) {
+        console.log(arrayMediciones);
+        localStorage.setItem("nuevosRegistros", JSON.stringify([nuevoRegistro]));
+        console.log(arrayMediciones);
+        setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
+        setPrenda('');
 
 
+      } else {
+        datos.push(nuevoRegistro);
+        //console.log(arrayMediciones);
+        setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
+        //console.log(arrayMediciones);
+        setPrenda('');
+
+        localStorage.setItem("nuevosRegistros", JSON.stringify(datos));
+      }
+
+      limpiarCampos();
+      // Add nuevoRegistro to the queue or perform any other action
     } else {
-      datos.push(nuevoRegistro);
-      console.log(arrayMediciones);
-      setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
-      console.log(arrayMediciones);
-
+      console.log("Hay datos vacios")
       
-      localStorage.setItem("nuevosRegistros", JSON.stringify(datos));
+      // Display an error message or handle the case where fields are not filled
     }
 
-    limpiarCampos();
+
   };
 
+  const eliminarMedicion = (idCliente, prenda) => {
+    console.log(idCliente);
+    // Obtener el array de mediciones almacenado en localStorage
+    let medicionesLocalStorage = JSON.parse(localStorage.getItem("nuevosRegistros"));
+  
+    // Filtrar el array de mediciones y mantener solo los elementos que no coinciden con los parámetros
+    const nuevasMediciones = medicionesLocalStorage.filter(
+      (medicion) =>
+        parseInt(medicion.idCliente) !== parseInt(idCliente) || medicion.prenda !== prenda
+    );
+
+    console.log(nuevasMediciones);
+  
+    // Actualizar el array de mediciones en localStorage
+    localStorage.setItem("nuevosRegistros", JSON.stringify(nuevasMediciones));
+  
+    // Actualizar el estado arrayMediciones si es necesario
+    setArrayMediciones(nuevasMediciones);
+  };
+  
   /**
    * Limpia todos los campos de los input
    */
@@ -440,11 +434,28 @@ const RegistroMedicion = ({clientes}) => {
     }
   };
 
+  const obtenerMedidasAgregar = () => {
+    let medidasPorAgregar = JSON.parse(localStorage.getItem("nuevosRegistros"));
+    
+    if (medidasPorAgregar){
+      setArrayMediciones(medidasPorAgregar);
+    }
+
+  }
+
+  /**
+   * Captura lo que el usuario ingresó en el filtro.
+   * @param {text} event 
+   */
   const handleInputFiltroClientes = (event) => {
     setFiltro(event.target.value);
   }
 
-  const filtrarClientes = (event) => {
+  /**
+   * Funcion para obtener los clientes segun el filtro.
+   * @returns clientes filtrados
+   */
+  const filtrarClientes = () => {
     const datosFiltrados = clientes.filter(dato => {
       const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
       return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
@@ -463,7 +474,7 @@ const RegistroMedicion = ({clientes}) => {
             id="form-registro-medicion"
             onSubmit={handleSubmit}
           >
-            
+
             <div className="div-inp">
               <label htmlFor="text">Buscar cliente:</label>
               <input className="buscarTexto" onChange={handleInputFiltroClientes} name="filtro" type="text" placeholder="Escriba el nombre"></input>
@@ -519,269 +530,11 @@ const RegistroMedicion = ({clientes}) => {
             <hr className="division"></hr>
 
             {prendaSuperior && (
-              <div className="container opciones-medidas">
-                <div className="div-inp">
-                  <label htmlFor="text">Espalda:</label>
-                  <input
-                    type="number"
-                    id="espalda"
-                    name="espalda"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Talle de espalda:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="talle_espalda"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Talle de frente:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="talle_frente"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Busto:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="busto"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Cintura:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="cintura"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Cadera:</label>
-                  <input
-                    type="number"
-                    id="cadera"
-                    name="cadera"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo Manga Corta:</label>
-                  <input
-                    type="number"
-                    id="largo_manga_corta"
-                    name="largo_manga_corta"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo Manga Larga:</label>
-                  <input
-                    type="number"
-                    id="largo_manga_larga"
-                    name="largo_manga_larga"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Ancho Manga Corta:</label>
-                  <input
-                    type="number"
-                    id="ancho_manga_corta"
-                    name="ancho_manga_corta"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Ancho Manga Larga:</label>
-                  <input
-                    type="number"
-                    id="ancho_manga_larga"
-                    name="ancho_manga_larga"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo total:</label>
-                  <input
-                    type="number"
-                    id="largo_total"
-                    name="largo_total"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Alto de pinza:</label>
-                  <input
-                    type="number"
-                    id="alto_pinza"
-                    name="alto_pinza"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Talla:</label>
-                  <input
-                    type="text"
-                    id="talla"
-                    name="talla"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Observaciones:</label>
-                  <textarea
-                    id="txtArea"
-                    name="observaciones"
-                    rows="5"
-                    cols="60"
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                </div>
-              </div>
+              <FormMedicionesSuperior handleInputChange={handleInputChange}/>
             )}
 
             {prendaInferior && (
-              <div className="container opciones-medidas">
-                <div className="div-inp">
-                  <label htmlFor="text">Largo:</label>
-                  <input
-                    type="number"
-                    id="largo"
-                    name="largo"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Cintura:</label>
-                  <input
-                    type="number"
-                    id="cintura"
-                    name="cintura"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Cadera:</label>
-                  <input
-                    type="number"
-                    id="cadera"
-                    name="cadera"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Pierna:</label>
-                  <input
-                    type="number"
-                    id="pierna"
-                    name="pierna"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Rodilla:</label>
-                  <input
-                    type="number"
-                    id="rodilla"
-                    name="rodilla"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Ruedo:</label>
-                  <input
-                    type="number"
-                    id="ruedo"
-                    name="ruedo"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Tiro:</label>
-                  <input
-                    type="number"
-                    id="tiro"
-                    name="tiro"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Talla:</label>
-                  <input
-                    type="text"
-                    id="talla"
-                    name="talla"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Observaciones:</label>
-                  <textarea
-                    name="observaciones"
-                    id="txtArea"
-                    rows="5"
-                    cols="60"
-                    onChange={handleInputChange}
-                    required
-                  ></textarea>
-                </div>
-              </div>
+              <FormMedicionesInferior handleInputChange={handleInputChange}/>
             )}
 
             <div className="container botones-contenedor">
@@ -804,6 +557,7 @@ const RegistroMedicion = ({clientes}) => {
             <tr>
               <th>Nombre del Cliente</th>
               <th>Prenda</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -811,16 +565,18 @@ const RegistroMedicion = ({clientes}) => {
               <tr key={datos.idCliente}>
                 <td>{datos.nombre}</td>
                 <td>{datos.prenda}</td>
+                <td><button className="btn-eliminar" onClick={() => eliminarMedicion(datos.idCliente, datos.prenda)}>Eliminar</button></td>
+
               </tr>
             ))}
           </tbody>
         </table>
 
         <div className="container botones-contenedor">
-              <button className="btn-registrar" type="submit" onClick={handleSubmit}>
-                Guardar
-              </button>
-            </div>
+          <button className="btn-registrar" type="submit" onClick={registrarMedicion}>
+            Guardar
+          </button>
+        </div>
       </div>
     </React.Fragment>
   );

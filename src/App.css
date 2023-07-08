@@ -86,6 +86,9 @@ html {
   color: white;
   font-size: 25px;
   font-weight: 700;
+  width: 200px;
+  text-align: center;
+  padding-top: 20px;
 }
 
 /*Numero de la tarjeta*/
@@ -121,12 +124,26 @@ html {
 .btn-registrar {
   background-color: #6e959c;
   color: white;
-  width: 120px;
-  height: 40px;
+  width: 160px;
+  height: 50px;
   border-radius: 15px;
   font-family: "Montserrat, sans-serif";
   font-size: medium ;
   border: #6e959c;
+}
+
+.btn-eliminar {
+  /* Estilos comunes para el botón de eliminar */
+  background-color: red;
+  width: 150px;
+  height: 40px;
+  border-radius: 15px;
+  font-family: "Montserrat, sans-serif";
+  font-size: medium;
+  border: none;
+  /* Otros estilos específicos para el botón de eliminar si los tienes */
+
+  /* Aquí puedes establecer el color de fondo para cada variante */
 }
 
 .btn-observar{
@@ -363,6 +380,10 @@ textarea{
 
 
 @media (max-width: 600px) {
+
+  .botones-contenedor{
+    flex-direction: column;
+  }
 
   .form-contenedor{
     justify-content: center;

@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../Images/Logos/Icono.jpg";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 const DetalleMedicion = () => {
-
-  const [prenda, setPrenda] = useState('');
-  const [medicion, setMedicion] = useState([])
+  const [prenda, setPrenda] = useState("");
+  const [medicion, setMedicion] = useState([]);
+  const role = Cookies.get("role");
+  const token = Cookies.get("jwtToken");
 
   let idDetalle = useParams();
+  let navigate = useNavigate();
 
   const medicionesSuperior = [
     "Camisa",
@@ -16,22 +20,22 @@ const DetalleMedicion = () => {
     "Jacket",
     "Chaleco",
     "Gabacha medica",
-    "Vestido"];
+    "Vestido",
+  ];
 
   /**Lista de mediciones inferiores */
   const medicionesInferior = ["Short", "Pantalon", "Enagua"];
 
   useEffect(() => {
-    obtenetInformacionMedidas(idDetalle)
-  },[idDetalle])
+    obtenetInformacionMedidas(idDetalle);
+  }, [idDetalle]);
 
   /**Validaciones si el estado prenda existe en alguna de las listas */
   const prendaSuperior = medicionesSuperior.includes(prenda);
   const prendaInferior = medicionesInferior.includes(prenda);
 
-
   const obtenetInformacionMedidas = (parametro) => {
-    let mediciones = localStorage.getItem('medidas');
+    let mediciones = localStorage.getItem("medidas");
     mediciones = JSON.parse(mediciones);
 
     mediciones.forEach((item, i) => {
@@ -41,9 +45,94 @@ const DetalleMedicion = () => {
         setMedicion(item);
       }
     });
+  };
 
-  }
+  const validarRol = (role) => {
+    if (role === "Admin") {
+      return true;
+    }
 
+    return false;
+  };
+
+  const peticionEliminar = (idMedidas) => {
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    console.log(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`);
+
+    fetch(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) =>{
+
+        let status = result.status;
+        console.log(status)
+
+        if (status == 200){
+          Swal.fire(
+            "Medicion eliminada!",
+            `Se ha eliminado permanentemente`,
+            "success"
+          ).then((result) => {
+            if (result.isConfirmed) {
+              // El usuario hizo clic en el botón "OK"
+              navigate("/mediciones");
+            } else {
+              navigate("/mediciones");
+            }
+          });
+        }else{
+          Swal.fire(
+            "Ha ocurrido un error!",
+            `Por favor intentarlo luego`,
+            "error"
+          ).then((result) => {
+            if (result.isConfirmed) {
+              // El usuario hizo clic en el botón "OK"
+              navigate("/mediciones");
+            } else {
+              navigate("/mediciones");
+            }
+          });
+        }
+          
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const eliminarMedicion = () => {
+    Swal.fire({
+      title: "¿Desea eliminar la medición?",
+      text: "Esta acción no se puede deshacer",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        peticionEliminar(idDetalle)
+      } else {
+        Swal.fire(
+          "Se ha cancelado!",
+          `No se eliminará la medición`,
+          "info"
+        )
+      }
+    });
+  };
+
+  
+
+  const permisos = validarRol(role);
 
   return (
     <React.Fragment>
@@ -51,8 +140,7 @@ const DetalleMedicion = () => {
         <h2 className="titulo-encabezado">{`${medicion.nombre} ${medicion.apellido1} ${medicion.apellido2} - ${medicion.articulo}`}</h2>
         <hr className="division"></hr>
         <div className="container form-contenedor">
-          <form className="form-registro-clientes" id="form-registro-medicion" >
-
+          <form className="form-registro-clientes" id="form-registro-medicion">
             {prendaSuperior && (
               <div className="container opciones-medidas">
                 <div className="div-inp">
@@ -211,6 +299,18 @@ const DetalleMedicion = () => {
                     disabled
                   ></textarea>
                 </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Sastre:</label>
+                  <input
+                    type="text"
+                    id="sastre"
+                    name="sastre"
+                    autoComplete="current-text"
+                    value={medicion.sastre}
+                    disabled
+                  />
+                </div>
               </div>
             )}
 
@@ -316,6 +416,18 @@ const DetalleMedicion = () => {
                     disabled
                   ></textarea>
                 </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Sastre:</label>
+                  <input
+                    type="text"
+                    id="sastre"
+                    name="sastre"
+                    autoComplete="current-text"
+                    value={medicion.sastre}
+                    disabled
+                  />
+                </div>
               </div>
             )}
           </form>
@@ -325,7 +437,7 @@ const DetalleMedicion = () => {
           </div>
         </div>
 
-                <div className="container botones-contenedor">
+        <div className="container botones-contenedor">
           <Link to="/mediciones">
             <button className="btn-registrar">Regresar</button>
           </Link>
@@ -333,12 +445,15 @@ const DetalleMedicion = () => {
           <Link to={`/mediciones/editar/${medicion.id}`}>
             <button className="btn-registrar">Editar</button>
           </Link>
+          {permisos ? (
+            <button className="btn-registrar" onClick={eliminarMedicion}>
+              Eliminar
+            </button>
+          ) : (
+            ""
+          )}
         </div>
-      
       </div>
-
-      
-
     </React.Fragment>
   );
 };
