@@ -42,7 +42,7 @@ const Login = () => {
     fetch("https://api.textechsolutionscr.com/api/v1/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+       // console.log(result);
 
         const { token, status, role } = result; // Desestructurar las propiedades del resultado
 
