@@ -153,18 +153,18 @@ const RegistroMedicionCliente = ({ clientes }) => {
      */
     const registrarMedicion = async () => {
         Swal.fire({
-            title: 'Espere unos segundos',
+            title: 'Las mediciones se están guardando...',
             icon: 'info',
             showConfirmButton: false,
-            timer: 10000 // Duración en milisegundos (10 segundos)
+            timer: 5000 // Duración en milisegundos (5 segundos)
           });
-
-
+    
+    
         let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
         let totalRegistros = datos.length;
         let registrosEnviados = 0;
         let registrosFallidos = [];
-
+    
         try {
             for (let i = 0; i < totalRegistros; i++) {
                 let nuevoRegistro = datos[i];
@@ -172,8 +172,8 @@ const RegistroMedicionCliente = ({ clientes }) => {
                 let formdata = new FormData();
                 var myHeaders = new Headers();
                 myHeaders.append("Authorization", `Bearer ${token}`);
-
-
+    
+    
                 // ... código para construir el formData
                 formdata.append("id_cliente", nuevoRegistro.idCliente);
                 formdata.append("articulo", nuevoRegistro.prenda);
@@ -184,7 +184,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
                 );
                 formdata.append("talla", nuevoRegistro.mediciones.talla);
                 formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
-
+    
                 if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
                     // Agregar las demás append() correspondientes a las mediciones superiores
                     formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
@@ -233,7 +233,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
                     formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
                     formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
                 }
-
+    
                 const requestOptions = {
                     method: "POST",
                     headers: {
@@ -242,22 +242,22 @@ const RegistroMedicionCliente = ({ clientes }) => {
                     body: formdata,
                     redirect: "follow",
                 };
-
+    
                 const response = await fetch(
                     "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
                     requestOptions
                 );
-
+    
                 const result = await response.json();
                 const status = result.status;
-
+    
                 if (parseInt(status) === 200) {
                     registrosEnviados++;
                 } else {
                     registrosFallidos.push(nuevoRegistro);
                 }
             }
-
+    
             if (registrosEnviados === totalRegistros) {
                 Swal.fire(
                     "Mediciones creadas con éxito!",
@@ -288,13 +288,14 @@ const RegistroMedicionCliente = ({ clientes }) => {
             console.log("error", error);
         }
     };
+      
 
 
     /**
      * Funcion para agregar una medida
      */
     const agregarOtraMedida = () => {
-        let cantidadAtributos = medicionesSuperior.includes(prenda) ? 15 : 10;
+        let cantidadAtributos = medicionesSuperior.includes(prenda) ? 14 : 9;
 
         if (idCliente && prenda && Object.keys(mediciones).length >= cantidadAtributos) {
             const nombreCliente = `${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`;

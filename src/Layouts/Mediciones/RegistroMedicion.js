@@ -139,13 +139,12 @@ const RegistroMedicion = ({ clientes }) => {
    * Registra las mediciones y hace las solicitudes al api
    */
   const registrarMedicion = async () => {
-
     Swal.fire({
-      title: 'Espere unos segundos',
-      icon: 'info',
-      showConfirmButton: false,
-      timer: 10000 // Duración en milisegundos (10 segundos)
-    });
+        title: 'Las mediciones se están guardando...',
+        icon: 'info',
+        showConfirmButton: false,
+        timer: 5000 // Duración en milisegundos (5 segundos)
+      });
 
 
     let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
@@ -269,26 +268,6 @@ const RegistroMedicion = ({ clientes }) => {
               });
         } else {
             // Algunos registros no se han enviado correctamente
-            Swal.fire(
-              "Hubo fallas al guardar algunas mediciones!",
-              `${registrosFallidos}`,
-              "info"
-            ).then((result) => {
-              if (result.isConfirmed) {
-                localStorage.removeItem("nuevosRegistros");
-                limpiarEstados();
-                setMediciones([]);
-                limpiarCampos();
-                navigate("/mediciones");
-              }
-              else {
-                localStorage.removeItem("nuevosRegistros");
-                limpiarEstados();
-                setMediciones([]);
-                limpiarCampos();
-                navigate("/mediciones");
-              }
-            });
             console.log("Registros fallidos:", registrosFallidos);
             // ...
         }
@@ -296,13 +275,14 @@ const RegistroMedicion = ({ clientes }) => {
         console.log("error", error);
     }
 };
+  
 
   /**
    * Funcion para agregar una medida
    */
   const agregarOtraMedida = () => {
-    let cantidadAtributos = medicionesSuperior.includes(prenda) ? 15 : 10;
-    console.log(cantidadAtributos);
+    let cantidadAtributos = medicionesSuperior.includes(prenda) ? 14 : 9;
+   // console.log(cantidadAtributos);
 
     if (idCliente && prenda && Object.keys(mediciones).length >= cantidadAtributos) {
       const datosCliente = cliente.find(

@@ -105,6 +105,7 @@ html {
   justify-content: center;
   align-items: flex-end;
   height: 50vh;
+  margin-top: 15px;
 }
 
 /***************************************************/

@@ -68,7 +68,7 @@ const DetalleMedicion = () => {
       redirect: "follow",
     };
 
-    console.log(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`);
+    //console.log(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`);
 
     fetch(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`, requestOptions)
       .then((response) => response.json())

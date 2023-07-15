@@ -157,7 +157,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     rows="5"
                     cols="60"
                     onChange={handleInputChange}
-                    required
                   ></textarea>
                 </div>
 

@@ -57,7 +57,7 @@ const DetalleClienteMediciones = () => {
                     localStorage.setItem('medidas', JSON.stringify(data));
                     const arrayMedicionesUsuario = data.filter(item => item.id_cliente == parametro.userId);
                     setMediciones(arrayMedicionesUsuario);
-                    console.log(mediciones);
+                    //console.log(mediciones);
                 } else {
                     // Mostrar mensaje de error o realizar otra acción
                 }
