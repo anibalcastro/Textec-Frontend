@@ -58,7 +58,7 @@ const FiltroEmpresa = ({ datos }) => {
                   <Link
                     className="link-nombre"
                     to={`/empresa/${dato.id}`}
-                  >{`${dato.nombre}`}</Link>
+                  >{`${dato.nombre_empresa}`}</Link>
                 </td>
               </tr>
             ))}

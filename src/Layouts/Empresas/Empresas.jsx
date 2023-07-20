@@ -1,10 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import FiltroEmpresa from "../../components/filtro-empresas/Filtro-empresas";
+import Cookies from "js-cookie";
 
 const Empresas = () => {
+    //Estado donde se almacenan las empresas
+    const [listaEmpresa, setEmpresas] = useState([]);
 
-    let listaEmpresa = [{'id':1, 'nombre':'Arenal Fitness Gym'},{'id':2, 'nombre':'Condos Vista al Volcán'}];
+    //Token activo
+    const token = Cookies.get("jwtToken");
+
+    useEffect(() => {
+        const obtenerEmpresas = () => {
+            var myHeaders = new Headers();
+            myHeaders.append("Authorization", `Bearer ${token}`);
+
+            var requestOptions = {
+                method: 'GET',
+                headers: myHeaders,
+                redirect: 'follow'
+            };
+
+            fetch("https://api.textechsolutionscr.com/api/v1/empresas", requestOptions)
+                .then(response => response.json())
+                .then(result => {
+                    const {data} = result;
+                    //console.log(data);
+                    window.localStorage.setItem('empresas', data);
+                    setEmpresas(data);
+                })
+                .catch(error => console.log('error', error));
+        }
+
+        obtenerEmpresas();
+    }, [])
+
+
 
     return (
         <React.Fragment>
