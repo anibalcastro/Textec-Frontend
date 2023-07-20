@@ -6,11 +6,11 @@ import Logo from '../../Images/Logos/Icono.jpg'
 
 const RegistroEmpresa = () => {
 
-    const [cliente, setCliente] = useState([]);
-    const [usuarios, setUsuarios] = useState([]);
+    const [input, setInput] = useState([]);
+    const [empresas, setEmpresas] = useState([]);
   
     useEffect(() => {
-      setUsuarios(obtenerUsuarios());
+      setEmpresas(obtenerEmpresas());
     },[])
   
     const navigate = useNavigate();
@@ -19,10 +19,10 @@ const RegistroEmpresa = () => {
   
     const handleInputChange = (event) => {
       const { name, value } = event.target;
-      setCliente({ ...cliente, [name]: value });
+      setInput({ ...input, [name]: value });
     };
   
-    const obtenerUsuarios = () => {
+    const obtenerEmpresas = () => {
       let datosUsuarios = localStorage.getItem('data');
       return JSON.parse(datosUsuarios);
     }
@@ -30,7 +30,7 @@ const RegistroEmpresa = () => {
     const handleInputChangeCedula = (event) => {
       const valorCedula = event.target.value;
       
-      const usuarioExistente = usuarios.find(usuario => usuario.cedula == valorCedula);
+      const usuarioExistente = empresas.find(usuario => usuario.cedula == valorCedula);
   
       if (usuarioExistente) {
         const inputElement = document.getElementById('cedula');
@@ -40,12 +40,12 @@ const RegistroEmpresa = () => {
   
         Swal.fire(
           "Error!",
-          "La cédula que dijitaste ya existe en la base de datos",
+          "La céedula ya esta asignada a una empresa",
           "error"
         );
       } else {
         const { name, value } = event.target;
-        setCliente({ ...cliente, [name]: value });
+        setInput({ ...input, [name]: value });
       }
   
   
@@ -53,23 +53,13 @@ const RegistroEmpresa = () => {
   
     const handleSubmit = (event) => {
       event.preventDefault();
-  
-      if (cliente.nombre !== undefined || cliente.apellido1 !== undefined || cliente.apellido2 !== undefined || cliente.cedula !== undefined || cliente.telefono !== undefined || cliente.empresa !== undefined || cliente.departamento !== undefined || cliente.observaciones !== undefined) {
         peticionApi();
         limpiarEstado();
-      } else {
-        // La variable es undefined
-        // Puedes manejar el caso de undefined aquí
-        Swal.fire(
-          "Error!",
-          "Debes llenar los campos correspondientes",
-          "error"
-        );
-      }
+      
     };
-  
+      
     const limpiarEstado = () => {
-      setCliente("");
+      setInput("");
     }
   
     const peticionApi = () => {
@@ -77,7 +67,14 @@ const RegistroEmpresa = () => {
       myHeaders.append("Authorization", `Bearer ${token}`);
   
       var formdata = new FormData();
-      formdata.append("comentarios", cliente.observaciones || 'NA');
+
+      formdata.append("nombre_empresa",input.nombre || 'Nombre empresa');
+      formdata.append("cedula", input.cedula || 'cedula');
+      formdata.append("email", input.correo || 'NA');
+      formdata.append("nombre_encargado", input.encargado);
+      formdata.append("telefono_encargado",input.telefono_encargado );
+      formdata.append("direccion", input.direccion || 'NA');
+      formdata.append("comentarios", input.observaciones || 'NA');
   
       var requestOptions = {
         method: "POST",
@@ -86,26 +83,22 @@ const RegistroEmpresa = () => {
         redirect: "follow",
       };
   
-      fetch("https://api.textechsolutionscr.com/api/v1/clientes/registrar", requestOptions)
+      fetch("https://api.textechsolutionscr.com/api/v1/empresas/registrar", requestOptions)
         .then((response) => response.json())
         .then((responseData) => {
-          console.log(responseData);
-          const { status } = responseData;
-          const nombreCompleto =
-            cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
-  
+          const { status, error } = responseData;
+           
   
           if (parseInt(status) === 200) {
-            // Cliente creado con éxito
-  
+            // Empresa creada con éxito
             Swal.fire(
-              "Cliente creado con éxito!",
-              `Se ha a registrado a ${nombreCompleto}!`,
+              "Empresa creada con éxito!",
+              `Se ha a registrado a ${input.nombre}!`,
               "success"
             ).then((result) => {
               if (result.isConfirmed) {
                 // El usuario hizo clic en el botón "OK"
-                navigate("/clientes");
+                navigate("/empresas");
               } else {
                 // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
                 // Realiza alguna otra acción o maneja el caso en consecuencia
@@ -114,15 +107,18 @@ const RegistroEmpresa = () => {
   
           } else {
             // Error al crear el cliente
+            let mensajeError = '';
+            for (const mensaje of error) {
+              mensajeError += mensaje + "\n";
+            }
             Swal.fire(
-              "Error al crear cliente!",
-              "Verificar que todos los campos estén llenos",
+              "Error al crear la empresa!",
+              `${mensajeError}`,
               "error"
             );
           }
         })
         .catch((error) => console.log("error", error));
-  
     }
 
     return(
