@@ -46,6 +46,7 @@ const FiltroEmpresa = ({ datos }) => {
           <tr>
             <th>#</th>
             <th>Nombre Empresa</th>
+            <th>Email</th>
           </tr>
         </thead>
         <tbody>
@@ -60,6 +61,7 @@ const FiltroEmpresa = ({ datos }) => {
                     to={`/empresa/${dato.id}`}
                   >{`${dato.nombre_empresa}`}</Link>
                 </td>
+                <td>{dato.email}</td>
               </tr>
             ))}
         </tbody>

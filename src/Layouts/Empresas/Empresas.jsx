@@ -24,10 +24,11 @@ const Empresas = () => {
             fetch("https://api.textechsolutionscr.com/api/v1/empresas", requestOptions)
                 .then(response => response.json())
                 .then(result => {
-                    const {data} = result;
-                    //console.log(data);
-                    window.localStorage.setItem('empresas', data);
-                    setEmpresas(data);
+                    if (result.hasOwnProperty("data")) {
+                        const { data } = result;
+                        setEmpresas(data);
+                        localStorage.setItem('empresas', JSON.stringify(data));
+                      } 
                 })
                 .catch(error => console.log('error', error));
         }

@@ -144,37 +144,21 @@ function App() {
                 <Routes>
                   <Route exact path="/" element={<Inicio />} />
                   <Route exact path="/inicio" element={<Inicio />} />
+                  
                   <Route exact path="/clientes" element={<Clientes />} />
-                  <Route
-                    exact
-                    path="/clientes/registro"
-                    element={<RegistroCliente />}
-                  />
-                  <Route
-                    exact
-                    path="/clientes/editar/:userId"
-                    element={<ModificarCliente />}
-                  />
-                  <Route
-                    exact
-                    path="/clientes/:userId"
-                    element={<DetalleCliente />}
-                  />
+                  <Route exact path="/clientes/registro" element={<RegistroCliente />} />
+                  <Route exact path="/clientes/editar/:userId" element={<ModificarCliente />} />
+                  <Route exact path="/clientes/:userId" element={<DetalleCliente />} />
 
                   <Route exact path="/empresas" element={<Empresas />} />
                   <Route exact path="/empresas/registro" element={<RegistroEmpresa />} />
-                  <Route exact path="/empresas/modificar/:idEmpresa" element={<EditarEmpresa />} />
-                  <Route exact path="/empresas/:idEmpresa" element={<DetalleEmpresa />} />
+                  <Route exact path="/empresa/editar/:idEmpresa" element={<EditarEmpresa />} />
+                  <Route exact path="/empresa/:idEmpresa" element={<DetalleEmpresa />} />
                   
                   <Route exact path="/mediciones" element={<Medidas />} />
                   <Route exact path="/mediciones/:idDetalle" element={<DetalleMedicion />}/>
                   <Route exact path="/mediciones/registro" element={<RegistroMedicion clientes={listaClientes} />} />
-                  <Route
-                    exact
-                    path="/mediciones/editar/:medicionId"
-                    element={<ModificarMedicion />}
-                  />
-                  
+                  <Route exact path="/mediciones/editar/:medicionId" element={<ModificarMedicion />} />
                   <Route exact path="/mediciones/cliente/:userId" element={<DetalleClienteMediciones />} />
                   <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
 
