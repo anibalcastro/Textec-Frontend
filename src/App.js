@@ -23,6 +23,12 @@ import DetalleClienteMediciones from "./Layouts/Mediciones/DetalleClienteMedicio
 import Login from "./Layouts/Login";
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
+import Empresas from "./Layouts/Empresas/Empresas";
+import RegistroEmpresa from "./Layouts/Empresas/RegistroEmpresa";
+import EditarEmpresa from "./Layouts/Empresas/EditarEmpresa";
+import DetalleEmpresa from "./Layouts/Empresas/DetalleEmpresa";
+
+
 import { useEffect, useState } from "react";
 
 function App() {
@@ -154,18 +160,15 @@ function App() {
                     path="/clientes/:userId"
                     element={<DetalleCliente />}
                   />
-                  <Route exact path="/empresas" element={<NuevosModulos />} />
+
+                  <Route exact path="/empresas" element={<Empresas />} />
+                  <Route exact path="/empresas/registro" element={<RegistroEmpresa />} />
+                  <Route exact path="/empresas/modificar/:idEmpresa" element={<EditarEmpresa />} />
+                  <Route exact path="/empresas/:idEmpresa" element={<DetalleEmpresa />} />
+                  
                   <Route exact path="/mediciones" element={<Medidas />} />
-                  <Route
-                    exact
-                    path="/mediciones/:idDetalle"
-                    element={<DetalleMedicion />}
-                  />
-                  <Route
-                    exact
-                    path="/mediciones/registro"
-                    element={<RegistroMedicion clientes={listaClientes} />}
-                  />
+                  <Route exact path="/mediciones/:idDetalle" element={<DetalleMedicion />}/>
+                  <Route exact path="/mediciones/registro" element={<RegistroMedicion clientes={listaClientes} />} />
                   <Route
                     exact
                     path="/mediciones/editar/:medicionId"
