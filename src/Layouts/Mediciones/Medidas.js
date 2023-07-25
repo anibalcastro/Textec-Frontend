@@ -7,6 +7,7 @@ import Filtro from "../../components/filtro-mediciones/Filtro-mediciones";
 const Mediciones = () => {
   const [listaClientes, setListaClientes] = useState([]);
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
   
   useEffect(() => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,6 +48,15 @@ const Mediciones = () => {
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador') {
+      return true;
+    }
+    return false
+  }
+
+  const permisosColaborador = validarPermisos();
    
 
   return (
@@ -56,9 +66,9 @@ const Mediciones = () => {
         <hr className="division"></hr>
 
         <div className="container mediciones-filtro">
-          <Link to='/mediciones/registro'>
+          {permisosColaborador && (  <Link to='/mediciones/registro'>
             <button className="btn-registrar">Registrar</button>
-          </Link>
+          </Link>)}
         </div>
 
         <Filtro datos={listaClientes} /> {/* Utilizando el nombre actualizado del estado */}

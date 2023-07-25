@@ -7,6 +7,7 @@ import Filtro from "../../components/filtro-clientes/Filtro-clientes";
 const Clientes = () => {
   const [listaClientes, setListaClientes] = useState([]);
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
   
   useEffect(() => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -47,7 +48,15 @@ const Clientes = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
   
-  // Rest of your code...
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador'){
+      return true;
+    }
+  
+    return false
+  }
+
+  const permisos = validarPermisos();
   
   return (
     <React.Fragment>
@@ -56,9 +65,9 @@ const Clientes = () => {
         <hr className="division"></hr>
 
         <div className="container mediciones-filtro">
-          <Link to='/clientes/registro'>
+          {permisos && (<Link to='/clientes/registro'>
             <button className="btn-registrar">Registrar</button>
-          </Link>
+          </Link> )}
         </div>
 
         <Filtro datos={listaClientes} /> {/* Utilizando el nombre actualizado del estado */}

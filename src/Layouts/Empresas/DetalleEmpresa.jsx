@@ -114,6 +114,16 @@ const DetalleEmpresa = () => {
     });
   }
 
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador') {
+      return true;
+    }
+
+    return false
+  }
+
+  const permisosColaborador = validarPermisos();
+
   const validarRol = (role) => {
     return role === "Admin";
   };
@@ -227,9 +237,11 @@ const DetalleEmpresa = () => {
               <Link to="/empresas">
                 <button className="btn-registrar">Regresar</button>
               </Link>
-              <Link to={`/empresa/editar/${empresa.id}`}>
+
+              {permisosColaborador && (<Link to={`/empresa/editar/${empresa.id}`}>
                 <button className="btn-registrar">Editar</button>
-              </Link>
+              </Link>)}
+              
 
               {permisos && (
                 <button className="btn-registrar" onClick={() => eliminarEmpresa()}>

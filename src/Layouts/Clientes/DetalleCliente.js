@@ -146,6 +146,16 @@ const DetalleCliente = () => {
     });
   };
 
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador') {
+      return true;
+    }
+
+    return false
+  }
+
+  const permisosColaborador = validarPermisos();
+
   const validarRol = (role) => {
     return role === "Admin";
   };
@@ -164,7 +174,7 @@ const DetalleCliente = () => {
               <label htmlFor="cedula">Cédula:</label>
               <input
                 type="text"
-id="cedula"
+                id="cedula"
                 autoComplete="current-password"
                 value={cliente.cedula}
                 disabled
@@ -245,10 +255,10 @@ id="cedula"
           <Link to="/clientes">
             <button className="btn-registrar">Regresar</button>
           </Link>
-
-          <Link to={`/clientes/editar/${cliente.id}`}>
-            <button className="btn-registrar">Editar</button>
-          </Link>
+          
+          {permisosColaborador && (<Link to={`/clientes/editar/${cliente.id}`}>
+              <button className="btn-registrar">Editar</button>
+            </Link>)}
 
           {permisos && (
             <button className="btn-registrar" onClick={eliminarCliente}>

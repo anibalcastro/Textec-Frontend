@@ -8,6 +8,7 @@ const DetalleClienteMediciones = () => {
     let [cliente, setCliente] = useState([]);
     let [mediciones, setMediciones] = useState([]);
     const token = Cookies.get("jwtToken");
+    const role = Cookies.get("role");
     let userId = useParams();
 
     useEffect(() => {
@@ -37,7 +38,6 @@ const DetalleClienteMediciones = () => {
         }
     }
 
-
     const obtenerMediciones = (parametro) => {
         const myHeaders = new Headers({
             "Authorization": `Bearer ${token}`
@@ -65,23 +65,29 @@ const DetalleClienteMediciones = () => {
             .catch(error => console.log('error', error));
     }
 
+    const randomColores = () => {
+        let listaColores = ['#94744C', '#6d949c'];
+        let randomIndex = Math.floor(Math.random() * listaColores.length);
+        return listaColores[randomIndex];
+    }
 
+    if (!mediciones || mediciones.length === 0) {
+        Swal.fire({
+        title: "Cargando los datos...",
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        timer: 1000 // Duración en milisegundos (10 segundos),
+        });
+    }
 
-
-const randomColores = () => {
-    let listaColores = ['#94744C', '#6d949c'];
-    let randomIndex = Math.floor(Math.random() * listaColores.length);
-    return listaColores[randomIndex];
-}
-
-if (!mediciones || mediciones.length === 0) {
-    Swal.fire({
-      title: "Cargando los datos...",
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      timer: 1000 // Duración en milisegundos (10 segundos),
-    });
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador') {
+      return true;
+    }
+    return false
   }
+
+  const permisosColaborador = validarPermisos();
 
 return (
     <React.Fragment>
@@ -116,10 +122,11 @@ return (
             <Link to="/mediciones">
                 <button className="btn-registrar">Regresar</button>
             </Link>
-
-            <Link to={`/mediciones/registro/cliente/${cliente.id}`}>
+            
+            {permisosColaborador && (<Link to={`/mediciones/registro/cliente/${cliente.id}`}>
                 <button className="btn-registrar">Agregar</button>
-            </Link>
+            </Link>)}
+            
         </div>
     </React.Fragment>
 );

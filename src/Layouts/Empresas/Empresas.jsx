@@ -9,6 +9,7 @@ const Empresas = () => {
 
     //Token activo
     const token = Cookies.get("jwtToken");
+    const role = Cookies.get("role");
 
     useEffect(() => {
         const obtenerEmpresas = () => {
@@ -37,6 +38,16 @@ const Empresas = () => {
     }, [])
 
 
+    const validarPermisos = () => {
+        if (role === 'Admin' || role === 'Colaborador') {
+          return true;
+        }
+    
+        return false
+      }
+    
+      const permisosColaborador = validarPermisos();
+
 
     return (
         <React.Fragment>
@@ -45,9 +56,9 @@ const Empresas = () => {
                 <hr className="division"></hr>
 
                 <div className="container mediciones-filtro">
-                    <Link to='/empresas/registro'>
+                    {permisosColaborador && (  <Link to='/empresas/registro'>
                         <button className="btn-registrar">Registrar</button>
-                    </Link>
+                    </Link>)}
                 </div>
 
                 <FiltroEmpresa datos={listaEmpresa} /> {/* Utilizando el nombre actualizado del estado */}

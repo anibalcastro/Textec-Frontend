@@ -130,7 +130,14 @@ const DetalleMedicion = () => {
     });
   };
 
-  
+  const validarPermisos = () => {
+    if (role === 'Admin' || role === 'Colaborador') {
+      return true;
+    }
+    return false
+  }
+
+  const permisosColaborador = validarPermisos();
 
   const permisos = validarRol(role);
 
@@ -442,9 +449,12 @@ const DetalleMedicion = () => {
             <button className="btn-registrar">Regresar</button>
           </Link>
 
-          <Link to={`/mediciones/editar/${medicion.id}`}>
+          {permisosColaborador && (
+            <Link to={`/mediciones/editar/${medicion.id}`}>
             <button className="btn-registrar">Editar</button>
           </Link>
+          )}
+          
           {permisos ? (
             <button className="btn-registrar" onClick={eliminarMedicion}>
               Eliminar

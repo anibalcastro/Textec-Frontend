@@ -12,7 +12,7 @@ const ModificarCliente = () => {
 
   let { userId } = useParams(); //Capturar el identificador de la URL 
   const token = Cookies.get("jwtToken"); //Obtener el token
-
+  
   const navigate = useNavigate();
 
   useEffect(() => {
