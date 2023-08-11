@@ -105,6 +105,8 @@ const RegistroMedicion = ({ clientes }) => {
     return JSON.parse(mediciones);
   };
 
+ 
+
   /**
    * Obtiene y almacena el id del cliente seleccionado en estado {idCliente}.
    * @param {*} event 
@@ -274,9 +276,8 @@ const RegistroMedicion = ({ clientes }) => {
     } catch (error) {
         console.log("error", error);
     }
-};
+  };
   
-
   /**
    * Funcion para agregar una medida
    */
