@@ -9,15 +9,17 @@ import { useNavigate } from "react-router-dom";
 const ModificarCliente = () => {
 
   const [cliente, setCliente] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
 
   let { userId } = useParams(); //Capturar el identificador de la URL 
   const token = Cookies.get("jwtToken"); //Obtener el token
-  
+
   const navigate = useNavigate();
 
   useEffect(() => {
     //Llenar la infrmacion del cliente por mediio de identificador
     informacionCliente(userId)
+    obtenerEmpresas();
   }, [userId])
 
   const informacionCliente = (identificador) => {
@@ -128,6 +130,30 @@ const ModificarCliente = () => {
     // Restablecer los campos del formulario después de enviar
   };
 
+  /**
+   * Obtener información de empresas
+   */
+  const obtenerEmpresas = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/empresas", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.hasOwnProperty("data")) {
+          const { data } = result;
+          setEmpresas(data);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
   return (
     <React.Fragment>
       <div className="container registro">
@@ -162,7 +188,24 @@ const ModificarCliente = () => {
             </div>
             <div className="div-inp">
               <label htmlFor="empresa">Empresa:</label>
-              <input type="text" id="empresa" name="empresa" autoComplete="empresa" defaultValue={cliente.empresa ?? ''} onChange={handleInputChange} />
+              <select
+                onChange={handleInputChange}
+                name="empresa"
+                id="empresa"
+                defaultValue={cliente.nombre_empresa || ''}
+                required
+              >
+                {empresas.map((iterador) => (
+                  <option
+                    key={iterador.id}
+                    value={iterador.nombre_empresa}
+                    selected={iterador.nombre_empresa === cliente.empresa}
+                  >
+                    {iterador.nombre_empresa}
+                  </option>
+))}
+
+              </select>
             </div>
             <div className="div-inp">
               <label htmlFor="departamento">Departamento:</label>

@@ -7,10 +7,12 @@ import Swal from "sweetalert2";
 const RegistroCliente = () => {
   const [cliente, setCliente] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
+  const [empresas, setEmpresas] = useState([]);
 
   useEffect(() => {
+    obtenerEmpresas();
     setUsuarios(obtenerUsuarios());
-  },[])
+  }, []);
 
   const navigate = useNavigate();
 
@@ -22,19 +24,21 @@ const RegistroCliente = () => {
   };
 
   const obtenerUsuarios = () => {
-    let datosUsuarios = localStorage.getItem('data');
+    let datosUsuarios = localStorage.getItem("data");
     return JSON.parse(datosUsuarios);
-  }
- 
+  };
+
   const handleInputChangeCedula = (event) => {
     const valorCedula = event.target.value;
-    
-    const usuarioExistente = usuarios.find(usuario => usuario.cedula == valorCedula);
+
+    const usuarioExistente = usuarios.find(
+      (usuario) => usuario.cedula == valorCedula
+    );
 
     if (usuarioExistente) {
-      const inputElement = document.getElementById('cedula');
+      const inputElement = document.getElementById("cedula");
       if (inputElement) {
-        inputElement.value = '';
+        inputElement.value = "";
       }
 
       Swal.fire(
@@ -46,30 +50,33 @@ const RegistroCliente = () => {
       const { name, value } = event.target;
       setCliente({ ...cliente, [name]: value });
     }
-
-
-  }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    if (cliente.nombre !== undefined || cliente.apellido1 !== undefined || cliente.apellido2 !== undefined || cliente.cedula !== undefined || cliente.telefono !== undefined || cliente.empresa !== undefined || cliente.departamento !== undefined || cliente.observaciones !== undefined) {
+    if (
+      cliente.nombre !== undefined ||
+      cliente.apellido1 !== undefined ||
+      cliente.apellido2 !== undefined ||
+      cliente.cedula !== undefined ||
+      cliente.telefono !== undefined ||
+      cliente.empresa !== undefined ||
+      cliente.departamento !== undefined ||
+      cliente.observaciones !== undefined
+    ) {
       peticionApi();
       limpiarEstado();
     } else {
       // La variable es undefined
       // Puedes manejar el caso de undefined aquí
-      Swal.fire(
-        "Error!",
-        "Debes llenar los campos correspondientes",
-        "error"
-      );
+      Swal.fire("Error!", "Debes llenar los campos correspondientes", "error");
     }
   };
 
   const limpiarEstado = () => {
     setCliente("");
-  }
+  };
 
   const peticionApi = () => {
     var myHeaders = new Headers();
@@ -84,7 +91,7 @@ const RegistroCliente = () => {
     formdata.append("telefono", cliente.telefono);
     formdata.append("empresa", cliente.empresa);
     formdata.append("departamento", cliente.departamento);
-    formdata.append("comentarios", cliente.observaciones || 'NA');
+    formdata.append("comentarios", cliente.observaciones || "NA");
 
     var requestOptions = {
       method: "POST",
@@ -93,14 +100,16 @@ const RegistroCliente = () => {
       redirect: "follow",
     };
 
-    fetch("https://api.textechsolutionscr.com/api/v1/clientes/registrar", requestOptions)
+    fetch(
+      "https://api.textechsolutionscr.com/api/v1/clientes/registrar",
+      requestOptions
+    )
       .then((response) => response.json())
       .then((responseData) => {
         console.log(responseData);
         const { status } = responseData;
         const nombreCompleto =
           cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
-
 
         if (parseInt(status) === 200) {
           // Cliente creado con éxito
@@ -118,7 +127,6 @@ const RegistroCliente = () => {
               // Realiza alguna otra acción o maneja el caso en consecuencia
             }
           });
-
         } else {
           // Error al crear el cliente
           Swal.fire(
@@ -129,8 +137,31 @@ const RegistroCliente = () => {
         }
       })
       .catch((error) => console.log("error", error));
+  };
 
-  }
+  /**
+   * Obtener información de empresas
+   */
+  const obtenerEmpresas = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/empresas", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.hasOwnProperty("data")) {
+          const { data } = result;
+          setEmpresas(data);
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
 
   return (
     <React.Fragment>
@@ -207,15 +238,20 @@ const RegistroCliente = () => {
               />
             </div>
             <div className="div-inp">
-              <label htmlFor="password">Empresa:</label>
-              <input
+              <label htmlFor="empresa">Empresa:</label>
+              <select
                 onChange={handleInputChange}
-                type="text"
                 name="empresa"
-                id="cedula"
-                autoComplete="current-password"
+                id="empresa"
                 required
-              />
+              >
+                <option value="">Selecciona una empresa</option>
+                {empresas.map((empresa) => (
+                  <option key={empresa.id} value={empresa.nombre_empresa}>
+                    {empresa.nombre_empresa}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="div-inp">
               <label htmlFor="password">Departamento:</label>
