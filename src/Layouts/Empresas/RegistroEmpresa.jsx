@@ -69,6 +69,7 @@ const RegistroEmpresa = () => {
       var formdata = new FormData();
 
       formdata.append("nombre_empresa",input.nombre || 'Nombre empresa');
+      formdata.append("razon_social",input.razon_social || 'Razon social');
       formdata.append("cedula", input.cedula || 'cedula');
       formdata.append("email", input.correo || 'NA');
       formdata.append("nombre_encargado", input.encargado);
@@ -137,6 +138,17 @@ const RegistroEmpresa = () => {
                 name="nombre"
                 id="nombre"
                 autoComplete="nombre"
+                required
+              />
+            </div>
+            <div className="div-inp">
+              <label htmlFor="username">Razón social:</label>
+              <input
+                onChange={handleInputChange}
+                type="text"
+                name="razon_social"
+                id="razon_social"
+                autoComplete="razon_social"
                 required
               />
             </div>

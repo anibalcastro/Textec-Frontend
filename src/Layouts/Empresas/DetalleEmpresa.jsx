@@ -151,6 +151,18 @@ const DetalleEmpresa = () => {
               />
             </div>
             <div className="div-inp">
+              <label htmlFor="username">Razón social:</label>
+              <input
+                value={empresa.razon_social}
+                type="text"
+                name="razon_social"
+                id="razon_social"
+                autoComplete="razon_social"
+                required
+                disabled
+              />
+            </div>
+            <div className="div-inp">
               <label htmlFor="password">Cédula:</label>
               <input
                 value={empresa.cedula}

@@ -81,6 +81,7 @@ const EditarEmpresa = () => {
 
     var formdata = new FormData();
     formdata.append("nombre_empresa", empresa.nombre_empresa);
+    formdata.append("razon_social", empresa.razon_social || 'NA');
     formdata.append("cedula", empresa.cedula);
     formdata.append("email", empresa.email);
     formdata.append("nombre_encargado", empresa.nombre_encargado);
@@ -96,7 +97,7 @@ const EditarEmpresa = () => {
     };
 
     fetch(
-      "https://api.textechsolutionscr.com/api/v1/empresas/editar/1",
+      `https://api.textechsolutionscr.com/api/v1/empresas/editar/${idEmpresa}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -106,7 +107,7 @@ const EditarEmpresa = () => {
             // Empresa creada con éxito
             Swal.fire(
               "Empresa modificada con éxito!",
-              `Se ha a modificad información de ${empresa.nombre_empresa}!`,
+              `Se ha a modificado información de ${empresa.nombre_empresa}!`,
               "success"
             ).then((result) => {
               if (result.isConfirmed) {
@@ -151,6 +152,18 @@ const EditarEmpresa = () => {
                 name="nombre_empresa"
                 id="nombre"
                 autoComplete="nombre"
+                required
+              />
+            </div>
+            <div className="div-inp">
+              <label htmlFor="username">Razón Social:</label>
+              <input
+                onChange={handleInputChange}
+                defaultValue={empresa.razon_social}
+                type="text"
+                name="razon_social"
+                id="razon_social"
+                autoComplete="razon_social"
                 required
               />
             </div>
