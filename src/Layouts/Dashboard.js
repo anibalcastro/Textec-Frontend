@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Logo from "../Images/Logos/Logo Textech.jpg";
+import Logo from "../Images/Logos/Logo Textech.png";
 import Card from "../components/card-information/card";
 import Cookies from "js-cookie";
 

@@ -42,7 +42,7 @@ const Login = () => {
     fetch("https://api.textechsolutionscr.com/api/v1/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
-       // console.log(result);
+        // console.log(result);
 
         const { token, status, role } = result; // Desestructurar las propiedades del resultado
 
@@ -51,27 +51,27 @@ const Login = () => {
           Cookies.set("jwtToken", token, { expires: 7 });
           Cookies.set("role", role, { expires: 7 });
 
-       
+
           Swal.fire(
             'Inicio de sesión!',
             'Bienvenido!',
             'success'
           ).then(result => {
-            if (result.isConfirmed){
+            if (result.isConfirmed) {
               navigate('/');
               window.location.reload();
             }
-            else{
+            else {
               navigate('/');
               window.location.reload();
             }
           })
         } else {
-            Swal.fire(
-                'Error!',
-                'Correo electrónico o contraseña incorrecta!',
-                'error'
-              )
+          Swal.fire(
+            'Error!',
+            'Correo electrónico o contraseña incorrecta!',
+            'error'
+          )
         }
       })
       .catch((error) => console.log("error", error));
