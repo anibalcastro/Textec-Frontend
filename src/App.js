@@ -9,25 +9,30 @@ import "./App.css";
 
 import Encabezado from "./components/header/Header";
 
+import Login from "./Layouts/Login";
+
 import Inicio from "./Layouts/Dashboard";
 import Clientes from "./Layouts/Clientes/Clientes";
 import RegistroCliente from "./Layouts/Clientes/RegistroClientes";
 import ModificarCliente from "./Layouts/Clientes/ModificarCliente";
 import DetalleCliente from "./Layouts/Clientes/DetalleCliente";
+
 import Medidas from "./Layouts/Mediciones/Medidas";
 import DetalleMedicion from "./Layouts/Mediciones/DetalleMedicion";
 import RegistroMedicion from "./Layouts/Mediciones/RegistroMedicion";
 import RegistroMedicionCliente from "./Layouts/Mediciones/RegistroMedicionCliente";
 import ModificarMedicion from "./Layouts/Mediciones/ModificarMedicion";
 import DetalleClienteMediciones from "./Layouts/Mediciones/DetalleClienteMedicion";
-import Login from "./Layouts/Login";
-import NuevosModulos from "./Layouts/NuevosModulos";
-import NoEncotrada from "./Layouts/NoEncontrada";
+
 import Empresas from "./Layouts/Empresas/Empresas";
 import RegistroEmpresa from "./Layouts/Empresas/RegistroEmpresa";
 import EditarEmpresa from "./Layouts/Empresas/EditarEmpresa";
 import DetalleEmpresa from "./Layouts/Empresas/DetalleEmpresa";
 
+import Productos  from "./Layouts/Productos/Productos";
+
+import NuevosModulos from "./Layouts/NuevosModulos";
+import NoEncotrada from "./Layouts/NoEncontrada";
 
 import { useEffect, useState } from "react";
 
@@ -161,6 +166,11 @@ function App() {
                   <Route exact path="/mediciones/editar/:medicionId" element={<ModificarMedicion />} />
                   <Route exact path="/mediciones/cliente/:userId" element={<DetalleClienteMediciones />} />
                   <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
+                  
+                  <Route exact path="/productos" element={<Productos />} />
+                  <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
+
+                  
 
                   <Route exact path="/orden" element={<NuevosModulos />} />
                   <Route exact path="/arreglos" element={<NuevosModulos />} />
