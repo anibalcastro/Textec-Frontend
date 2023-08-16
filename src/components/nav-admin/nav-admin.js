@@ -33,6 +33,10 @@ const VerticalNavbar = () => {
               Mediciones
             </Nav.Link>
 
+            <Nav.Link as={NavLink} to="/productos" className={location.pathname === '/productos' ? 'active' : ''}>
+              Productos
+            </Nav.Link>
+
             <Nav.Link as={NavLink} to="/orden" className={location.pathname === '/orden' ? 'active' : ''}>
               Orden de compra
             </Nav.Link>

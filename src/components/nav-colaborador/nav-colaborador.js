@@ -23,14 +23,21 @@ const VerticalNavbar = () => {
             <Nav.Link as={NavLink} to="/" className={location.pathname === '/' ? 'active' : ''}>
               Inicio
             </Nav.Link>
+            
             <Nav.Link as={NavLink} to="/clientes" className={location.pathname === '/clientes' ? 'active' : ''}>
               Clientes
             </Nav.Link>
+
             <Nav.Link as={NavLink} to="/empresas" className={location.pathname === '/empresas' ? 'active' : ''}>
               Empresas
             </Nav.Link>
+
             <Nav.Link as={NavLink} to="/mediciones" className={location.pathname === '/mediciones' ? 'active' : ''}>
               Mediciones
+            </Nav.Link>
+
+            <Nav.Link as={NavLink} to="/productos" className={location.pathname === '/productos' ? 'active' : ''}>
+              Productos
             </Nav.Link>
 
             <Nav.Link as={NavLink} to="/orden" className={location.pathname === '/orden' ? 'active' : ''}>
