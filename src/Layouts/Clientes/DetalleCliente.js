@@ -230,25 +230,6 @@ const DetalleCliente = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-
-        <hr className="division" />
-
-        <div className="container mediciones-cliente-contenedor">
-          <h2 className="titulo-encabezado">Mediciones</h2>
-
-          <div className="container mediciones-card">
-            {mediciones.map((medicion) => (
-              <CardMediciones
-                key={medicion.id}
-                articulo={medicion.articulo}
-                fecha={medicion.fecha}
-                color="#6d949c"
-                id={medicion.id}
-              />
-            ))}
-          </div>
-        </div>
-
         <hr className="division" />
 
         <div className="container botones-contenedor">

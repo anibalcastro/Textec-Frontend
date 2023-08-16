@@ -44,10 +44,9 @@ const Empresas = () => {
         }
     
         return false
-      }
+    }
     
-      const permisosColaborador = validarPermisos();
-
+    const permisosColaborador = validarPermisos();
 
     return (
         <React.Fragment>
@@ -61,8 +60,7 @@ const Empresas = () => {
                     </Link>)}
                 </div>
 
-                <FiltroEmpresa datos={listaEmpresa} /> {/* Utilizando el nombre actualizado del estado */}
-
+                <FiltroEmpresa datos={listaEmpresa} /> {/* Usar la lista de elementos actuales */}
             </div>
         </React.Fragment>
     )

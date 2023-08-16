@@ -1,14 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.css';
 
-
-const Filtro = ({ datos }) => {
+const FiltroClientes = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20; // Número de clientes por página
+
+  useEffect(() => {
+    setFiltro(""); // Resetear el filtro cuando los datos cambian
+    setCurrentPage(1); // Resetear la página cuando los datos cambian
+  }, [datos]);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
+    setCurrentPage(1); // Resetear la página cuando se aplica un filtro
   };
 
   const filtrarDatos = () => {
@@ -19,8 +26,6 @@ const Filtro = ({ datos }) => {
     return datosFiltrados;
   };
 
-  let contador = 0
-
   if (!datos || datos.length === 0) {
     Swal.fire({
       title: 'Cargando los datos...',
@@ -30,7 +35,16 @@ const Filtro = ({ datos }) => {
       }
     });
   }
-  
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFilteredItems = filtrarDatos().reverse().slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filtrarDatos().length / itemsPerPage);
+
+  const handleClick = (page) => {
+    setCurrentPage(page);
+  };
 
   return (
     <React.Fragment>
@@ -55,14 +69,14 @@ const Filtro = ({ datos }) => {
           </tr>
         </thead>
         <tbody>
-          {filtrarDatos().map((dato, index) => (
-            
+          {currentFilteredItems.map((dato, index) => (
             <tr key={index}>
-              <td>{contador+=1}</td>
-              <td >
-                <Link className="link-nombre" to={`/clientes/${dato.id}`}>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
+              <td>{indexOfFirstItem + index + 1}</td>
+              <td>
+                <Link className="link-nombre" to={`/clientes/${dato.id}`}>
+                  {`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}
+                </Link>
               </td>
-
               <td>{dato.cedula}</td>
               <td>{dato.empresa}</td>
               <td>{dato.departamento}</td>
@@ -70,8 +84,20 @@ const Filtro = ({ datos }) => {
           ))}
         </tbody>
       </table>
+
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={currentPage === index + 1 ? "active" : ""}
+            onClick={() => handleClick(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </React.Fragment>
   );
 };
 
-export default Filtro;
+export default FiltroClientes;

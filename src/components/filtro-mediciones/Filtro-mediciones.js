@@ -1,12 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const Filtro = ({ datos }) => {
+const FiltroMediciones = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25; // Número de mediciones por página
+
+  useEffect(() => {
+    setFiltro(""); // Resetear el filtro cuando los datos cambian
+    setCurrentPage(1); // Resetear la página cuando los datos cambian
+  }, [datos]);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
+    setCurrentPage(1); // Resetear la página cuando se aplica un filtro
   };
 
   const filtrarDatos = () => {
@@ -27,7 +35,17 @@ const Filtro = ({ datos }) => {
     });
   }
 
-  let iterador = 0;
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFilteredItems = filtrarDatos().reverse().slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(filtrarDatos().length / itemsPerPage);
+
+  const handleClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  let iterador = indexOfFirstItem;
 
   return (
     <React.Fragment>
@@ -50,24 +68,34 @@ const Filtro = ({ datos }) => {
           </tr>
         </thead>
         <tbody>
-          {filtrarDatos()
-            .reverse()
-            .map((dato, index) => (
-              <tr key={index}>
-                <td>{(iterador += 1)}</td>
-                <td>
-                  <Link
-                    className="link-nombre"
-                    to={`/mediciones/cliente/${dato.id}`}
-                  >{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
-                </td>
-                <td>{dato.cedula}</td>
-              </tr>
-            ))}
+          {currentFilteredItems.map((dato, index) => (
+            <tr key={index}>
+              <td>{iterador + index + 1}</td>
+              <td>
+                <Link
+                  className="link-nombre"
+                  to={`/mediciones/cliente/${dato.id}`}
+                >{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
+              </td>
+              <td>{dato.cedula}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
+
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={currentPage === index + 1 ? "active" : ""}
+            onClick={() => handleClick(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </React.Fragment>
   );
 };
 
-export default Filtro;
+export default FiltroMediciones;

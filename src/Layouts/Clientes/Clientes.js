@@ -58,7 +58,7 @@ const Clientes = () => {
   }
 
   const permisos = validarPermisos();
-  
+
   return (
     <React.Fragment>
       <div className="container mediciones">
