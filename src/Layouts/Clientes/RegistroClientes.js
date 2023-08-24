@@ -8,6 +8,7 @@ const RegistroCliente = () => {
   const [cliente, setCliente] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [empresas, setEmpresas] = useState([]);
+  const [filtroEmpresa, setFiltroEmpresa] = useState("");
 
   useEffect(() => {
     obtenerEmpresas();
@@ -163,6 +164,18 @@ const RegistroCliente = () => {
       .catch((error) => console.log("error", error));
   };
 
+  const handleInputChangeFiltroEmpresa = (event) => {
+    setFiltroEmpresa(event.target.value);
+  }
+
+  const filtrarEmpresas = () => {
+    const datosFiltrados = empresas.filter(dato => {
+      return dato.nombre_empresa.toLowerCase().includes(filtroEmpresa.toLowerCase());
+    });
+
+    return datosFiltrados;
+  }
+
   return (
     <React.Fragment>
       <div className="container registro">
@@ -237,6 +250,19 @@ const RegistroCliente = () => {
                 required
               />
             </div>
+
+            <div className="div-inp">
+              <label htmlFor="password">Buscar empresa:</label>
+              <input
+                onChange={handleInputChangeFiltroEmpresa}
+                type="text"
+                name="buscarEmpresa"
+                id="cedula"
+                autoComplete="current-password"
+                placeholder="Nombre de la empresa."
+              />
+            </div>
+
             <div className="div-inp">
               <label htmlFor="empresa">Empresa:</label>
               <select
@@ -246,7 +272,7 @@ const RegistroCliente = () => {
                 required
               >
                 <option value="">Selecciona una empresa</option>
-                {empresas.map((empresa) => (
+                {filtrarEmpresas().map((empresa) => (
                   <option key={empresa.id} value={empresa.nombre_empresa}>
                     {empresa.nombre_empresa}
                   </option>
