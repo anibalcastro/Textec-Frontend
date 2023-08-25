@@ -21,6 +21,7 @@ const RegistroMedicion = ({ clientes }) => {
     obtenerInformacion();
     obtenerMedidasAgregar();
     let data = obtenerMediciones();
+    console.log(data);
     validarExistenciaProducto(idCliente, prenda, data);
     //console.log(arrayMediciones);
   }, [mediciones]);
@@ -102,6 +103,33 @@ const RegistroMedicion = ({ clientes }) => {
    */
   const obtenerMediciones = () => {
     let mediciones = localStorage.getItem("medidas");
+
+    if (mediciones === null){
+      const myHeaders = new Headers({
+        "Authorization": `Bearer ${token}`
+    });
+
+    const requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/mediciones/clientes", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if (result.hasOwnProperty("data")) {
+                const { data } = result;
+                localStorage.setItem('medidas', JSON.stringify(data));
+                setMediciones(data);
+                //console.log(mediciones);
+            } else {
+                // Mostrar mensaje de error o realizar otra acción
+            }
+        })
+        .catch(error => console.log('error', error));
+    } 
+
     return JSON.parse(mediciones);
   };
 
