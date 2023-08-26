@@ -44,13 +44,13 @@ const RegistroMedicion = ({ clientes }) => {
    * @param {*} seleccionPrenda
    * @returns
    */
-  const validarExistenciaPrenda = (idCliente, seleccionPrenda) => {
+  const validarExistenciaMedicion = (seleccionPrenda) => {
     const medicionExistente = mediciones.find(
-      (item) =>
-        parseInt(item.idCliente) === idCliente &&
-        item.prenda === seleccionPrenda
+      (item) => {
+        return parseInt(item.id_cliente) === parseInt(idCliente) && String(item.articulo) === String(seleccionPrenda);
+      }
     );
-
+  
     if (medicionExistente) {
       Swal.fire({
         title: "Error!",
@@ -71,7 +71,7 @@ const RegistroMedicion = ({ clientes }) => {
   const handleOptionChangeCloth = (event) => {
     const prendaSeleccionada = event.target.value;
 
-    if (!validarExistenciaPrenda(idCliente, prendaSeleccionada)) {
+    if (!validarExistenciaMedicion(prendaSeleccionada)) {
       setPrenda(prendaSeleccionada);
     } else {
       limpiarCampos();
@@ -148,9 +148,6 @@ const RegistroMedicion = ({ clientes }) => {
 
             localStorage.setItem("medidas", JSON.stringify(data));
             setMediciones(data);
-            console.log(mediciones);
-            return JSON.parse(data);
-            //console.log(mediciones);
           } else {
             // Mostrar mensaje de error o realizar otra acción
           }
@@ -385,12 +382,10 @@ const RegistroMedicion = ({ clientes }) => {
       let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
 
       if (!datos) {
-        console.log(arrayMediciones);
         localStorage.setItem(
           "nuevosRegistros",
           JSON.stringify([nuevoRegistro])
         );
-        console.log(arrayMediciones);
         setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
         setPrenda("");
       } else {
@@ -413,7 +408,6 @@ const RegistroMedicion = ({ clientes }) => {
   };
 
   const eliminarMedicion = (idCliente, prenda) => {
-    console.log(idCliente);
     // Obtener el array de mediciones almacenado en localStorage
     let medicionesLocalStorage = JSON.parse(
       localStorage.getItem("nuevosRegistros")
@@ -425,8 +419,6 @@ const RegistroMedicion = ({ clientes }) => {
         parseInt(medicion.idCliente) !== parseInt(idCliente) ||
         medicion.prenda !== prenda
     );
-
-    console.log(nuevasMediciones);
 
     // Actualizar el array de mediciones en localStorage
     localStorage.setItem("nuevosRegistros", JSON.stringify(nuevasMediciones));
