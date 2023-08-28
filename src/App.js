@@ -29,7 +29,9 @@ import RegistroEmpresa from "./Layouts/Empresas/RegistroEmpresa";
 import EditarEmpresa from "./Layouts/Empresas/EditarEmpresa";
 import DetalleEmpresa from "./Layouts/Empresas/DetalleEmpresa";
 
-import Productos  from "./Layouts/Productos/Productos";
+import Product  from "./Layouts/Productos/Products";
+import CreateProduct from "./Layouts/Productos/CreateProduct";
+import ProductDetail from "./Layouts/Productos/ProductDetail";
 
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
@@ -167,8 +169,10 @@ function App() {
                   <Route exact path="/mediciones/cliente/:userId" element={<DetalleClienteMediciones />} />
                   <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
                   
-                  <Route exact path="/productos" element={<Productos />} />
-                  <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />
+                  <Route exact path="/productos" element={<Product />} />
+                  <Route exact path="/productos/registro" element={<CreateProduct />} />
+                  <Route exact path="/producto/:productId" element={<ProductDetail />} />
+
 
                   
 
