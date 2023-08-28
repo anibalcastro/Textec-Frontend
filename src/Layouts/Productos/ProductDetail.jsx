@@ -45,7 +45,7 @@ const ProductDetail = () => {
     );
 
     var requestOptions = {
-      method: "POST",
+      method: "DELETE",
       headers: myHeaders,
       redirect: "follow",
     };
@@ -61,7 +61,7 @@ const ProductDetail = () => {
 
         if (status === 200) {
           Swal.fire({
-            title: "Empresa eliminada!",
+            title: "Producto eliminado!",
             text: "Se ha eliminado permanentemente",
             icon: "success",
           }).then((result) => {

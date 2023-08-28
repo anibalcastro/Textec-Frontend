@@ -32,6 +32,7 @@ import DetalleEmpresa from "./Layouts/Empresas/DetalleEmpresa";
 import Product  from "./Layouts/Productos/Products";
 import CreateProduct from "./Layouts/Productos/CreateProduct";
 import ProductDetail from "./Layouts/Productos/ProductDetail";
+import EditProduct from "./Layouts/Productos/EditProduct";
 
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
@@ -172,6 +173,8 @@ function App() {
                   <Route exact path="/productos" element={<Product />} />
                   <Route exact path="/productos/registro" element={<CreateProduct />} />
                   <Route exact path="/producto/:productId" element={<ProductDetail />} />
+                  <Route exact path="/producto/editar/:productId" element={<EditProduct />} />
+
 
 
                   
