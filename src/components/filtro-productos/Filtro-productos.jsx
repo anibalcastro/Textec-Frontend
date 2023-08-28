@@ -14,7 +14,7 @@ const FiltroProductos = ({ datos }) => {
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
-    setCurrentPage(1); // Resetear la página cuando se aplica un filtro
+    setCurrentPage(1); 
   };
 
   const filtrarDatos = () => {
@@ -65,6 +65,7 @@ const FiltroProductos = ({ datos }) => {
             <th>#</th>
             <th>Producto</th>
             <th>Descripción</th>
+            <th>Precio</th>
           </tr>
         </thead>
         <tbody>
@@ -78,6 +79,7 @@ const FiltroProductos = ({ datos }) => {
                 >{`${dato.nombre_producto}`}</Link>
               </td>
               <td>{dato.descripcion}</td>
+              <td>₡{dato.precio_unitario}</td>
             </tr>
           ))}
         </tbody>
