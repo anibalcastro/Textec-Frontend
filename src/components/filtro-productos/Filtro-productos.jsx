@@ -65,7 +65,7 @@ const FiltroProductos = ({ datos }) => {
             <th>#</th>
             <th>Producto</th>
             <th>Descripción</th>
-            <th>Precio</th>
+            <th>Precio con IVA</th>
           </tr>
         </thead>
         <tbody>
