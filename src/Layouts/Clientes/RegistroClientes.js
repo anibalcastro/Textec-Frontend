@@ -107,7 +107,7 @@ const RegistroCliente = () => {
     )
       .then((response) => response.json())
       .then((responseData) => {
-        console.log(responseData);
+        //console.log(responseData);
         const { status } = responseData;
         const nombreCompleto =
           cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
@@ -259,7 +259,6 @@ const RegistroCliente = () => {
                 name="buscarEmpresa"
                 id="cedula"
                 autoComplete="current-password"
-                placeholder="Nombre de la empresa."
               />
             </div>
 
