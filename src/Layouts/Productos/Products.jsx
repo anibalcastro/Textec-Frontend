@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FiltroProductos from "../../components/filtro-productos/Filtro-productos";
+import ProductFilter  from "../../components/filtro-productos/Filtro-productos";
 import Cookies from "js-cookie";
 
 const Productos = () => {
-    //Estado donde se almacenan las empresas
-    const [listaProductos, setProductos] = useState([]);
+    // State to store products
+    const [productList, setProducts] = useState([]);
 
     //Token activo
     const token = Cookies.get("jwtToken");
     const role = Cookies.get("role");
 
+    console.log(token);
+
     useEffect(() => {
-        const obtenerProductos = () => {
+        const fetchProducts = () => {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `Bearer ${token}`);
 
@@ -27,18 +29,18 @@ const Productos = () => {
                 .then(result => {
                     if (result.hasOwnProperty("data")) {
                         const { data } = result;
-                        setProductos(data);
+                        setProducts(data);
                         localStorage.setItem('productos', JSON.stringify(data));
                       } 
                 })
                 .catch(error => console.log('error', error));
         }
 
-        obtenerProductos();
+        fetchProducts();
     }, [])
 
 
-    const validarPermisos = () => {
+    const validatePermissions = () => {
         if (role === 'Admin' || role === 'Colaborador') {
           return true;
         }
@@ -46,7 +48,7 @@ const Productos = () => {
         return false
     }
     
-    const permisosColaborador = validarPermisos();
+    const contributorPermissions  = validatePermissions();
 
     return (
         <React.Fragment>
@@ -55,12 +57,12 @@ const Productos = () => {
                 <hr className="division"></hr>
 
                 <div className="container mediciones-filtro">
-                    {permisosColaborador && (  <Link to='/productos/registro'>
+                    {contributorPermissions  && (  <Link to='/productos/registro'>
                         <button className="btn-registrar">Registrar</button>
                     </Link>)}
                 </div>
 
-                <FiltroProductos datos={listaProductos} /> {/* Usar la lista de elementos actuales */}
+                <ProductFilter  datos={productList} /> {/* Usar la lista de elementos actuales */}
             </div>
         </React.Fragment>
     )
