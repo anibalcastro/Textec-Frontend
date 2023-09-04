@@ -1,13 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Cookies from "js-cookie";
 import jwtDecode from 'jwt-decode';
-import MenuAdmin from "./components/nav-admin/nav-admin";
-import MenuColaborador from "./components/nav-colaborador/nav-colaborador";
+import Sidebar from "./components/Sidebar/Sidebar";
+
 import "./App.css";
 
-
-
-import Encabezado from "./components/header/Header";
 
 import Login from "./Layouts/Login";
 
@@ -34,6 +31,8 @@ import CreateProduct from "./Layouts/Productos/CreateProduct";
 import ProductDetail from "./Layouts/Productos/ProductDetail";
 import EditProduct from "./Layouts/Productos/EditProduct";
 
+import Orders from "./Layouts/OrdenPedido/Orders";
+
 import NuevosModulos from "./Layouts/NuevosModulos";
 import NoEncotrada from "./Layouts/NoEncontrada";
 
@@ -42,11 +41,9 @@ import { useEffect, useState } from "react";
 function App() {
 
   const token = Cookies.get("jwtToken"); 
-  const role = Cookies.get("role");
   const [listaClientes, setListaClientes] = useState([]);
 
   useEffect(() => {
-    //console.log(token)
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   
     const solicitudClientesApi = async () => {
@@ -120,35 +117,15 @@ function App() {
     // Si no hay token, requerir autenticación
     return false;
   };
-
-  
-  const validarRole = (role) => {
-    let Admin = false;
-
-    if (role === "Admin"){
-      Admin = true;
-    }
-
-    return Admin
-  }
   
   const mostrarContenido = validarToken(token);
-  const menu = validarRole(role);
 
   return (
     <Router>
-      <div>
-        <header>
-          <Encabezado />
-        </header>
-
+       
         {mostrarContenido ? (
-          <div className="container-fluid">
-            <div className="row">
-              <div id="menuVertical" className="col-md-2">
-                {menu ? (<MenuAdmin />) : (<MenuColaborador />)}
-              </div>
-              <div className="contenido col-md-10">
+          
+              <Sidebar >
                 <Routes>
                   <Route exact path="/" element={<Inicio />} />
                   <Route exact path="/inicio" element={<Inicio />} />
@@ -175,6 +152,8 @@ function App() {
                   <Route exact path="/producto/:productId" element={<ProductDetail />} />
                   <Route exact path="/producto/editar/:productId" element={<EditProduct />} />
 
+                  <Route exact path="/ordenpedidos" element={<Orders />} />
+
 
 
                   
@@ -186,13 +165,11 @@ function App() {
                   <Route exact path="/reportes" element={<NuevosModulos />} />
                   <Route exact path="*" element={<NoEncotrada />} />
                 </Routes>
-              </div>
-            </div>
-          </div>
+                </Sidebar>
+                
         ) : (
           <Login />
         )}
-      </div>
     </Router>
   );
 }
