@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FiltroEmpresa from "../../components/filtro-empresas/Filtro-empresas";
+import FiltroEmpresa from "../../components/Filtros/Filtro-empresas";
 import Cookies from "js-cookie";
 
 const Empresas = () => {
@@ -50,7 +50,7 @@ const Empresas = () => {
 
     return (
         <React.Fragment>
-            <div className="container mediciones">
+      
                 <h2 className="titulo-encabezado">Empresas</h2>
                 <hr className="division"></hr>
 
@@ -61,7 +61,7 @@ const Empresas = () => {
                 </div>
 
                 <FiltroEmpresa datos={listaEmpresa} /> {/* Usar la lista de elementos actuales */}
-            </div>
+       
         </React.Fragment>
     )
 }

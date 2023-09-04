@@ -390,7 +390,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
 
     return (
         <React.Fragment>
-            <div className="container registro-medicion">
+            
                 <h2 className="titulo-encabezado">Registrar mediciones a {cliente.nombre} {cliente.apellido1} {cliente.apellido2}</h2>
                 <hr className="division"></hr>
                 <div className="container form-contenedor">
@@ -476,7 +476,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
                         Guardar
                     </button>
                 </div>
-            </div>
+         
         </React.Fragment>
     );
 };

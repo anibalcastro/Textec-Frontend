@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import Cookies from "js-cookie";
 
-import Filtro from "../../components/filtro-clientes/Filtro-clientes";
+import Filtro from "../../components/Filtros/Filtro-clientes";
 
 const Clientes = () => {
   const [listaClientes, setListaClientes] = useState([]);
@@ -61,7 +61,7 @@ const Clientes = () => {
 
   return (
     <React.Fragment>
-      <div className="container mediciones">
+ 
         <h2 className="titulo-encabezado">Clientes</h2>
         <hr className="division"></hr>
 
@@ -73,9 +73,9 @@ const Clientes = () => {
 
         <Filtro datos={listaClientes} /> {/* Utilizando el nombre actualizado del estado */}
 
-      </div>
+
     </React.Fragment>
   )
 }
 
-export default Clientes; // Cambiado el nombre del componente para que comience con mayúscula
+export default Clientes; 

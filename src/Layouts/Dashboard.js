@@ -106,7 +106,7 @@ export default function Dashboard() {
 
   return (
     <React.Fragment>
-      <div className="container dashboard">
+  
         <h2 className="titulo-encabezado">Inicio</h2>
 
         <div className="information">
@@ -141,7 +141,7 @@ export default function Dashboard() {
         <div className="container-logo">
           <img src={Logo} className="logo-textec" alt="Logo" />
         </div>
-      </div>
+    
     </React.Fragment>
   );
 }

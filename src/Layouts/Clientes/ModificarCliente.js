@@ -156,7 +156,6 @@ const ModificarCliente = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro">
         <h2 className="titulo-encabezado">Editar cliente</h2>
         <hr className="division"></hr>
 
@@ -232,7 +231,7 @@ const ModificarCliente = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-      </div>
+     
     </React.Fragment>
   );
 };

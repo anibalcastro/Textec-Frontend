@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import Cookies from "js-cookie";
 
-import Filtro from "../../components/filtro-mediciones/Filtro-mediciones";
+import Filtro from "../../components/Filtros/Filtro-mediciones";
 
 const Mediciones = () => {
   const [listaClientes, setListaClientes] = useState([]);
@@ -61,7 +61,6 @@ const Mediciones = () => {
 
   return (
     <React.Fragment>
-      <div className="container mediciones">
         <h2 className="titulo-encabezado">Mediciones</h2>
         <hr className="division"></hr>
 
@@ -72,8 +71,6 @@ const Mediciones = () => {
         </div>
 
         <Filtro datos={listaClientes} /> {/* Utilizando el nombre actualizado del estado */}
-
-      </div>
     </React.Fragment>
   )
 }

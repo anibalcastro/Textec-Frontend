@@ -126,7 +126,7 @@ const ProductDetail = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro">
+     
         <h2 className="titulo-encabezado">Detalle de empresa</h2>
         <hr className="division"></hr>
 
@@ -209,7 +209,7 @@ const ProductDetail = () => {
                 </button>
               )}
         </div>
-      </div>
+     
     </React.Fragment>
   );
 };

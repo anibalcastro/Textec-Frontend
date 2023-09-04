@@ -178,7 +178,7 @@ const RegistroCliente = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro">
+      
         <h2 className="titulo-encabezado">Registro de clientes</h2>
         <hr className="division"></hr>
 
@@ -315,7 +315,7 @@ const RegistroCliente = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-      </div>
+     
     </React.Fragment>
   );
 };

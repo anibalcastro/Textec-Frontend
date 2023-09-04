@@ -159,7 +159,7 @@ const ModificarMedicion = () => {
 
     return (
         <React.Fragment>
-            <div className="container registro-medicion">
+            
                 <h2 className="titulo-encabezado">Registro de mediciones</h2>
                 <hr className="division"></hr>
                 <div className="container form-contenedor">
@@ -461,7 +461,7 @@ const ModificarMedicion = () => {
                         <img className="isologo" src={Logo} alt="imagen" />
                     </div>
                 </div>
-            </div>
+            
         </React.Fragment>
     );
 };

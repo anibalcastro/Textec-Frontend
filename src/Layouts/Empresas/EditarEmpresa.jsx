@@ -137,7 +137,7 @@ const EditarEmpresa = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro">
+     
         <h2 className="titulo-encabezado">Editar empresa</h2>
         <hr className="division"></hr>
 
@@ -254,7 +254,7 @@ const EditarEmpresa = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-      </div>
+    
     </React.Fragment>
   );
 };

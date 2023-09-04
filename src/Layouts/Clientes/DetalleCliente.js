@@ -163,7 +163,6 @@ const DetalleCliente = () => {
 
   return (
     <React.Fragment>
-      <div className="container detalle-cliente-contenedor">
         <h2 className="titulo-encabezado">{`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}</h2>
         <hr className="division" />
 
@@ -246,7 +245,7 @@ const DetalleCliente = () => {
             </button>
           )}
         </div>
-      </div>
+    
     </React.Fragment>
   );
 };

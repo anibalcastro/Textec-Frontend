@@ -143,7 +143,6 @@ const DetalleMedicion = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro-medicion">
         <h2 className="titulo-encabezado">{`${medicion.nombre} ${medicion.apellido1} ${medicion.apellido2} - ${medicion.articulo}`}</h2>
         <hr className="division"></hr>
         <div className="container form-contenedor">
@@ -463,7 +462,6 @@ const DetalleMedicion = () => {
             ""
           )}
         </div>
-      </div>
     </React.Fragment>
   );
 };

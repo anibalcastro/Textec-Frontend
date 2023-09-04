@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProductFilter  from "../../components/filtro-productos/Filtro-productos";
+import ProductFilter  from "../../components/Filtros/Filtro-productos";
 import Cookies from "js-cookie";
 
 const Productos = () => {
@@ -10,8 +10,6 @@ const Productos = () => {
     //Token activo
     const token = Cookies.get("jwtToken");
     const role = Cookies.get("role");
-
-    console.log(token);
 
     useEffect(() => {
         const fetchProducts = () => {
@@ -52,7 +50,7 @@ const Productos = () => {
 
     return (
         <React.Fragment>
-            <div className="container mediciones">
+            
                 <h2 className="titulo-encabezado">Productos</h2>
                 <hr className="division"></hr>
 
@@ -63,7 +61,7 @@ const Productos = () => {
                 </div>
 
                 <ProductFilter  datos={productList} /> {/* Usar la lista de elementos actuales */}
-            </div>
+           
         </React.Fragment>
     )
 }

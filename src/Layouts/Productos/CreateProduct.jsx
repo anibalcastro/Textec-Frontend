@@ -82,7 +82,7 @@ const CreateProduct = () => {
 
   return (
     <React.Fragment>
-      <div className="container registro">
+    
         <h2 className="titulo-encabezado">Registro de producto</h2>
         <hr className="division"></hr>
 
@@ -156,7 +156,7 @@ const CreateProduct = () => {
             <img className="isologo" src={Logo} alt="imagen" />
           </div>
         </div>
-      </div>
+     
     </React.Fragment>
   );
 };
