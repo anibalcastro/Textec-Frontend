@@ -1,42 +1,93 @@
 html {
   margin: 0, 0, 0, 0;
 }
-/***************************************************/
-/*Encabezado */
-.encabezado {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 80px;
-  background-color: #6e959c;
-}
 
-.logo {
-  height: 81px;
-  width: 196px;
+.logo-textec{
+  width: 400px;
 }
-
 /***************************************************/
 /* Menu vertical */
-.vertical-navbar {
+*{
+  margin:0;
+  padding:0;
+  text-decoration: none;
+}
+
+.container{
+  display:flex;
+}
+
+main{
+  width: 100%;
+  padding: 20px;
+  margin-left: 20px;
+}
+.sidebar{
+  background: #6e959c;
+  color: #fff;
   height: 100vh;
+  position: fixed; /* Esto es importante para que el sidebar quede fijo en la pantalla */
+  left: 0; /* Alinea el sidebar a la izquierda */
+  top: 0; /* Opcional: Alinea el sidebar en la parte superior de la pantalla */
+  max-height: 100vh; /* Establecer una altura máxima */
+  overflow-y: auto; /* Permitir el desplazamiento vertical cuando el contenido excede la altura máxima */
+  transition: all 0.5s;
+}
+
+.top_section{
   display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  margin-left: 0;
+  align-items:center;
+  padding:20px 15px;
 }
 
-.custom-toggle {
-  margin-top: 1rem;
-  align-self: center;
-}
-
-/*Logo tex tec*/
-.logo-textec {
+.logo-menu{
+  width: 50px;
   height: auto;
-  width: 300px;
 }
+
+.bars{
+  display: flex;
+  font-size: 25px;
+}
+
+.link{
+  display: flex;
+  color: #fff;
+  padding: 10px 15px;
+  gap: 15px;
+  transition: all 0.5s;
+  text-decoration: none !important;
+}
+
+.link:hover{
+  background:lightskyblue;
+  color: #000;
+  transition: all 0.5s;
+}
+
+.active{
+  background: #fff;
+  color: #000;
+}
+
+.icon, .link_text{
+  font-size: 17px;
+  text-decoration: none;
+}
+
+
+.sidebar::-webkit-scrollbar {
+  width: 6px; /* Ancho de la barra de desplazamiento */
+  height: 2px; /* Altura de la barra de desplazamiento en modo horizontal */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: white; /* Color del botón de la barra de desplazamiento */
+  border-radius: 3px; /* Borde redondeado del botón de la barra de desplazamiento */
+}
+
+
+
 
 /***************************************************/
 /*Contenido*/
@@ -46,12 +97,6 @@ html {
 }
 
 /***************************************************/
-/*Inicio*/
-
-.dashboard,
-.mediciones, .modulos, .registro, .detalle-cliente-contenedor{
-  padding-top: 20px;
-}
 
 /*Titulo de las pantallas*/
 .titulo-encabezado {
@@ -103,9 +148,6 @@ html {
 .container-logo {
   display: flex;
   justify-content: center;
-  align-items: flex-end;
-  height: 50vh;
-  margin-top: 15px;
 }
 
 /***************************************************/
@@ -306,6 +348,7 @@ html {
 
 .div-inp label {
   width: 150px;
+
 }
 
 .div-inp input,
@@ -401,7 +444,42 @@ textarea{
   color: #fff;
 }
 
+.icon-nav-menu {
+  height: 40px;
+  width: auto;
+}
+
+/* CSS personalizado para ocultar/en mostrar enlaces de texto e iconos */
+.navbar-nav .nav-link .text {
+  display: inline; /* Mostrar texto */
+}
+
+.navbar-nav .nav-link .icon {
+  display: none; /* Ocultar iconos */
+}
+
+/* Estilo para el botón hamburguesa personalizado */
+.custom-toggler .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+/* Mostrar iconos y ocultar texto en Navbar colapsado */
+@media (max-width: 992px) {
+  .navbar-nav .nav-link .text {
+    display: none; /* Ocultar texto */
+  }
+
+  .navbar-nav .nav-link .icon {
+    display: inline; /* Mostrar iconos */
+  }
+}
+
+
 @media (max-width: 600px) {
+
+  main{
+    margin-left: 25px;
+  }
 
   .botones-contenedor{
     flex-direction: column;
@@ -432,8 +510,15 @@ textarea{
     flex-direction: column;
   }
 
+  .div-inp label{
+    width: 215px;
+    text-align: center;
+  }
+
   .div-inp input, textarea{
-    width: 300px !important;
+    width: 256px !important;
+    text-align: center;
+    color: black;
   }
 
   .tabla-medidas table {
