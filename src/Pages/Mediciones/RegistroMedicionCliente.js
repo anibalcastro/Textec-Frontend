@@ -21,8 +21,8 @@ const RegistroMedicionCliente = ({ clientes }) => {
         obtenerInformacionCliente(userId);
         let data = obtenerMediciones();
         validarExistenciaProducto(idCliente, prenda, data);
-        //console.log(arrayMediciones);
-    }, [mediciones]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     /**Lista de mediciones superiores */
     const medicionesSuperior = [

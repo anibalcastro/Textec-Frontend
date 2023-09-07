@@ -102,7 +102,8 @@ export default function Dashboard() {
     consultaCantidadEmpresa();
     consultaCantidadClientes();
     consultaCantidadMedidas();
-  }, [cantidadClientes, cantidadMedidas, token]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <React.Fragment>

@@ -1,10 +1,14 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const Orders = () => {
     // State to store products
     const [orders, setOrders] = useState([]);
+
+    useEffect(() => {
+        
+    },[])
 
     //Token activo
     const token = Cookies.get("jwtToken");

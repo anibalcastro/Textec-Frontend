@@ -22,7 +22,8 @@ const ModificarMedicion = () => {
             setNombreCliente("");
             setMediciones([]);
         };
-    }, [idDetalle]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     /**Lista de mediciones superiores */
     const medicionesSuperior = [

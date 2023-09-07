@@ -6,35 +6,35 @@ import Sidebar from "./components/Sidebar/Sidebar";
 import "./App.css";
 
 
-import Login from "./Layouts/Login";
+import Login from "./Pages/Login";
 
-import Inicio from "./Layouts/Dashboard";
-import Clientes from "./Layouts/Clientes/Clientes";
-import RegistroCliente from "./Layouts/Clientes/RegistroClientes";
-import ModificarCliente from "./Layouts/Clientes/ModificarCliente";
-import DetalleCliente from "./Layouts/Clientes/DetalleCliente";
+import Inicio from "./Pages/Dashboard";
+import Clientes from "./Pages/Clientes/Clientes";
+import RegistroCliente from "./Pages/Clientes/RegistroClientes";
+import ModificarCliente from "./Pages/Clientes/ModificarCliente";
+import DetalleCliente from "./Pages/Clientes/DetalleCliente";
 
-import Medidas from "./Layouts/Mediciones/Medidas";
-import DetalleMedicion from "./Layouts/Mediciones/DetalleMedicion";
-import RegistroMedicion from "./Layouts/Mediciones/RegistroMedicion";
-import RegistroMedicionCliente from "./Layouts/Mediciones/RegistroMedicionCliente";
-import ModificarMedicion from "./Layouts/Mediciones/ModificarMedicion";
-import DetalleClienteMediciones from "./Layouts/Mediciones/DetalleClienteMedicion";
+import Medidas from "./Pages/Mediciones/Medidas";
+import DetalleMedicion from "./Pages/Mediciones/DetalleMedicion";
+import RegistroMedicion from "./Pages/Mediciones/RegistroMedicion";
+import RegistroMedicionCliente from "./Pages/Mediciones/RegistroMedicionCliente";
+import ModificarMedicion from "./Pages/Mediciones/ModificarMedicion";
+import DetalleClienteMediciones from "./Pages/Mediciones/DetalleClienteMedicion";
 
-import Empresas from "./Layouts/Empresas/Empresas";
-import RegistroEmpresa from "./Layouts/Empresas/RegistroEmpresa";
-import EditarEmpresa from "./Layouts/Empresas/EditarEmpresa";
-import DetalleEmpresa from "./Layouts/Empresas/DetalleEmpresa";
+import Empresas from "./Pages/Empresas/Empresas";
+import RegistroEmpresa from "./Pages/Empresas/RegistroEmpresa";
+import EditarEmpresa from "./Pages/Empresas/EditarEmpresa";
+import DetalleEmpresa from "./Pages/Empresas/DetalleEmpresa";
 
-import Product  from "./Layouts/Productos/Products";
-import CreateProduct from "./Layouts/Productos/CreateProduct";
-import ProductDetail from "./Layouts/Productos/ProductDetail";
-import EditProduct from "./Layouts/Productos/EditProduct";
+import Product  from "./Pages/Productos/Products";
+import CreateProduct from "./Pages/Productos/CreateProduct";
+import ProductDetail from "./Pages/Productos/ProductDetail";
+import EditProduct from "./Pages/Productos/EditProduct";
 
-import Orders from "./Layouts/OrdenPedido/Orders";
+import Orders from "./Pages/OrdenPedido/Orders";
 
-import NuevosModulos from "./Layouts/NuevosModulos";
-import NoEncotrada from "./Layouts/NoEncontrada";
+import NuevosModulos from "./Pages/NuevosModulos";
+import NoEncotrada from "./Pages/NoEncontrada";
 
 import { useEffect, useState } from "react";
 

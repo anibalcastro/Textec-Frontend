@@ -36,6 +36,7 @@ const RegistroMedicion = ({ clientes }) => {
     obtenerDatosClientes();
     obtenerMedidasAgregar();
     obtenerMediciones();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**

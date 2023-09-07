@@ -15,7 +15,8 @@ const DetalleCliente = () => {
   useEffect(() => {
     obtenerInformacionCliente(userId);
     obtenerMediciones(userId);
-  }, [userId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const obtenerInformacionCliente = (parametro) => {
     let datos = localStorage.getItem("data");

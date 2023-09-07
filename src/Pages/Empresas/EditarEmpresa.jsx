@@ -12,6 +12,7 @@ const EditarEmpresa = () => {
   useEffect(() => {
     limpiarEstado();
     obtenerEmpresas(idEmpresa)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigate = useNavigate();

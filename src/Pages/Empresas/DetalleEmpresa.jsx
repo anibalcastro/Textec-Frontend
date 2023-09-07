@@ -16,7 +16,7 @@ const DetalleEmpresa = () => {
   useEffect(() => {
     limpiarEstado();
     obtenerInformacionEmpresa(idEmpresa);
-    //console.log(empresa);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const obtenerInformacionEmpresa = (parametro) => {

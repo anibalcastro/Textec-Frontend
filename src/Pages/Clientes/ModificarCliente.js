@@ -20,7 +20,8 @@ const ModificarCliente = () => {
     //Llenar la infrmacion del cliente por mediio de identificador
     informacionCliente(userId)
     obtenerEmpresas();
-  }, [userId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const informacionCliente = (identificador) => {
     let datos = localStorage.getItem('data');

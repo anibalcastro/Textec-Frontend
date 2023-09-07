@@ -47,7 +47,7 @@ const Mediciones = () => {
   
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   const validarPermisos = () => {
     if (role === 'Admin' || role === 'Colaborador') {

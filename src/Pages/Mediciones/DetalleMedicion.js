@@ -28,7 +28,8 @@ const DetalleMedicion = () => {
 
   useEffect(() => {
     obtenetInformacionMedidas(idDetalle);
-  }, [idDetalle]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /**Validaciones si el estado prenda existe en alguna de las listas */
   const prendaSuperior = medicionesSuperior.includes(prenda);
