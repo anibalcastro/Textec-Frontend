@@ -50,7 +50,7 @@ const CreateProduct = () => {
     )
       .then((response) => response.json())
       .then((result) => {
-        console.log(result);
+        //console.log(result);
         const { status, error } = result;
         if (parseInt(status) === 200) {
           Swal.fire(
