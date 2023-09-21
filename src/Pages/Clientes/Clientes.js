@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from 'react-router-dom';
 import Cookies from "js-cookie";
 
-import Filtro from "../../components/Filtros/Filtro-clientes";
+import Filtro from "../../components/Filters/Filtro-clientes";
 
 const Clientes = () => {
   const [listaClientes, setListaClientes] = useState([]);

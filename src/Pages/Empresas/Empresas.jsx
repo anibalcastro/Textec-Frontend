@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import FiltroEmpresa from "../../components/Filtros/Filtro-empresas";
+import FiltroEmpresa from "../../components/Filters/Filtro-empresas";
 import Cookies from "js-cookie";
 
 const Empresas = () => {

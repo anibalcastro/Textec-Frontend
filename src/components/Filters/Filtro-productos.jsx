@@ -72,7 +72,7 @@ const FiltroProductos = ({ datos }) => {
           type="text"
           value={filtro}
           onChange={handleFiltroChange}
-          placeholder="Buscar medición"
+          placeholder="Buscar producto"
         />
       </div>
 

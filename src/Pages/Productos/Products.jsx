@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import ProductFilter  from "../../components/Filtros/Filtro-productos";
+import ProductFilter  from "../../components/Filters/Filtro-productos";
 import Cookies from "js-cookie";
 
 const Productos = () => {
