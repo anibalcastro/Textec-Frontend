@@ -32,6 +32,8 @@ import ProductDetail from "./Pages/Productos/ProductDetail";
 import EditProduct from "./Pages/Productos/EditProduct";
 
 import Orders from "./Pages/OrdenPedido/Orders";
+import CreateOrder from "./Pages/OrdenPedido/CreateOrder";
+import OrderDetail from "./Pages/OrdenPedido/OrderDetail";
 
 import NuevosModulos from "./Pages/NuevosModulos";
 import NoEncotrada from "./Pages/NoEncontrada";
@@ -86,7 +88,8 @@ function App() {
     return () => {
       clearInterval(intervaloValidacion); // Limpiar el intervalo cuando el componente se desmonte
     };
-  }, [token]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const validarToken = (token) => {
     if (token) {
@@ -152,13 +155,11 @@ function App() {
                   <Route exact path="/producto/:productId" element={<ProductDetail />} />
                   <Route exact path="/producto/editar/:productId" element={<EditProduct />} />
 
-                  <Route exact path="/ordenpedidos" element={<Orders />} />
+                  <Route exact path="/orden" element={<Orders />} />
+                  <Route exact path="/orden/registro" element={<CreateOrder />} />
+                  <Route exact path="/orden/:ordenId" element={<OrderDetail />} />
+                  <Route exact path="/orden/editar/:ordenId" element={<NuevosModulos />} />
 
-
-
-                  
-
-                  <Route exact path="/orden" element={<NuevosModulos />} />
                   <Route exact path="/arreglos" element={<NuevosModulos />} />
                   <Route exact path="/articulos" element={<NuevosModulos />} />
                   <Route exact path="/inventario" element={<NuevosModulos />} />

@@ -100,7 +100,7 @@ main{
 
 /*Titulo de las pantallas*/
 .titulo-encabezado {
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   margin: 1rem;
   font-weight: 700;
 }
@@ -127,9 +127,9 @@ main{
 
 /*Titulo de las tarjetas*/
 .card-title {
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   color: white;
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 700;
   width: 200px;
   text-align: center;
@@ -138,7 +138,7 @@ main{
 
 /*Numero de la tarjeta*/
 .card-number {
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   color: white;
   font-size: 20px;
   font-weight: 400;
@@ -164,13 +164,13 @@ main{
   justify-content: flex-end;
 }
 
-.btn-registrar {
+.btn-registrar, .btn {
   background-color: #6e959c;
   color: white;
   width: 160px;
   height: 50px;
   border-radius: 15px;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: medium ;
   border: #6e959c;
 }
@@ -181,7 +181,7 @@ main{
   width: 150px;
   height: 40px;
   border-radius: 15px;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: medium;
   border: none;
   /* Otros estilos específicos para el botón de eliminar si los tienes */
@@ -195,7 +195,7 @@ main{
   width: 100px;
   height: 25px;
   border-radius: 15px;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: medium;
   text-align: center;
   border: #6e959c;
@@ -208,11 +208,21 @@ main{
   justify-content: flex-end;
 }
 
-.filtro-mediciones{
+.container-filtro-ordenes{
+  padding-top: 20px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-direction: column;
+}
+
+.filtro-mediciones, .filtro-pedidos{
   width: 400px;
   height: auto;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
 }
+
+
 
 .boton-mediciones{
   background-color: transparent;
@@ -227,7 +237,7 @@ main{
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
 }
 
 .tabla-medidas th, .tabla-medidas td {
@@ -250,7 +260,7 @@ main{
 
 /*Nuevos modulos*/
 .textech{
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: medium;
 }
 
@@ -258,7 +268,7 @@ main{
   color: white;
   border: #6e959c;
   background-color: #6e959c;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   border-radius: 20px;
   width: 100px;
   height: 25px;
@@ -299,13 +309,13 @@ main{
   width: 120px;
   height: 40px;
   border-radius: 15px;
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: medium ;
   border: white;
 }
 
 .label-input{
-  font-family: "Montserrat, sans-serif";
+  font-family: 'Montserrat', sans-serif; 
   font-size: larger;
   display: flex;
   align-items: center;
@@ -325,10 +335,9 @@ main{
 
 .form-contenedor{
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap-reverse;
-  font-family: 'Montserrat, sans serif';
+  flex-direction: row; /* Cambiamos a dirección de columna para evitar superposiciones */
+  align-items: center; /* Alineamos los elementos al principio */
+  font-family: 'Montserrat', sans-serif; 
 }
 
 .opciones-medidas{
@@ -341,18 +350,41 @@ main{
   margin: 1rem;
 }
 
-.div-inp {
+.form-order-detail{
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 1rem;
 }
 
-.div-inp label {
-  width: 150px;
+.div-inp, .div-inp-detail {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
+
+.div-inp label {
+  width: 152px;
+  font-weight: bold; 
+
+}
+
+.div-inp-detail label{
+  width: 100px;
+  font-weight: bold;
+}
+
+.div-inp-detail input{
+  flex: 1;
+  width: 180px;
+  height: 24px;
+  margin-right: 5px;
 }
 
 .div-inp input,
 .div-inp select {
+  flex: 1;
   width: 320px;
   height: 24px ;
 }
@@ -368,11 +400,18 @@ textarea{
   justify-content: center;
 }
 
+.detail-container{
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
 .botones-contenedor{
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   flex-direction: row;
   gap: 10px;
   padding-top: 20px;
@@ -408,7 +447,7 @@ textarea{
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Montserrat, sans-serif';
+  font-family: 'Montserrat', sans-serif; 
   font-size: larger;
   flex-wrap: nowrap;
 }
@@ -463,6 +502,89 @@ textarea{
   background-color: transparent;
 }
 
+/* Estilo para el contenedor del checkbox (el label) */
+.lb-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+/* Estilo para el contenedor del switch */
+.form-switch {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+/* Estilo para el texto del switch */
+.form-check-label {
+  margin-left: 10px; /* Espacio entre el switch y el texto (ajusta según sea necesario) */
+}
+
+/* Estilo para el switch en sí */
+.form-check-input {
+  width: 40px; /* Ancho del switch */
+  height: 20px; /* Altura del switch */
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #ccc;
+  border-radius: 20px; /* Bordes redondeados para crear la forma del switch */
+  outline: none;
+  background-color: #fff; /* Color de fondo del switch cuando está apagado */
+}
+
+/* Estilo para el switch cuando está marcado (encendido) */
+.form-check-input:checked {
+  background-color: #007bff; /* Color de fondo del switch cuando está encendido */
+  border-color: #007bff; /* Color del borde del switch cuando está encendido */
+}
+
+/* Estilo para el indicador del switch (el punto o círculo) */
+.form-check-input:checked::before {
+  content: "";
+  position: absolute;
+  width: 20px; /* Tamaño del indicador */
+  height: 16px; /* Tamaño del indicador */
+  background-color: #fff; /* Color del indicador cuando está encendido */
+  border-radius: 50%; /* Hacer que el indicador sea un círculo */
+  top: 50%;
+  left: 4px; /* Ajusta la posición del indicador dentro del switch */
+  transform: translateY(-50%);
+  transition: left 0.2s ease-in-out;
+}
+
+/* Estilo para el indicador del switch cuando está marcado (encendido) */
+.form-check-input:checked::before {
+  left: 20px; /* Mueve el indicador a la posición de encendido */
+}
+
+
+/* Estilo para el texto del label */
+label {
+  font-size: 16px;
+  color: #333;
+}
+
+/* Estilo para el texto del label cuando el checkbox está marcado */
+input[type="checkbox"]:checked + label {
+  color: #007bff; /* Cambiar el color del texto cuando está marcado */
+}
+
+.btn-agregar-detalle{
+  margin-top: 10px;
+  background-color: #6e959c;
+  color: white;
+  width: 200px;
+  height: 50px;
+  border-radius: 15px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: medium;
+  border: #6e959c;
+
+}
+
 /* Mostrar iconos y ocultar texto en Navbar colapsado */
 @media (max-width: 992px) {
   .navbar-nav .nav-link .text {
@@ -487,10 +609,15 @@ textarea{
 
   .form-contenedor{
     justify-content: center;
+    flex-direction: column-reverse;
+  }
+
+  .detail-container{
+    flex-direction: column;
   }
 
   .division{
-    width: 350px;
+    width: -1px;
   }
 
   .login{
@@ -515,7 +642,7 @@ textarea{
     text-align: center;
   }
 
-  .div-inp input, textarea{
+  .div-inp input, textarea, #empresa, #producto, .div-inp-detail input{
     width: 256px !important;
     text-align: center;
     color: black;
@@ -538,6 +665,15 @@ textarea{
     content: attr(data-label);
     float: left;
     font-weight: bold;
+  }
+
+  .filtro-pedidos, .filtro-mediciones{
+    width: 330px;
+  }
+
+  .btn-agregar-detalle{
+    margin: auto;
+    margin-top: 10px;
   }
 
 
