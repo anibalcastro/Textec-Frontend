@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const CreateOrder = () => {
     const [orderCompany, setOrderCompany] = useState({
+        titulo: '',
         id_empresa: 0,
         fecha_orden: '',
         precio_total: 0,
@@ -116,10 +117,13 @@ const CreateOrder = () => {
         const selectedProductId = event.target.value;
         const selectedProduct = products.find((product) => product.id == selectedProductId);
 
+        console.log(selectedProductId);
+        console.log(selectedProduct.nombre_producto);
+
         setOrderDetail({
             ...orderDetail,
-            IdProducto: selectedProductId || '',
-            nombre_producto: selectedProduct.nombre_producto || '',
+            IdProducto: parseInt(selectedProductId),
+            nombre_producto: selectedProduct.nombre_producto,
         });
 
     };
@@ -196,7 +200,24 @@ const CreateOrder = () => {
      * @param {*} IdProduct
      * @param {*} count
      */
-    const deleteDetail = (IdProduct, count) => { };
+    const deleteDetail = (descripcion, IdProducto, cantidad, subtotal) => {
+        const updatedDetail = detail.filter(
+            (item) =>
+                item.descripcion !== descripcion ||
+                item.IdProducto !== IdProducto ||
+                item.cantidad !== cantidad
+        );
+
+        let newAmountTotal = total - subtotal;
+
+        console.log(subtotal);
+        console.log(newAmountTotal);
+
+
+        setTotal(newAmountTotal);
+        calculateTaxAndSubt(newAmountTotal);
+        setDetail(updatedDetail);
+    };
 
     const getDate = () => {
         const fecha = new Date();
@@ -220,23 +241,35 @@ const CreateOrder = () => {
         const today = getDate();
 
         const orden = {
+            titulo: orderCompany.titulo,
             id_empresa: orderCompany.id_empresa,
             fecha_orden: today,
-            IVA: tax,
-            subtotal: subtotal,
             precio_total: total,
             estado: 'Pendiente',
             detalles: detail.map((detalle) => ({
-                id_producto: detalle.id_producto,
+                id_producto: detalle.IdProducto,
+                nombre_producto : detalle.nombre_producto,
                 precio_unitario: detalle.precio_unitario,
                 cantidad: detalle.cantidad,
                 subtotal: detalle.subtotal,
                 descripcion: detalle.descripcion
             })),
-            factura: invoice
-        };
-       
+            factura: [
+                {
+                  id_empresa: invoice.id_empresa,
+                  subtotal: invoice.subtotal,
+                  iva: invoice.iva,
+                  monto: invoice.monto,
+                  saldo_restante: invoice.saldo_restante,
+                  comentario: invoice.comentario,
+                  cajero: invoice.cajero,
+                },
+              ],
+            };
+        
+
         const raw = JSON.stringify({ orden });
+        console.log(raw);
 
         var requestOptions = {
             method: 'POST',
@@ -245,10 +278,10 @@ const CreateOrder = () => {
             redirect: 'follow'
         };
 
-        fetch("http://127.0.0.1:8000/api/v1/ordenes/registrar", requestOptions)
+        fetch("https://api.textechsolutionscr.com/api/v1/ordenes/registrar", requestOptions)
             .then(response => response.json())
             .then(result => {
-                const {status, mensaje, error } = result;
+                const { status, mensaje, error } = result;
 
                 if (parseInt(status) === 200) {
                     Swal.fire(
@@ -256,22 +289,22 @@ const CreateOrder = () => {
                         "Se ha registrado la orden y se ha generado una factura.",
                         "success"
                     ).then((result) => {
-                        if(result.isConfirmed){
+                        if (result.isConfirmed) {
                             navigate("/orden");
                         }
-                        else{
+                        else {
                             navigate("/orden");
                         }
                     });
                 }
-                else{
+                else {
                     let errorMessage = "";
 
                     for (const message of error) {
                         errorMessage += message + "\n";
                     }
 
-                    Swal.fire("Error al crear el producto!", `${errorMessage}`, "error");
+                    Swal.fire("Error al crear la orden!", `${errorMessage}`, "error");
                 }
             })
             .catch(error => console.log('error', error));
@@ -281,15 +314,17 @@ const CreateOrder = () => {
     };
 
     const fillStateInvoice = () => {
-        setInvoice({
-            id_empresa: orderCompany.id_empresa,
-            subtotal: subtotal,    
-            iva: tax,          
-            monto: total,       
-            saldo_restante: total, 
+
+        const createInvoice = {
+            id_empresa: parseInt(orderCompany.id_empresa),
+            subtotal: parseFloat(subtotal),
+            iva: parseFloat(tax),
+            monto: parseFloat(total),
+            saldo_restante: parseFloat(total),
             comentario: 'Muchas gracias por su compra',
-            cajero: invoice.cajero    
-        });
+            cajero: invoice.cajero
+        }
+        setInvoice(createInvoice);
     };
 
     const handleInputChangeEmployee = (event) => {
@@ -346,6 +381,17 @@ const CreateOrder = () => {
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="div-inp">
+                        <label htmlFor="password">Comentario:</label>
+                        <textarea
+                            onChange={handleInputChange}
+                            id="txtArea"
+                            name="descripcion"
+                            rows="5"
+                            cols="60"
+                        ></textarea>
                     </div>
 
                     <div className="div-inp">
@@ -448,7 +494,14 @@ const CreateOrder = () => {
                             <td>
                                 <button
                                     className="btn-eliminar"
-                                    onClick={() => deleteDetail(item.IdProducto, item.cantidad)}
+                                    onClick={() =>
+                                        deleteDetail(
+                                            item.descripcion,
+                                            item.IdProducto,
+                                            item.cantidad,
+                                            item.subtotal
+                                        )
+                                    }
                                 >
                                     Eliminar
                                 </button>
@@ -467,20 +520,23 @@ const CreateOrder = () => {
 
             <hr className="division"></hr>
 
-            <div className="container detail-container">
-                <div className="div-inp-detail">
-                    <label htmlFor="text">Subtotal:</label>
-                    <input name="filtro" type="text" value={formatCurrencyCRC.format(subtotal)} disabled></input>
-                </div>
-                <div className="div-inp-detail">
-                    <label htmlFor="text">IVA 13%:</label>
-                    <input name="filtro" type="text" value={formatCurrencyCRC.format(tax)} disabled></input>
-                </div>
-                <div className="div-inp-detail">
-                    <label htmlFor="text">Total:</label>
-                    <input name="filtro" type="text" value={formatCurrencyCRC.format(total)} disabled></input>
-                </div>
-            </div>
+
+            <Header title="Facturación" />
+            <table className="tabla-medidas">
+                <thead>
+                    <tr>
+                        <th>Subtotal</th>
+                        <th>IVA 13%</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <td>{formatCurrencyCRC.format(subtotal)}</td>
+                    <td>{formatCurrencyCRC.format(tax)}</td>
+                    <td>{formatCurrencyCRC.format(total)}</td>
+                </tbody>
+            </table>
 
             <div className="container botones-contenedor">
                 <button className="btn-agregar-detalle" type="submit" onClick={fetchOrder}>
