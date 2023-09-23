@@ -175,7 +175,7 @@ main{
   border: #6e959c;
 }
 
-.btn-eliminar {
+.btn-eliminar, .btnEdit-eliminar {
   /* Estilos comunes para el botón de eliminar */
   background-color: red;
   width: 150px;
@@ -184,9 +184,19 @@ main{
   font-family: 'Montserrat', sans-serif; 
   font-size: medium;
   border: none;
-  /* Otros estilos específicos para el botón de eliminar si los tienes */
+  color:white
+}
 
-  /* Aquí puedes establecer el color de fondo para cada variante */
+.btnEdit{
+   /* Estilos comunes para el botón de eliminar */
+   background-color: #6e959c;
+   width: 150px;
+   height: 40px;
+   border-radius: 15px;
+   font-family: 'Montserrat', sans-serif; 
+   font-size: medium;
+   border: none;
+   color:white
 }
 
 .btn-observar{
@@ -252,6 +262,13 @@ main{
 
 .tabla-medidas tr:nth-child(even) {
   background-color: #f9f9f9;
+}
+
+.table-button-content{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
 }
 
 .link-nombre {

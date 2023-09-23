@@ -34,6 +34,7 @@ import EditProduct from "./Pages/Productos/EditProduct";
 import Orders from "./Pages/OrdenPedido/Orders";
 import CreateOrder from "./Pages/OrdenPedido/CreateOrder";
 import OrderDetail from "./Pages/OrdenPedido/OrderDetail";
+import EditOrder from "./Pages/OrdenPedido/EditOrder";
 
 import NuevosModulos from "./Pages/NuevosModulos";
 import NoEncotrada from "./Pages/NoEncontrada";
@@ -158,7 +159,7 @@ function App() {
                   <Route exact path="/orden" element={<Orders />} />
                   <Route exact path="/orden/registro" element={<CreateOrder />} />
                   <Route exact path="/orden/:ordenId" element={<OrderDetail />} />
-                  <Route exact path="/orden/editar/:ordenId" element={<NuevosModulos />} />
+                  <Route exact path="/orden/editar/:ordenId" element={<EditOrder />} />
 
                   <Route exact path="/arreglos" element={<NuevosModulos />} />
                   <Route exact path="/articulos" element={<NuevosModulos />} />
