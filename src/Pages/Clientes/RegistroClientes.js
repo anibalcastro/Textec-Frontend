@@ -32,48 +32,34 @@ const RegistroCliente = () => {
 
   const handleInputChangeCedula = (event) => {
     const valorCedula = event.target.value;
-
-    const usuarioExistente = usuarios.find(
-      (usuario) => usuario.cedula == valorCedula
-    );
-
-    if (usuarioExistente) {
-      const inputElement = document.getElementById("cedula");
-      if (inputElement) {
-        inputElement.value = "";
-      }
-
-      Swal.fire(
-        "Error!",
-        "La cédula que dijitaste ya existe en la base de datos",
-        "error"
-      );
+  
+    if (valorCedula === "NA" || valorCedula === "na" || valorCedula === "Na" || valorCedula === "nA") {
+      // El usuario ingresó "NA", actualiza el estado con ese valor
+      setCliente({ ...cliente, cedula: valorCedula });
     } else {
-      const { name, value } = event.target;
-      setCliente({ ...cliente, [name]: value });
+      const usuarioExistente = usuarios.find(
+        (usuario) => usuario.cedula === valorCedula
+      );
+  
+      if (usuarioExistente) {
+        // Usuario con la misma cédula ya existe
+        Swal.fire(
+          "Error!",
+          "La cédula que ingresaste ya existe en la base de datos",
+          "error"
+        );
+      } else {
+        // Usuario no existe, actualiza el estado
+        const { name, value } = event.target;
+        setCliente({ ...cliente, [name]: value });
+      }
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (
-      cliente.nombre !== undefined ||
-      cliente.apellido1 !== undefined ||
-      cliente.apellido2 !== undefined ||
-      cliente.cedula !== undefined ||
-      cliente.telefono !== undefined ||
-      cliente.empresa !== undefined ||
-      cliente.departamento !== undefined ||
-      cliente.observaciones !== undefined
-    ) {
       peticionApi();
       limpiarEstado();
-    } else {
-      // La variable es undefined
-      // Puedes manejar el caso de undefined aquí
-      Swal.fire("Error!", "Debes llenar los campos correspondientes", "error");
-    }
   };
 
   const limpiarEstado = () => {
@@ -88,11 +74,11 @@ const RegistroCliente = () => {
     formdata.append("nombre", cliente.nombre);
     formdata.append("apellido1", cliente.apellido1);
     formdata.append("apellido2", cliente.apellido2);
-    formdata.append("cedula", cliente.cedula);
-    formdata.append("email", cliente.correo);
-    formdata.append("telefono", cliente.telefono);
-    formdata.append("empresa", cliente.empresa);
-    formdata.append("departamento", cliente.departamento);
+    formdata.append("cedula", cliente.cedula || "NA");
+    formdata.append("email", cliente.correo || "NA");
+    formdata.append("telefono", cliente.telefono || "NA");
+    formdata.append("empresa", cliente.empresa || "NA");
+    formdata.append("departamento", cliente.departamento || "NA");
     formdata.append("comentarios", cliente.observaciones || "NA");
 
     var requestOptions = {
@@ -108,7 +94,6 @@ const RegistroCliente = () => {
     )
       .then((response) => response.json())
       .then((responseData) => {
-        //console.log(responseData);
         const { status } = responseData;
         const nombreCompleto =
           cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
