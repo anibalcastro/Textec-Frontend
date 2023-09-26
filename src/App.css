@@ -96,6 +96,11 @@ main{
   background-color: #f4f4f4;
 }
 
+.sc-filter{
+  margin-left: 5px;
+  width: 100px;
+}
+
 /***************************************************/
 
 /*Titulo de las pantallas*/
