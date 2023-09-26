@@ -21,16 +21,6 @@ const CreateOrder = () => {
         precio_unitario: 0,
         subtotal: 0,
     });
-    const [invoice, setInvoice] = useState({
-        id_empresa: '',
-        subtotal: 0,
-        iva: 0,
-        monto: 0,
-        saldo_restante: 0,
-        comentario: '',
-        cajero: ''
-    });
-
 
     const [detail, setDetail] = useState([]);
     const [subtotal, setSubtotal] = useState(0);
@@ -39,12 +29,18 @@ const CreateOrder = () => {
     const [company, setCompany] = useState([]);
     const [products, setProducts] = useState([]);
     const [filterCompany, setFilterCompany] = useState("");
+    const [dataLoad, setDataLoad] = useState(false);
     const token = Cookies.get("jwtToken");
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetchCompany();
-        fetchProducts();
+
+        if (!dataLoad){
+            fetchCompany();
+            fetchProducts();
+            setDataLoad(true);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const formatCurrencyCRC = new Intl.NumberFormat('es-CR', {
@@ -115,10 +111,8 @@ const CreateOrder = () => {
 
     const handleInputChangeProduct = (event) => {
         const selectedProductId = event.target.value;
+        // eslint-disable-next-line eqeqeq
         const selectedProduct = products.find((product) => product.id == selectedProductId);
-
-        console.log(selectedProductId);
-        console.log(selectedProduct.nombre_producto);
 
         setOrderDetail({
             ...orderDetail,
@@ -210,10 +204,6 @@ const CreateOrder = () => {
 
         let newAmountTotal = total - subtotal;
 
-        console.log(subtotal);
-        console.log(newAmountTotal);
-
-
         setTotal(newAmountTotal);
         calculateTaxAndSubt(newAmountTotal);
         setDetail(updatedDetail);
@@ -231,7 +221,13 @@ const CreateOrder = () => {
      *
      */
     const fetchOrder = () => {
-        fillStateInvoice();
+        Swal.fire({
+            title: "La orden se están guardando...",
+            icon: "info",
+            showConfirmButton: false,
+            timer: 5000, // Duración en milisegundos (5 segundos)
+          });
+
 
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -246,6 +242,7 @@ const CreateOrder = () => {
             fecha_orden: today,
             precio_total: total,
             estado: 'Pendiente',
+            comentario: orderCompany.comentario,
             detalles: detail.map((detalle) => ({
                 id_producto: detalle.IdProducto,
                 nombre_producto : detalle.nombre_producto,
@@ -256,20 +253,20 @@ const CreateOrder = () => {
             })),
             factura: [
                 {
-                  id_empresa: invoice.id_empresa,
-                  subtotal: invoice.subtotal,
-                  iva: invoice.iva,
-                  monto: invoice.monto,
-                  saldo_restante: invoice.saldo_restante,
-                  comentario: invoice.comentario,
-                  cajero: invoice.cajero,
+                  id_empresa: parseInt(orderCompany.id_empresa),
+                  subtotal: parseFloat(subtotal),
+                  iva: parseFloat(tax),
+                  monto: parseFloat(total),
+                  saldo_restante: parseFloat(total),
+                  comentario: 'Muchas gracias por su compra',
+                  cajero: orderCompany.cajero,
                 },
               ],
             };
         
 
         const raw = JSON.stringify({ orden });
-        console.log(raw);
+
 
         var requestOptions = {
             method: 'POST',
@@ -281,7 +278,7 @@ const CreateOrder = () => {
         fetch("https://api.textechsolutionscr.com/api/v1/ordenes/registrar", requestOptions)
             .then(response => response.json())
             .then(result => {
-                const { status, mensaje, error } = result;
+                const { status, error } = result;
 
                 if (parseInt(status) === 200) {
                     Swal.fire(
@@ -312,30 +309,6 @@ const CreateOrder = () => {
 
 
     };
-
-    const fillStateInvoice = () => {
-
-        const createInvoice = {
-            id_empresa: parseInt(orderCompany.id_empresa),
-            subtotal: parseFloat(subtotal),
-            iva: parseFloat(tax),
-            monto: parseFloat(total),
-            saldo_restante: parseFloat(total),
-            comentario: 'Muchas gracias por su compra',
-            cajero: invoice.cajero
-        }
-        setInvoice(createInvoice);
-    };
-
-    const handleInputChangeEmployee = (event) => {
-        const { name, value } = event.target;
-
-        setInvoice({
-            ...invoice,
-            [name]: value,
-        })
-    }
-
 
     return (
         <React.Fragment>
@@ -388,7 +361,7 @@ const CreateOrder = () => {
                         <textarea
                             onChange={handleInputChange}
                             id="txtArea"
-                            name="descripcion"
+                            name="comentario"
                             rows="5"
                             cols="60"
                         ></textarea>
@@ -397,7 +370,7 @@ const CreateOrder = () => {
                     <div className="div-inp">
                         <label htmlFor="password">Vendedor:</label>
                         <input
-                            onChange={handleInputChangeEmployee}
+                            onChange={handleInputChange}
                             type="text"
                             name="cajero"
                             id="titulo"
@@ -486,7 +459,7 @@ const CreateOrder = () => {
 
                 <tbody>
                     {Array.isArray(detail) && detail.map((item) => (
-                        <tr key={item.IdProducto}>
+                        <tr key={item.id_producto}>
                             <td>{item.nombre_producto}</td>
                             <td>{item.cantidad}</td>
                             <td>{item.descripcion}</td>

@@ -17,7 +17,7 @@ const CreateProduct = () => {
   const role = Cookies.get("role");
 
   const validateRole = () => {
-    if (!role === "Admin" || role === "Colaborador") {
+    if (!role === "Admin" || !role === "Colaborador") {
       navigate("/productos");
     }
   };

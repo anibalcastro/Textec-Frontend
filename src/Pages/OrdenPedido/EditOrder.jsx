@@ -7,33 +7,24 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const EditOrder = () => {
   const [order, setOrder] = useState({
-    id: 1,
-    titulo: "Título de la Orden",
-    id_empresa: 2,
+    id: 0,
+    titulo: "",
+    id_empresa: 0,
     estado: "Pendiente",
-    fecha_orden: "Fecha de la Orden",
-    cajero: "Nombre del Vendedor",
-    descripcion : "NA"
+    fecha_orden: "",
+    cajero: "",
+    descripcion: "NA",
   });
 
   const [orderDetail, setOrderDetail] = useState({
-    nombre_producto: "",
-    IdProducto: 0,
+    id_producto: 0,
     cantidad: 0,
     descripcion: "",
     precio_unitario: 0,
     subtotal: 0,
   });
 
-  const [invoice, setInvoice] = useState({
-    id_empresa: "",
-    subtotal: 0,
-    iva: 0,
-    monto: 0,
-    saldo_restante: 0,
-    comentario: "",
-    cajero: "",
-  });
+  const [invoice, setInvoice] = useState([]);
 
   const [company, setCompany] = useState([]);
   const [detail, setDetail] = useState([]);
@@ -41,72 +32,69 @@ const EditOrder = () => {
   const [tax, setTax] = useState(0);
   const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
-  const [dataLoaded, setDataLoaded] = useState(false);
 
-  const { orderId } = useParams();
+
+  const { ordenId } = useParams();
   const token = Cookies.get("jwtToken");
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!dataLoaded) {
-      const detallesObtenidos = [
-        {
-          IdProducto: 7,
-          nombre_producto: "Vestido",
-          descripcion: "Descripción del Producto 1",
-          cantidad: 2,
-          subtotal: 11300,
-        },
-        {
-          IdProducto: 2,
-          nombre_producto: "Gabacha Médica",
-          descripcion: "Descripción del Producto 2",
-          cantidad: 2,
-          subtotal: 11300,
-        },
-        // Agregar más elementos de detalle según sea necesario
-      ];
+    fetchOrder();
+    fetchProducts();
+    getCompany();
+    loadingData();
+   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      const facturaObtenida = [
-        {
-          subtotal: 20000,
-          iva: 2600,
-          monto: 22600,
-          saldo_restante: 5000,
-        },
-        // Agregar más elementos de factura según sea necesario
-      ];
+  const fetchOrder = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-      // Actualiza el estado detail con los datos obtenidos
-      setDetail(detallesObtenidos);
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
 
-      // Actualiza el estado invoice con los datos obtenidos
-      setInvoice(facturaObtenida);
-
-      setDataLoaded(true); // Marca los datos como cargados
-      // El resto de tu useEffect
-      fetchProducts();
-      getCompany();
-    }
-
-    getTotalDetail();
-  }, [dataLoaded]);
-
-  const getTotalDetail = () => {
-    let sumaSubtotales = 0;
-
-    for (const item of detail) {
-      sumaSubtotales += item.subtotal;
-    }
-
-    setTotal(sumaSubtotales);
-    calculateTaxAndSubt(sumaSubtotales);
-  };
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/ordenes/${ordenId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { orden, detalles, facturas, status } = result;
+        if (status === 200) {
+          setOrder(orden);
+          setDetail(detalles);
+          setInvoice(facturas);
+          setTotal(parseFloat(facturas[0].monto));
+          setTax(parseFloat(facturas[0].iva));
+          setSubtotal(parseFloat(facturas[0].subtotal));
+        } else {
+          Swal.fire("Error, intentelo más tarde!", "error");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };  
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
     style: "currency",
     currency: "CRC",
   });
+
+  const nameProduct = (productId) => {
+    const productFind = products.find(
+      // eslint-disable-next-line eqeqeq
+      (item) => parseInt(item.id) == parseInt(productId)
+    );
+
+    if (productFind) {
+      return productFind.nombre_producto;
+    } else {
+      return "Producto no encontrado";
+    }
+  };
 
   const calculateTaxAndSubt = (total) => {
     const taxRate = 13; // Tasa de impuesto (13% en este ejemplo)
@@ -140,7 +128,7 @@ const EditOrder = () => {
 
     // Reinicia el estado de detalleProducto para el próximo detalle
     setOrderDetail({
-      producto: "",
+      id_producto: "",
       cantidad: "",
       descripcion: "",
       precio_unitario: "",
@@ -161,14 +149,11 @@ const EditOrder = () => {
 
   const handleInputChangeProduct = (event) => {
     const selectedProductId = event.target.value;
-    const selectedProduct = products.find(
-      (product) => product.id == selectedProductId
-    );
+
 
     setOrderDetail({
       ...orderDetail,
-      IdProducto: selectedProductId || "",
-      nombre_producto: selectedProduct.nombre_producto || "",
+      id_producto: selectedProductId || ""
     });
   };
 
@@ -202,14 +187,11 @@ const EditOrder = () => {
     const updatedDetail = detail.filter(
       (item) =>
         item.descripcion !== descripcion ||
-        item.IdProducto !== IdProducto ||
+        item.id_producto !== IdProducto ||
         item.cantidad !== cantidad
     );
 
     let newAmountTotal = total - subtotal;
-
-    console.log(subtotal);
-    console.log(newAmountTotal);
 
     setTotal(newAmountTotal);
     calculateTaxAndSubt(newAmountTotal);
@@ -220,27 +202,43 @@ const EditOrder = () => {
    *
    */
   const fetchUptadeOrder = () => {
-    fillStateInvoice();
+    Swal.fire({
+      title: "La orden se está modificando...",
+      icon: "info",
+      showConfirmButton: false,
+      timer: 5000, // Duración en milisegundos (5 segundos)
+    });
 
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
 
     const orden = {
+      titulo: order.titulo,
       id_empresa: order.id_empresa,
       fecha_orden: order.fecha_orden,
-      IVA: tax,
-      subtotal: subtotal,
       precio_total: total,
       estado: "Pendiente",
+      comentario: order.comentario,
       detalles: detail.map((detalle) => ({
         id_producto: detalle.id_producto,
+        nombre_producto: detalle.nombre_producto,
         precio_unitario: detalle.precio_unitario,
         cantidad: detalle.cantidad,
         subtotal: detalle.subtotal,
         descripcion: detalle.descripcion,
       })),
-      factura: invoice,
+      factura: [
+        {
+          id_empresa: parseInt(order.id_empresa),
+          subtotal: parseFloat(subtotal),
+          iva: parseFloat(tax),
+          monto: parseFloat(total),
+          saldo_restante: parseFloat(total),
+          comentario: "Muchas gracias por su compra",
+          cajero: invoice[0].cajero,
+        },
+      ],
     };
 
     const raw = JSON.stringify({ orden });
@@ -252,9 +250,13 @@ const EditOrder = () => {
       redirect: "follow",
     };
 
-    fetch(`http://127.0.0.1:8000/api/v1/ordenes/editar/${orderId}`, requestOptions)
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/ordenes/editar/${ordenId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
+
         const { status, error } = result;
 
         if (parseInt(status) === 200) {
@@ -280,18 +282,6 @@ const EditOrder = () => {
         }
       })
       .catch((error) => console.log("error", error));
-  };
-
-  const fillStateInvoice = () => {
-    setInvoice({
-      id_empresa: order.id_empresa,
-      subtotal: subtotal,
-      iva: tax,
-      monto: total,
-      saldo_restante: total,
-      comentario: "Muchas gracias por su compra",
-      cajero: invoice.cajero,
-    });
   };
 
   /**
@@ -326,6 +316,7 @@ const EditOrder = () => {
    */
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
+      // eslint-disable-next-line eqeqeq
       (item) => parseInt(item.id) == parseInt(companyId)
     );
 
@@ -366,6 +357,33 @@ const EditOrder = () => {
     setOrderDetail(updatedDetail);
     deleteDetail(descripcion, IdProduct, cantidad, subtotal);
   };
+
+  const loadingData = () => {
+    let timerInterval;
+    Swal.fire({
+      title: "Cargando datos!",
+      html: "Se va a cerrar en <b></b> segundo",
+      timer: 3000, // Cambiar a la duración en segundos (por ejemplo, 2 segundos)
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+        const b = Swal.getHtmlContainer().querySelector("b");
+        timerInterval = setInterval(() => {
+          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
+          b.textContent = timerLeftInSeconds;
+        }, 1000); // Actualizar cada segundo
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      },
+    }).then((result) => {
+      /* Read more about handling dismissals below */
+      if (result.dismiss === Swal.DismissReason.timer) {
+        // El temporizador ha expirado
+      }
+    });
+  };
+
 
   return (
     <React.Fragment>
@@ -437,15 +455,19 @@ const EditOrder = () => {
 
           <div className="div-inp">
             <label htmlFor="password">Vendedor:</label>
-            <input
-              type="text"
-              name="cajero"
-              id="titulo"
-              autoComplete="current-password"
-              disabled
-              value={order.cajero}
-              required
-            />
+            {invoice && invoice.length > 0 ? (
+              <input
+                type="text"
+                name="cajero"
+                id="titulo"
+                autoComplete="current-password"
+                disabled
+                value={invoice[0].cajero}
+                required
+              />
+            ) : (
+              <span>No hay datos de vendedor disponibles.</span>
+            )}
           </div>
         </form>
       </div>
@@ -467,7 +489,7 @@ const EditOrder = () => {
                 <option
                   key={product.id}
                   value={product.id}
-                  selected={product.id === orderDetail.IdProducto}
+                  selected={product.id === orderDetail.id_producto}
                 >
                   {product.nombre_producto}
                 </option>
@@ -533,8 +555,8 @@ const EditOrder = () => {
         <tbody>
           {Array.isArray(detail) &&
             detail.map((item) => (
-              <tr key={item.IdProducto}>
-                <td>{item.nombre_producto}</td>
+              <tr key={item.id_producto}>
+                <td>{nameProduct(item.id_producto)}</td>
                 <td>{item.cantidad}</td>
                 <td>{item.descripcion}</td>
                 <td>{formatCurrencyCRC.format(item.subtotal)}</td>
@@ -544,7 +566,7 @@ const EditOrder = () => {
                     onClick={() =>
                       editDetailProduct(
                         item.nombre_producto,
-                        item.IdProducto,
+                        item.id_producto,
                         item.cantidad,
                         item.descripcion,
                         item.subtotal
@@ -559,7 +581,7 @@ const EditOrder = () => {
                     onClick={() =>
                       deleteDetail(
                         item.descripcion,
-                        item.IdProducto,
+                        item.id_producto,
                         item.cantidad,
                         item.subtotal
                       )

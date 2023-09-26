@@ -8,6 +8,7 @@ const FilterOrders = ({ datos }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 25; // Número de mediciones por página
   const [company, setCompany] = useState([]);
+  const [typeFilter, setTypeFilter] = useState("Titulo");
 
   const token = Cookies.get("jwtToken");
 
@@ -54,11 +55,40 @@ const FilterOrders = ({ datos }) => {
       return [];
     }
 
-    const datosFiltrados = datos.filter((dato) => {
-      const nombreProducto = `${dato.titulo}`;
-      return nombreProducto.toLowerCase().includes(filter.toLowerCase());
-    });
-    return datosFiltrados;
+    console.log(typeFilter);
+
+    if (typeFilter ==="Titulo"){
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreOrden = `${dato.titulo}`;
+        return nombreOrden.toLowerCase().includes(filter.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Estado"){
+      const datosFiltrados = datos.filter((dato) => {
+        const estado = `${dato.estado}`;
+        return estado.toLowerCase().includes(filter.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Empresa"){
+      const  idEmpresa = getIdCompany(filter);
+
+      console.log(idEmpresa)
+
+      const datosFiltrados = datos.filter((dato) => {
+        const empresa = `${dato.id_empresa}`;
+        return empresa.includes(idEmpresa);
+      });
+      return datosFiltrados;
+    }
+    else {
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreOrden = `${dato.titulo}`;
+        return nombreOrden.toLowerCase().includes(filter.toLowerCase());
+      });
+      return datosFiltrados;
+    }
   };
 
   const loadingData = () => {
@@ -99,6 +129,18 @@ const FilterOrders = ({ datos }) => {
     }
 };
 
+  const getIdCompany = (nameCompany) => {
+    const empresa = company.find((item) => item.nombre_empresa == nameCompany);
+
+    if (empresa){
+      return empresa.id;
+    }
+  }
+
+const handleInputFilterSelect = (event) => {
+  setTypeFilter(event.target.value);
+}
+
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -126,6 +168,11 @@ const FilterOrders = ({ datos }) => {
           {" "}
           {/* Añade la clase 'align-items-center' para centrar verticalmente */}
           <label>Buscar por: </label>
+          <select className="sc-filter" onChange={handleInputFilterSelect}>
+            <option value={"Titulo"}>Titulo</option>
+            <option value={"Estado"}>Estado</option>
+            <option value={"Empresa"}>Empresa</option>
+          </select>
         </div>
 
         <table className="tabla-medidas">
