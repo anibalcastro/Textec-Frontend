@@ -154,9 +154,9 @@ export default function Dashboard() {
 
         <Card titulo="Orden de Pedidos En Proceso" numero={ordenesProceso} color="#6d949c" />
 
-        <Card titulo="Orden de Pedidos Entregados" numero={ordenesEntregadas} color="#94744C" />
+        <Card titulo="Orden de Pedidos Listos" numero={ordenesListas} color="#94744C" />
 
-        <Card titulo="Orden de Pedidos Listos" numero={ordenesListas} color="#6d949c" />
+        <Card titulo="Orden de Pedidos Entregados" numero={ordenesEntregadas} color="#6d949c" />
 
         <Card titulo="Medidas" numero={cantidadMedidas} color="#94744C" />
 
