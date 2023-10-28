@@ -57,7 +57,7 @@ const Sidebar = ({ children }) => {
       icon: <FaClipboardList />,
     },
     {
-      path: "/pagost",
+      path: "/pagos",
       name: "Pagos",
       icon: <FaCashRegister />,
     },
@@ -82,7 +82,7 @@ const Sidebar = ({ children }) => {
       icon: <FaChartLine />,
     },
   ];
-  const menuItem = [
+  const menuItemColaborator = [
     {
       path: "/",
       name: "Inicio",
@@ -114,9 +114,57 @@ const Sidebar = ({ children }) => {
       icon: <FaClipboardList />,
     },
     {
-      path: "/pagost",
+      path: "/pagos",
       name: "Pagos",
       icon: <FaCashRegister />,
+    },
+    {
+      path: "/reparaciones",
+      name: "Reparar",
+      icon: <BsTools />,
+    },
+    {
+      path: "/proveedores",
+      name: "Proveedores",
+      icon: <FaCube />,
+    },
+    {
+      path: "/inventario",
+      name: "Inventario",
+      icon: <GiRolledCloth />,
+    },
+  ];
+
+  const menuItemExpect = [
+    {
+      path: "/",
+      name: "Inicio",
+      icon: <FaHome />,
+    },
+    {
+      path: "/clientes",
+      name: "Clientes",
+      icon: <FaUserAlt />,
+    },
+    {
+      path: "/empresas",
+      name: "Empresas",
+      icon: <FaCity />,
+    },
+    {
+      path: "/mediciones",
+      name: "Mediciones",
+      icon: <FaCropAlt />,
+    },
+    {
+      path: "/productos",
+      name: "Productos",
+      icon: <GiClothes />,
+    },
+    {
+      path: "/orden",
+      name: "Pedidos",
+      icon: <FaClipboardList />,
     },
     {
       path: "/reparaciones",
@@ -143,6 +191,8 @@ const Sidebar = ({ children }) => {
   };
 
   const isAdmin = role === "Admin";
+  const isColaborator = role === "Colaborador";
+  const isEspectador = role === "Visor";
 
   return (
     <div className="container">
@@ -156,7 +206,7 @@ const Sidebar = ({ children }) => {
           </div>
         </div>
         {isAdmin
-          ? menuItemAdmin.map((item, index) => (
+          && menuItemAdmin.map((item, index) => (
               <NavLink
                 to={item.path}
                 key={index}
@@ -171,8 +221,9 @@ const Sidebar = ({ children }) => {
                   {item.name}
                 </div>
               </NavLink>
-            ))
-          : menuItem.map((item, index) => (
+            )) }
+            
+          {isColaborator && menuItemColaborator.map((item, index) => (
               <NavLink
                 to={item.path}
                 key={index}
@@ -190,6 +241,25 @@ const Sidebar = ({ children }) => {
                 </div>
               </NavLink>
             ))}
+
+            {isEspectador && menuItemExpect.map((item, index) => (
+              <NavLink
+                to={item.path}
+                key={index}
+                className="link"
+                activeclassname="active"
+               
+              >
+                <div className="icon">{item.icon}</div>
+                <div
+                  style={{ display: isOpen ? "block" : "none" }}
+                  className="link_text"
+                  activeclassname="active"
+                >
+                  {item.name}
+                </div>
+              </NavLink>))}
+
 
         <NavLink
           to="#"
