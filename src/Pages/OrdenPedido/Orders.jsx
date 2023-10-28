@@ -59,7 +59,7 @@ const Orders = () => {
         )}
       </div>
 
-      <FilterOrders datos={orders} />
+      <FilterOrders datos={orders} showMonto={false} />
     </React.Fragment>
   );
 };
