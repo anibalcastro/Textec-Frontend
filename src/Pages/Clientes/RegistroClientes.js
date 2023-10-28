@@ -67,63 +67,76 @@ const RegistroCliente = () => {
   };
 
   const peticionApi = () => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var formdata = new FormData();
-    formdata.append("nombre", cliente.nombre);
-    formdata.append("apellido1", cliente.apellido1);
-    formdata.append("apellido2", cliente.apellido2);
-    formdata.append("cedula", cliente.cedula || "NA");
-    formdata.append("email", cliente.correo || "NA");
-    formdata.append("telefono", cliente.telefono || "NA");
-    formdata.append("empresa", cliente.empresa || "NA");
-    formdata.append("departamento", cliente.departamento || "NA");
-    formdata.append("comentarios", cliente.observaciones || "NA");
+    if (cliente.nombre !== undefined && cliente.nombre.toLowerCase() !== "undefined"){
+      
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+  
+      var formdata = new FormData();
+      formdata.append("nombre", cliente.nombre);
+      formdata.append("apellido1", cliente.apellido1);
+      formdata.append("apellido2", cliente.apellido2);
+      formdata.append("cedula", cliente.cedula || "NA");
+      formdata.append("email", cliente.correo || "NA");
+      formdata.append("telefono", cliente.telefono || "NA");
+      formdata.append("empresa", cliente.empresa || "NA");
+      formdata.append("departamento", cliente.departamento || "NA");
+      formdata.append("comentarios", cliente.observaciones || "NA");
+  
+      var requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow",
+      };
+  
+      fetch(
+        "https://api.textechsolutionscr.com/api/v1/clientes/registrar",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((responseData) => {
+          const { status } = responseData;
+          const nombreCompleto =
+            cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
+  
+          if (parseInt(status) === 200) {
+            // Cliente creado con éxito
+  
+            Swal.fire(
+              "Cliente creado con éxito!",
+              `Se ha a registrado a ${nombreCompleto}!`,
+              "success"
+            ).then((result) => {
+              if (result.isConfirmed) {
+                // El usuario hizo clic en el botón "OK"
+                navigate("/clientes");
+              } else {
+                // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
+                // Realiza alguna otra acción o maneja el caso en consecuencia
+              }
+            });
+          } else {
+            // Error al crear el cliente
+            Swal.fire(
+              "Error al crear cliente!",
+              "Verificar que todos los campos estén llenos",
+              "error"
+            );
+          }
+        })
+        .catch((error) => console.log("error", error));
 
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
+    }
+    else{
+      Swal.fire(
+        "Error al crear cliente!",
+        `El nombre del cliente no puede ser ${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`,
+        "error"
+      );
+    }
 
-    fetch(
-      "https://api.textechsolutionscr.com/api/v1/clientes/registrar",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((responseData) => {
-        const { status } = responseData;
-        const nombreCompleto =
-          cliente.nombre + " " + cliente.apellido1 + " " + cliente.apellido2;
-
-        if (parseInt(status) === 200) {
-          // Cliente creado con éxito
-
-          Swal.fire(
-            "Cliente creado con éxito!",
-            `Se ha a registrado a ${nombreCompleto}!`,
-            "success"
-          ).then((result) => {
-            if (result.isConfirmed) {
-              // El usuario hizo clic en el botón "OK"
-              navigate("/clientes");
-            } else {
-              // El usuario cerró el cuadro de diálogo sin hacer clic en el botón "OK"
-              // Realiza alguna otra acción o maneja el caso en consecuencia
-            }
-          });
-        } else {
-          // Error al crear el cliente
-          Swal.fire(
-            "Error al crear cliente!",
-            "Verificar que todos los campos estén llenos",
-            "error"
-          );
-        }
-      })
-      .catch((error) => console.log("error", error));
   };
 
   /**
