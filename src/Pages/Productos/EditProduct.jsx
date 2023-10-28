@@ -42,8 +42,6 @@ const EditProduct = () => {
             `Bearer ${token}`
         );
 
-        console.log(product);
-
         var formdata = new FormData();
         formdata.append("nombre_producto", product.nombre_producto);
         formdata.append("descripcion", product.descripcion || "NA");
@@ -60,7 +58,6 @@ const EditProduct = () => {
         fetch(`https://api.textechsolutionscr.com/api/v1/productos/editar/${productId}`, requestOptions)
             .then((response) => response.json())
             .then((result) => {
-                console.log(result);
                 const { status, error } = result;
                 if (parseInt(status) === 200) {
                     Swal.fire(

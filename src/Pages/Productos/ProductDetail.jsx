@@ -58,7 +58,6 @@ const ProductDetail = () => {
       .then((response) => response.json())
       .then((result) => {
         const { status } = result;
-        console.log(status);
 
         if (status === 200) {
           Swal.fire({
@@ -109,6 +108,7 @@ const ProductDetail = () => {
       }
     });
   }
+
 
   const validatePermissions = () => {
     if (role === 'Admin' || role === 'Colaborador') {
