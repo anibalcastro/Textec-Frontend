@@ -5,7 +5,7 @@ import Swal from "sweetalert2";
 const FiltroMediciones = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 25; // Número de mediciones por página
+  const itemsPerPage = 40; // Número de mediciones por página
 
   useEffect(() => {
     setFiltro(""); // Resetear el filtro cuando los datos cambian

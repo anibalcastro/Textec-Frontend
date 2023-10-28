@@ -6,7 +6,7 @@ import "sweetalert2/dist/sweetalert2.css";
 const FiltroClientes = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 20; // Número de clientes por página
+  const itemsPerPage = 40; // Número de clientes por página
 
   useEffect(() => {
     setFiltro(""); // Resetear el filtro cuando los datos cambian
