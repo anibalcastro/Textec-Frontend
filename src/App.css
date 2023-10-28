@@ -22,6 +22,12 @@ main{
   padding: 20px;
   margin-left: 20px;
 }
+
+.lb_login{
+  color: white;
+}
+
+
 .sidebar{
   background: #6e959c;
   color: #fff;
@@ -33,6 +39,7 @@ main{
   overflow-y: auto; /* Permitir el desplazamiento vertical cuando el contenido excede la altura máxima */
   transition: all 0.5s;
 }
+
 
 .top_section{
   display: flex;
@@ -82,7 +89,7 @@ main{
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: white; /* Color del botón de la barra de desplazamiento */
+  background:#6e959c; /* Color del botón de la barra de desplazamiento */
   border-radius: 3px; /* Borde redondeado del botón de la barra de desplazamiento */
 }
 
@@ -607,6 +614,46 @@ input[type="checkbox"]:checked + label {
 
 }
 
+
+.swal2-popup-payment {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fff;
+  border: 2px solid #6e959c;
+  border-radius: 5px;
+}
+
+.swal2-title-payment {
+  color: #6e959c;
+}
+
+.swal2-input-payment, .swal2-textarea-payment, .swal2-select-payment {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.swal2-buttons-payment {
+  display: flex;
+  justify-content: center;
+}
+
+.swal2-button-payment {
+  background-color: #6e959c;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.swal2-button-payment:hover {
+  background-color:#6e959c;
+}
+
 /* Mostrar iconos y ocultar texto en Navbar colapsado */
 @media (max-width: 992px) {
   .navbar-nav .nav-link .text {
@@ -690,13 +737,15 @@ input[type="checkbox"]:checked + label {
   }
 
   .filtro-pedidos, .filtro-mediciones{
-    width: 330px;
+    width: 300px;
   }
 
   .btn-agregar-detalle{
     margin: auto;
     margin-top: 10px;
   }
+
+
 
 
 

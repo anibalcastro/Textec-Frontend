@@ -53,8 +53,8 @@ const Login = () => {
 
 
           Swal.fire(
-            'Inicio de sesión!',
             'Bienvenido!',
+            'Nuevo inicio de sesión.',
             'success'
           ).then(result => {
             if (result.isConfirmed) {
@@ -86,7 +86,7 @@ const Login = () => {
         <img src={Icono} className="icono-textech" alt="icono textech" />
         <form className="form-login" onSubmit={handleSubmit}>
           <div className="label-input">
-            <label htmlFor="username">Correo electronico:</label>
+            <label className="lb_login" htmlFor="username">Correo electronico:</label>
             <input
               type="text"
               id="username"
@@ -97,7 +97,7 @@ const Login = () => {
             />
           </div>
           <div className="label-input">
-            <label htmlFor="password">Contraseña:</label>
+            <label className="lb_login" htmlFor="password">Contraseña:</label>
             <input
               type="password"
               id="password"
