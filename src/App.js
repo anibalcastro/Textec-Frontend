@@ -36,6 +36,21 @@ import CreateOrder from "./Pages/OrdenPedido/CreateOrder";
 import OrderDetail from "./Pages/OrdenPedido/OrderDetail";
 import EditOrder from "./Pages/OrdenPedido/EditOrder";
 
+import Payments from "./Pages/Pagos/Payments";
+import DetailPayment from "./Pages/Pagos/DetailPayments";
+
+import Repairs from "./Pages/Reparaciones/Repair";
+import CreateRepair from "./Pages/Reparaciones/CreateRepair.jsx";
+import EditRepair from "./Pages/Reparaciones/EditRepair";
+
+import Supplier from "./Pages/Proveedor/Supplier";
+import CreateSupplier from "./Pages/Proveedor/CreateSupplier";
+import EditSupplier from "./Pages/Proveedor/EditSupplier";
+import SupplierDetail from "./Pages/Proveedor/SupplierDetail";
+import CreateProductSuplier from "./Pages/Proveedor/Productos/CreateProduct";
+import EditProductSuplier from "./Pages/Proveedor/Productos/EditProduct";
+
+
 import NuevosModulos from "./Pages/NuevosModulos";
 import NoEncotrada from "./Pages/NoEncontrada";
 
@@ -161,8 +176,22 @@ function App() {
                   <Route exact path="/orden/:ordenId" element={<OrderDetail />} />
                   <Route exact path="/orden/editar/:ordenId" element={<EditOrder />} />
 
-                  <Route exact path="/arreglos" element={<NuevosModulos />} />
-                  <Route exact path="/articulos" element={<NuevosModulos />} />
+                  <Route exact path="/pagos" element={<Payments />} />
+                  <Route exact path="/orden/:ordenId/pagos" element={<DetailPayment />} />
+                  
+                  <Route exact path="/reparaciones" element={<Repairs />} />
+                  <Route exact path="/reparacion/:repairId" element={<CreateRepair />} />
+                  <Route exact path="/reparaciones/registrar" element={<CreateRepair />} />
+                  <Route exact path="/reparacion/editar/:repairId" element={<EditRepair />} />
+
+                  <Route exact path="/proveedores" element={<Supplier />} />
+                  <Route exact path="/proveedores/registrar" element={<CreateSupplier />} /> 
+                  <Route exact path="/proveedores/:supplierId" element={<SupplierDetail />} /> 
+                  <Route exact path="/proveedor/editar/:supplierId" element={<EditSupplier />} /> 
+                  <Route exact path="/proveedor/productos/registrar/:supplierId" element={<CreateProductSuplier />} /> 
+                  <Route exact path="/proveedor/productos/editar" element={<EditProductSuplier />} /> 
+                  
+
                   <Route exact path="/inventario" element={<NuevosModulos />} />
                   <Route exact path="/reportes" element={<NuevosModulos />} />
                   <Route exact path="*" element={<NoEncotrada />} />
