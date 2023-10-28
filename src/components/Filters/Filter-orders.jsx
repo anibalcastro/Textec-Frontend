@@ -3,10 +3,12 @@ import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
-const FilterOrders = ({ datos }) => {
+const FilterOrders = ({ datos, showMonto }) => {
   const [filter, setFilter] = useState("");
+  
+
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 25; // Número de mediciones por página
+  const itemsPerPage = 25; // Número de ordenes por página
   const [company, setCompany] = useState([]);
   const [typeFilter, setTypeFilter] = useState("Titulo");
 
@@ -54,8 +56,6 @@ const FilterOrders = ({ datos }) => {
     if (!datos) {
       return [];
     }
-
-    console.log(typeFilter);
 
     if (typeFilter ==="Titulo"){
       const datosFiltrados = datos.filter((dato) => {
@@ -182,6 +182,7 @@ const handleInputFilterSelect = (event) => {
               <th>Titulo</th>
               <th>Empresa</th>
               <th>Estado</th>
+              {showMonto && ( <th>Monto</th>)}
               <th>Fecha</th>
             </tr>
           </thead>
@@ -190,13 +191,18 @@ const handleInputFilterSelect = (event) => {
               <tr key={index}>
                 <td>{iterador + index + 1}</td>
                 <td>
-                  <Link
+                  {showMonto ? ( <Link
+                    className="link-nombre"
+                    to={`/orden/${dato.id}/pagos`}
+                  >{`${dato.titulo}`}</Link>) : ( <Link
                     className="link-nombre"
                     to={`/orden/${dato.id}`}
-                  >{`${dato.titulo}`}</Link>
+                  >{`${dato.titulo}`}</Link>)}
+                
                 </td>
                 <td>{nameCompany(dato.id_empresa)}</td>
                 <td>{dato.estado}</td>
+                {showMonto && <td>{dato.precio_total}</td>}
                 <td>{dato.fecha_orden}</td>
               </tr>
             ))}
