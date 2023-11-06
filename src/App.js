@@ -42,6 +42,7 @@ import DetailPayment from "./Pages/Pagos/DetailPayments";
 import Repairs from "./Pages/Reparaciones/Repair";
 import CreateRepair from "./Pages/Reparaciones/CreateRepair.jsx";
 import EditRepair from "./Pages/Reparaciones/EditRepair";
+import DetailRepair from "./Pages/Reparaciones/DetailRepair.jsx";
 
 import Supplier from "./Pages/Proveedor/Supplier";
 import CreateSupplier from "./Pages/Proveedor/CreateSupplier";
@@ -81,7 +82,6 @@ function App() {
         if (result.hasOwnProperty("data")) {
           const { data } = result;
           setListaClientes(data);
-          localStorage.setItem('data', JSON.stringify(data));
         } else {
           //console.log("La respuesta de la API no contiene la propiedad 'data'");
           // Mostrar mensaje de error o realizar otra acción
@@ -177,10 +177,10 @@ function App() {
                   <Route exact path="/orden/editar/:ordenId" element={<EditOrder />} />
 
                   <Route exact path="/pagos" element={<Payments />} />
-                  <Route exact path="/orden/:ordenId/pagos" element={<DetailPayment />} />
+                  <Route exact path="/:tipo/:id/pagos" element={<DetailPayment />} />
                   
                   <Route exact path="/reparaciones" element={<Repairs />} />
-                  <Route exact path="/reparacion/:repairId" element={<CreateRepair />} />
+                  <Route exact path="/reparacion/:repairId" element={<DetailRepair />} />
                   <Route exact path="/reparaciones/registrar" element={<CreateRepair />} />
                   <Route exact path="/reparacion/editar/:repairId" element={<EditRepair />} />
 
