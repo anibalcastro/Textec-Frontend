@@ -1,12 +1,26 @@
 import React from "react";
 import Header from "../Header/Header";
 
-const Detail = ({ order, detail, invoice, company, product }) => {
+const Detail = ({ order, detail, invoice, company, product, title, subtitle }) => {
+
+
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
     style: "currency",
     currency: "CRC",
   });
+
+  const formatDate = (inputDate) => {
+    if (inputDate) {
+      const date = new Date(inputDate);
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Sumamos 1 para ajustar el índice del mes
+      const year = date.getFullYear();
+  
+      return `${day}/${month}/${year}`;
+    }
+    return ""; // O cualquier valor predeterminado que desees en caso de que la fecha no sea válida
+  };
 
   /**
    * Returns name of the company by Id
@@ -40,7 +54,7 @@ const Detail = ({ order, detail, invoice, company, product }) => {
 
   return (
     <React.Fragment>
-      <Header title="Detalle de la orden" />
+      <Header title={title} />
 
       <div className="container form-contenedor">
         <form className="form-registro-clientes">
@@ -101,14 +115,14 @@ const Detail = ({ order, detail, invoice, company, product }) => {
               id="titulo"
               autoComplete="current-password"
               disabled
-              value={order.fecha_orden}
+              value={formatDate(order.fecha_orden) || formatDate(order.fecha)}
               required
             />
           </div>
 
           <div className="div-inp">
             <label htmlFor="password">Vendedor:</label>
-            {invoice && invoice.length > 0 ? (
+            {Array.isArray(invoice) && invoice && invoice.length > 0 ? (
               <input
                 type="text"
                 name="cajero"
@@ -127,7 +141,7 @@ const Detail = ({ order, detail, invoice, company, product }) => {
 
       <hr></hr>
 
-      <Header title="Detalle del pedido" />
+      <Header title={subtitle} />
 
       <table className="tabla-medidas">
         <thead>
@@ -141,7 +155,7 @@ const Detail = ({ order, detail, invoice, company, product }) => {
         </thead>
 
         <tbody>
-          {detail.map((item) => (
+          {Array.isArray(detail) && detail.map((item) => (
             <tr key={item.id_producto}>
               <td>{nameProduct(item.id_producto)}</td>
               <td>{item.descripcion}</td>

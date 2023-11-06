@@ -79,6 +79,18 @@ const PaymentsTable = ({ payments, orderId }) => {
   const validateRole = (role) => {
     return role === "Admin";
   };
+
+  const formatDate = (inputDate) => {
+    if (inputDate) {
+      const date = new Date(inputDate);
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Sumamos 1 para ajustar el índice del mes
+      const year = date.getFullYear();
+  
+      return `${day}/${month}/${year}`;
+    }
+    return ""; // O cualquier valor predeterminado que desees en caso de que la fecha no sea válida
+  };
   
   const permissions = validateRole(role);
 
@@ -106,7 +118,7 @@ const PaymentsTable = ({ payments, orderId }) => {
             payments.map((item) => (
               <tr key={count + 1}>
                 <td>{count++}</td>
-                <td>{format(new Date(item.created_at), "yyyy-MM-dd")}</td>
+                <td>{formatDate(item.created_at)}</td>
                 <td>{item.estado}</td>
                 <td>{item.metodo_pago}</td>
                 <td>{formatCurrencyCRC.format(item.monto)}</td>
@@ -117,7 +129,7 @@ const PaymentsTable = ({ payments, orderId }) => {
                     onClick={() => questionCancelPayment(item.id)}
                     disabled={item.estado === "Anulado"}
                   >
-                    Anular
+                    {item.estado === "Anulado" ? `Anulado` : 'Anular'}
                   </button>
                 </td>)}
                 
