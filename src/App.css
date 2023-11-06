@@ -4,6 +4,7 @@ html {
 
 .logo-textec{
   width: 400px;
+  height: auto;
 }
 /***************************************************/
 /* Menu vertical */
@@ -494,6 +495,7 @@ textarea{
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .pagination button {
@@ -744,9 +746,5 @@ input[type="checkbox"]:checked + label {
     margin: auto;
     margin-top: 10px;
   }
-
-
-
-
 
 }
