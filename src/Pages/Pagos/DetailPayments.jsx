@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Detail from "../../components/OrderDetail/Detail";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import PaymentsTable from "../../components/OrderDetail/Payments";
 
 const DetailPayment = () => {
@@ -20,14 +20,31 @@ const DetailPayment = () => {
   const [product, setProduct] = useState([]);
   const [payment, setPayment] = useState([]);
 
-  const { ordenId } = useParams();
+  const { tipo, id } = useParams();
 
+  const navigate = useNavigate();
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
 
   useEffect(() => {
+    if (tipo === "orden"){
+      fetchOrder();
+    }
+    else if (tipo === "reparaciones"){
+      fetchRepair();
+    }
+    else{
+      Swal.fire("Error", "La ruta que elegiste no es la correcta.", "error").then((result) => {
+        if (result.isConfirmed){
+          navigate('/pagos')
+        }
+        else{
+          navigate('/pagos')
+        }
+      }) ;
+    }
+
     clearState();
-    fetchOrder();
     getCompany();
     getProducts();
     loadingData();
@@ -49,7 +66,7 @@ const DetailPayment = () => {
     };
 
     fetch(
-      `https://api.textechsolutionscr.com/api/v1/ordenes/${ordenId}`,
+      `https://api.textechsolutionscr.com/api/v1/ordenes/${id}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -62,6 +79,35 @@ const DetailPayment = () => {
           getPaymentsByOrder(facturas[0].id);
         } else {
           Swal.fire("Error, intentelo más tarde!", "error");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  };
+
+  const fetchRepair = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/reparacion/${id}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const {reparacion,factura, status} = result;
+        if (status === 200) {
+          setOrder(reparacion);
+          setDetail(reparacion.detalle_reparacion);
+          setInvoice(factura);
+          getPaymentsByOrder(factura[0].id);
+        } else {
+          Swal.fire("Error, intentelo más tarde!");
         }
       })
       .catch((error) => console.log("error", error));
@@ -309,7 +355,12 @@ const DetailPayment = () => {
                     "info"
                   ).then(() => {
                     // Recargar la página después de que se cierre la alerta
-                    fetchOrder();
+                    if (tipo === "orden"){
+                      fetchOrder();
+                    }
+                    else if (tipo === "reparaciones"){
+                      fetchRepair();
+                    }
                     const saldo_restante = invoice.saldo_restante - monto;
                     setInvoice({ ...invoice, saldo_restante });
                   });
@@ -366,7 +417,7 @@ const DetailPayment = () => {
         product={product}
       />
 
-      <PaymentsTable payments={payment} orderId={ordenId} />
+      <PaymentsTable payments={payment} orderId={id} />
 
       <div className="container botones-contenedor">
         <Link to="/pagos">

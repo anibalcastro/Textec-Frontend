@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Header from '../../components/Header/Header';
-import FilterOrders from "../../components/Filters/Filter-orders";
+import FilterInvoice from "../../components/Filters/Filter-invoice";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 const Payments = () => {
       // State to store products
-  const [orders, setOrders] = useState([]);
+  const [invoice, setInvoices] = useState([]);
   //Token activo
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
@@ -15,30 +15,33 @@ const Payments = () => {
   useEffect(() => {
 
     validateRole();
-    const fetchOrders = () => {
+    
+    const fetchInvoices = () => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `Bearer ${token}`);
-
+    
       var requestOptions = {
         method: "GET",
         headers: myHeaders,
         redirect: "follow",
       };
-
-      fetch("https://api.textechsolutionscr.com/api/v1/ordenes", requestOptions)
+    
+      fetch("https://api.textechsolutionscr.com/api/v1/facturas", requestOptions)
         .then((response) => response.json())
         .then((result) => {
-          if (result.hasOwnProperty("ordenes")) {
-            const { ordenes } = result;
-            setOrders(ordenes);
-            localStorage.setItem("ordenes", JSON.stringify(ordenes));
+          if (result.hasOwnProperty("data")) {
+            const { data } = result;
+            setInvoices(data);
           }
         })
         .catch((error) => console.log("error", error));
     };
+    
 
 
-    fetchOrders();
+    
+
+    fetchInvoices();
     
   }, []);
 
@@ -53,7 +56,7 @@ const Payments = () => {
         <React.Fragment>
             <Header title="Facturas" />
 
-            <FilterOrders datos={orders} showMonto={true}/>
+            <FilterInvoice datos={invoice} showMonto={true}/>
 
         </React.Fragment>
     )

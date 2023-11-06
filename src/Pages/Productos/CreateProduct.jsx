@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from "../../Images/Logos/Icono.png";
+import Logo from "../../Images/Logos/Icono (1).webp";
 
 const CreateProduct = () => {
   const [product, setProduct] = useState([]);
