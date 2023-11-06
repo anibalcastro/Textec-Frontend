@@ -46,6 +46,11 @@ const FilterOrders = ({ datos, showMonto }) => {
     loadingData();
   }, []);
 
+  const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
+    style: "currency",
+    currency: "CRC",
+  });
+
   const handleFiltroChange = (event) => {
     setFilter(event.target.value);
     setCurrentPage(1);
@@ -72,13 +77,11 @@ const FilterOrders = ({ datos, showMonto }) => {
       return datosFiltrados;
     }
     else if (typeFilter === "Empresa"){
-      const  idEmpresa = getIdCompany(filter);
-
-      console.log(idEmpresa)
+    
 
       const datosFiltrados = datos.filter((dato) => {
-        const empresa = `${dato.id_empresa}`;
-        return empresa.includes(idEmpresa);
+        const empresa = `${dato.nombre_empresa}`;
+        return empresa.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
     }
@@ -117,25 +120,14 @@ const FilterOrders = ({ datos, showMonto }) => {
     });
   };
 
-  const nameCompany = (companyId) => {
-    const empresaEncontrada = company.find(
-        (item) => parseInt(item.id) == parseInt(companyId)
-    );
+  const formatDate = (inputDate) => {
+    const date = new Date(inputDate);
+    const day = date.getDate();
+    const month = date.getMonth() + 1
+    const year = date.getFullYear();
 
-    if (empresaEncontrada) {
-        return empresaEncontrada.nombre_empresa;
-    } else {
-        return "Empresa no encontrada";
-    }
-};
-
-  const getIdCompany = (nameCompany) => {
-    const empresa = company.find((item) => item.nombre_empresa == nameCompany);
-
-    if (empresa){
-      return empresa.id;
-    }
-  }
+    return `${day}/${month}/${year}`;
+  };
 
 const handleInputFilterSelect = (event) => {
   setTypeFilter(event.target.value);
@@ -151,15 +143,6 @@ const handleInputFilterSelect = (event) => {
     setCurrentPage(page);
   };
 
-  const formatDate = (inputDate) => {
-    const date = new Date(inputDate);
-    const day = date.getDate();
-    const month = date.getMonth() + 1
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  };
-
   let iterador = indexOfFirstItem;
 
   return (
@@ -170,7 +153,7 @@ const handleInputFilterSelect = (event) => {
           type="text"
           value={filter}
           onChange={handleFiltroChange}
-          placeholder="Buscar Orden"
+          placeholder="Buscar"
         />
 
         <div className="d-flex align-items-center">
@@ -196,25 +179,51 @@ const handleInputFilterSelect = (event) => {
             </tr>
           </thead>
           <tbody>
-            {filterData().map((dato, index) => (
-              <tr key={index}>
-                <td>{iterador + index + 1}</td>
-                <td>
-                  {showMonto ? ( <Link
-                    className="link-nombre"
-                    to={`/orden/${dato.id}/pagos`}
-                  >{`${dato.titulo}`}</Link>) : ( <Link
-                    className="link-nombre"
-                    to={`/orden/${dato.id}`}
-                  >{`${dato.titulo}`}</Link>)}
-                
-                </td>
-                <td>{nameCompany(dato.id_empresa)}</td>
-                <td>{dato.estado}</td>
-                {showMonto && <td>{dato.precio_total}</td>}
-                <td>{formatDate(dato.fecha_orden)}</td>
-              </tr>
-            ))}
+          {filterData().map((dato, index) => (
+  <tr key={index}>
+    <td>{iterador + index + 1}</td>
+    <td>
+      {showMonto ? (
+        dato.orden_id ? (
+          <Link
+            className="link-nombre"
+            to={`/orden/${dato.orden_id}/pagos`}
+          >
+            {`${dato.titulo} - Orden`}
+          </Link>
+        ) : (
+          <Link
+            className="link-nombre"
+            to={`/reparaciones/${dato.reparacion_id}/pagos`}
+          >
+            {`${dato.titulo} - Reparación`}
+          </Link>
+        )
+      ) : (
+        dato.orden_id ? (
+          <Link
+            className="link-nombre"
+            to={`/orden/${dato.id}`}
+          >
+            {`${dato.titulo}`}
+          </Link>
+        ) : (
+          <Link
+            className="link-nombre"
+            to={`/reparacion/${dato.id}`}
+          >
+            {`${dato.titulo}`}
+          </Link>
+        )
+      )}
+    </td>
+    <td>{dato.nombre_empresa}</td>
+    <td>{dato.estado}</td>
+    {showMonto && <td>{formatCurrencyCRC.format(dato.monto)}</td>}
+    <td>{dato.fecha_orden ? formatDate(dato.fecha_orden) : formatDate(dato.fecha)}</td>
+  </tr>
+))}
+
           </tbody>
         </table>
           </div>

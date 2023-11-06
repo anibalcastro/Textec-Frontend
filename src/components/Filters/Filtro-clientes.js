@@ -7,6 +7,7 @@ const FiltroClientes = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 40; // Número de clientes por página
+  const [typeFilter, setTypeFilter] = useState("Nombre");
 
   useEffect(() => {
     setFiltro(""); // Resetear el filtro cuando los datos cambian
@@ -20,38 +21,78 @@ const FiltroClientes = ({ datos }) => {
   };
 
   const filtrarDatos = () => {
-    const datosFiltrados = datos.filter((dato) => {
-      const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
-      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
-    });
-    return datosFiltrados;
+    if (!datos){
+      return [];
+    }
+
+    if (typeFilter === "Nombre"){
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
+        return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Empresa"){
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreEmpresa = `${dato.empresa}`;
+        return nombreEmpresa.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Cedula"){
+      const datosFiltrados = datos.filter((dato) => {
+        const numeroCedula = `${dato.cedula}`;
+        return numeroCedula.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+
   };
 
   const loadingData = () => {
     let timerInterval;
-    Swal.fire({
-      title: "Cargando datos!",
-      html: "Se va a cerrar en <b></b> segundo",
-      timer: 3000, // Cambiar a la duración en segundos (por ejemplo, 2 segundos)
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
-          b.textContent = timerLeftInSeconds;
-        }, 1000); // Actualizar cada segundo
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // El temporizador ha expirado
-      }
-    });
+  
+    const showLoadingAlert = () => {
+      Swal.fire({
+        title: "Cargando datos!",
+        html: "Se va a cerrar en <b></b> segundo",
+        timer: 2000, // Duración en milisegundos (por ejemplo, 2000 milisegundos)
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
+            b.textContent = timerLeftInSeconds;
+          }, 1000); // Actualizar cada segundo
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+          const tablaClientes = document.getElementById("tabla-clientes");
+          if (tablaClientes) {
+            const estaLlena = tablaClientes.rows.length > 0; // Verificar si la tabla tiene alguna fila
+            if (!estaLlena) {
+              showLoadingAlert(); // Mostrar la alerta si la tabla no está llena
+            }
+          }
+        },
+      }).then((result) => {
+        /* Read more about handling dismissals below */
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // El temporizador ha expirado
+        }
+      });
+    };
+  
+    showLoadingAlert(); // Mostrar la primera alerta
   };
+
+  const handleInputFilterSelect = (event) => {
+    setTypeFilter(event.target.value);
+  }
+  
+  
+  
   
 
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -68,17 +109,29 @@ const FiltroClientes = ({ datos }) => {
 
   return (
     <React.Fragment>
-      <div className="container-filtro">
+      <div className="container-filtro-ordenes">
         <input
-          className="filtro-mediciones"
+          className="filtro-pedidos"
           type="text"
           value={filtro}
           onChange={handleFiltroChange}
-          placeholder="Buscar Cliente"
+          placeholder="Buscar"
         />
+
+        <div className="d-flex align-items-center">
+          {" "}
+          {/* Añade la clase 'align-items-center' para centrar verticalmente */}
+          <label>Buscar por: </label>
+          <select className="sc-filter" onChange={handleInputFilterSelect}>
+            <option value={"Nombre"}>Nombre</option>
+            <option value={"Empresa"}>Empresa</option>
+            <option value={"Cedula"}>Cédula</option>
+          </select>
+        </div>
       </div>
 
-      <table className="tabla-medidas">
+
+      <table id="tabla-clientes" className="tabla-medidas">
         <thead>
           <tr>
             <th>#</th>

@@ -6,6 +6,8 @@ const FiltroMediciones = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 40; // Número de mediciones por página
+  const [typeFilter, setTypeFilter] = useState("Nombre");
+
 
   useEffect(() => {
     setFiltro(""); // Resetear el filtro cuando los datos cambian
@@ -19,12 +21,37 @@ const FiltroMediciones = ({ datos }) => {
   };
 
   const filtrarDatos = () => {
-    const datosFiltrados = datos.filter((dato) => {
-      const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
-      return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
-    });
-    return datosFiltrados;
+    if (!datos){
+      return [];
+    }
+
+    if (typeFilter === "Nombre"){
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
+        return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Empresa"){
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreEmpresa = `${dato.empresa}`;
+        return nombreEmpresa.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    else if (typeFilter === "Cedula"){
+      const datosFiltrados = datos.filter((dato) => {
+        const numeroCedula = `${dato.cedula}`;
+        return numeroCedula.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
   };
+
+  const handleInputFilterSelect = (event) => {
+    setTypeFilter(event.target.value);
+  }
+  
 
   const loadingData = () => {
     let timerInterval;
@@ -66,14 +93,25 @@ const FiltroMediciones = ({ datos }) => {
 
   return (
     <React.Fragment>
-      <div className="container-filtro">
+           <div className="container-filtro-ordenes">
         <input
-          className="filtro-mediciones"
+          className="filtro-pedidos"
           type="text"
           value={filtro}
           onChange={handleFiltroChange}
-          placeholder="Buscar medición"
+          placeholder="Buscar"
         />
+
+        <div className="d-flex align-items-center">
+          {" "}
+          {/* Añade la clase 'align-items-center' para centrar verticalmente */}
+          <label>Buscar por: </label>
+          <select className="sc-filter" onChange={handleInputFilterSelect}>
+            <option value={"Nombre"}>Nombre</option>
+            <option value={"Empresa"}>Empresa</option>
+            <option value={"Cedula"}>Cédula</option>
+          </select>
+        </div>
       </div>
 
       <table className="tabla-medidas">
@@ -82,6 +120,7 @@ const FiltroMediciones = ({ datos }) => {
             <th>#</th>
             <th>Nombre Completo</th>
             <th>Cédula</th>
+            <th>Empresa</th>
           </tr>
         </thead>
         <tbody>
@@ -94,7 +133,9 @@ const FiltroMediciones = ({ datos }) => {
                   to={`/mediciones/cliente/${dato.id}`}
                 >{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
               </td>
+
               <td>{dato.cedula}</td>
+              <td>{dato.empresa}</td>
             </tr>
           ))}
         </tbody>

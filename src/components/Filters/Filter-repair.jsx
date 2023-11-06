@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
 const FilterRepair = ({ datos }) => {
+
   const [filtro, setFiltro] = useState("");
   const [company, setCompany] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -48,6 +49,18 @@ const FilterRepair = ({ datos }) => {
     setCurrentPage(1); 
   };
 
+  const formatDate = (inputDate) => {
+    if (inputDate) {
+      const date = new Date(inputDate);
+      const day = date.getDate();
+      const month = date.getMonth() + 1; // Sumamos 1 para ajustar el índice del mes
+      const year = date.getFullYear();
+  
+      return `${day}/${month}/${year}`;
+    }
+    return ""; // O cualquier valor predeterminado que desees en caso de que la fecha no sea válida
+  };
+
   const filtrarDatos = () => {
     const datosFiltrados = datos.filter((dato) => {
       const nombreProveedor = `${dato.nombre_proveedor}`;
@@ -58,29 +71,41 @@ const FilterRepair = ({ datos }) => {
 
   const loadingData = () => {
     let timerInterval;
-    Swal.fire({
-      title: "Cargando datos!",
-      html: "Se va a cerrar en <b></b> segundo",
-      timer: 3000, // Cambiar a la duración en segundos (por ejemplo, 2 segundos)
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
-          b.textContent = timerLeftInSeconds;
-        }, 1000); // Actualizar cada segundo
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // El temporizador ha expirado
-      }
-    });
+  
+    const showLoadingAlert = () => {
+      Swal.fire({
+        title: "Cargando datos!",
+        html: "Se va a cerrar en <b></b> segundo",
+        timer: 3000, // Cambiar a la duración en milisegundos (por ejemplo, 3000 milisegundos)
+        timerProgressBar: true,
+        didOpen: () => {
+          Swal.showLoading();
+          const b = Swal.getHtmlContainer().querySelector("b");
+          timerInterval = setInterval(() => {
+            const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
+            b.textContent = timerLeftInSeconds;
+          }, 1000); // Actualizar cada segundo
+        },
+        willClose: () => {
+          clearInterval(timerInterval);
+          const tablaReparacion = document.getElementById("tabla-reparacion");
+          if (tablaReparacion) {
+            const estaLlena = tablaReparacion.rows.length > 0; // Verificar si la tabla tiene alguna fila
+            if (!estaLlena) {
+              showLoadingAlert(); // Mostrar la alerta si la tabla no está llena
+            }
+          }
+        },
+      }).then((result) => {
+        if (result.dismiss === Swal.DismissReason.timer) {
+          // El temporizador ha expirado
+        }
+      });
+    };
+  
+    showLoadingAlert(); // Mostrar la primera alerta
   };
+  
 
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
@@ -118,7 +143,7 @@ const FilterRepair = ({ datos }) => {
         />
       </div>
 
-      <table className="tabla-medidas">
+      <table id="tabla-reparacion" className="tabla-medidas">
         <thead>
           <tr>
             <th>#</th>
@@ -135,12 +160,12 @@ const FilterRepair = ({ datos }) => {
               <td>
                 <Link
                   className="link-nombre"
-                  to={`/proveedores/${dato.id}`}
+                  to={`/reparacion/${dato.id}`}
                 >{`${dato.titulo}`}</Link>
               </td>
               <td>{nameCompany(dato.id_empresa)}</td>
-              <td>₡{dato.estado}</td>
-              <td>₡{dato.fecha}</td>
+              <td>{dato.estado}</td>
+              <td>{formatDate(dato.fecha)}</td>
             </tr>
           ))}
         </tbody>
