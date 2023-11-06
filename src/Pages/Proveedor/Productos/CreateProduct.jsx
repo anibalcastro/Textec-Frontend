@@ -8,7 +8,7 @@ const CreateProduct = () => {
   const [arrayProducts, setArrayProducts] = useState([]);
   const [idProduct, setIdProduct] = useState(0);
 
-  const {supplierId} = useParams();
+  const { supplierId } = useParams();
 
   useEffect(() => {
     validateRole();
@@ -38,18 +38,18 @@ const CreateProduct = () => {
     const productFilter = [];
 
     for (let i = 0; i < arrayProducts.length; i++) {
-      const { proveedor_id, nombre_producto, descripcion, precio } = arrayProducts[i];
+      const { proveedor_id, nombre_producto, descripcion, precio } =
+        arrayProducts[i];
       productFilter.push({
         proveedor_id,
         nombre_producto,
         descripcion,
-        precio
+        precio,
       });
     }
 
-    const jsonProducts = {productos : productFilter};
+    const jsonProducts = { productos: productFilter };
     console.log(JSON.stringify(jsonProducts));
-    
 
     var requestOptions = {
       method: "POST",
@@ -58,32 +58,38 @@ const CreateProduct = () => {
       redirect: "follow",
     };
 
-    fetch("https://api.textechsolutionscr.com/api/v1/productos/proveedores", requestOptions)
+    fetch(
+      "https://api.textechsolutionscr.com/api/v1/productos/proveedores",
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
-        const { data, error } = result;
-        if (parseInt(data) === 200) {
+        const { status, error } = result;
+        if (parseInt(status) === 200) {
           Swal.fire(
             "Producto creado con éxito!",
             `Se han registrado los productos!`,
             "success"
           ).then((result) => {
+
             if (result.isConfirmed) {
               navigate(`/proveedores/${supplierId}`);
             } else {
-              navigate(`/proveedores/${supplierId}`)
+              navigate(`/proveedores/${supplierId}`);
             }
           });
         } else {
           let errorMessage = "";
-          for (const message of error) {
-            errorMessage += message + "\n";
+          if (error && typeof error === "object" && !Array.isArray(error)) {
+            errorMessage = error.toString();
+          } else if (Array.isArray(error)) {
+            errorMessage = error.join("\n");
+          } else {
+            errorMessage = "Error desconocido al crear el producto.";
           }
           Swal.fire("Error al crear el producto!", `${errorMessage}`, "error");
         }
-        
-      })
-      .catch((error) => console.log("error", error));
+      });
   };
 
   const handleInputChange = (event) => {
@@ -92,21 +98,20 @@ const CreateProduct = () => {
   };
 
   const AddOtherProduct = () => {
-
     let id = idProduct;
     let newProduct = {
-      id : id++,
-      proveedor_id: supplierId ,
+      id: id++,
+      proveedor_id: supplierId,
       nombre_producto: product.nombre_producto,
       descripcion: product.descripcion,
-      precio: product.precio
-    } ;
+      precio: product.precio,
+    };
 
     setArrayProducts(arrayProducts.concat(newProduct));
     setProduct("");
     setIdProduct(id++);
     clearInputs();
-  }
+  };
 
   const clearInputs = () => {
     const inputs = document.getElementsByTagName("input");
@@ -124,13 +129,15 @@ const CreateProduct = () => {
       const textarea = textareas[i];
       textarea.value = "";
     }
-  }
+  };
 
   const deleteProduct = (idProduct) => {
-    const filterProducts = arrayProducts.filter((product) => parseInt(product.id) !== parseInt(idProduct));
+    const filterProducts = arrayProducts.filter(
+      (product) => parseInt(product.id) !== parseInt(idProduct)
+    );
 
     setArrayProducts(filterProducts);
-  }
+  };
 
   return (
     <React.Fragment>
@@ -180,45 +187,48 @@ const CreateProduct = () => {
             </button>
           </div>
         </form>
-        </div>
+      </div>
 
-        <hr className="division"></hr>
-        <h2 className="titulo-encabezado">Productos por agregar</h2>
+      <hr className="division"></hr>
+      <h2 className="titulo-encabezado">Productos por agregar</h2>
 
-        <table className="tabla-medidas">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Descripción</th>
-              <th>Precio</th>
-              <th>Acciones</th>
+      <table className="tabla-medidas">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {arrayProducts.map((datos) => (
+            <tr key={datos.id}>
+              <td>{datos.nombre_producto}</td>
+              <td>{datos.descripcion}</td>
+              <td>{datos.precio}</td>
+              <td className="table-button-content">
+                <button
+                  onClick={() => deleteProduct(datos.id)}
+                  className="btnEdit"
+                >
+                  Eliminar
+                </button>
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {arrayProducts.map((datos) => (
-              <tr key={datos.id}>
-                <td>{datos.nombre_producto}</td>
-                <td>{datos.descripcion}</td>
-                <td>{datos.precio}</td>
-                <td className="table-button-content">
-                  <button onClick={() => deleteProduct(datos.id)} className="btnEdit">Eliminar</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+          ))}
+        </tbody>
+      </table>
 
-        <div className="container botones-contenedor">
-              <button onClick={() => createProduct()} className="btn-registrar">
-                  Guardar
-              </button>
+      <div className="container botones-contenedor">
+        <button onClick={() => createProduct()} className="btn-registrar">
+          Guardar
+        </button>
 
-
-          <Link to={`/proveedores/${supplierId}`}>
-            <button className="btn-registrar">Regresar</button>
-          </Link>
-        </div>
-      
+        <Link to={`/proveedores/${supplierId}`}>
+          <button className="btn-registrar">Regresar</button>
+        </Link>
+      </div>
     </React.Fragment>
   );
 };
