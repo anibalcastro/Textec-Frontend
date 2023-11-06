@@ -298,7 +298,7 @@ const OrderDetail = () => {
     <React.Fragment>
 
       <Detail order={order} detail={detail} invoice={invoice} company={company} 
-      product={product} />
+      product={product} title={"Detalle de la orden"} subtitle={"Detalle de la orden"}/>
      
       <div className="container botones-contenedor">
         <Link to="/orden">

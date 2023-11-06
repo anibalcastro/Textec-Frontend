@@ -14,7 +14,7 @@ import { BsTools } from "react-icons/bs";
 import { GiRolledCloth, GiClothes } from "react-icons/gi";
 import { FiLogOut } from "react-icons/fi";
 
-import logo from "../../Images/Logos/Icono.jpg";
+import logo from "../../Images/Logos/Icono.webp";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 

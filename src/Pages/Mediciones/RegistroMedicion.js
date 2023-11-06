@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Logo from "../../Images/Logos/Icono.png";
+import Logo from "../../Images/Logos/Icono (1).webp";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";

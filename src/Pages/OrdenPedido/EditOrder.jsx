@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import Cookies from "js-cookie";
-import Logo from "../../Images/Logos/Icono.png";
+import Logo from "../../Images/Logos/Icono (1).webp";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 

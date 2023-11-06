@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Logo from "../../Images/Logos/Icono.png";
+import Logo from "../../Images/Logos/Icono (1).webp";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 

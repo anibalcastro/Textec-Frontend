@@ -46,6 +46,7 @@ const Orders = () => {
 
   const contributorPermissions = validatePermissions();
 
+
   return (
     <React.Fragment>
       <h2 className="titulo-encabezado">Orden de pedidos</h2>
