@@ -61,7 +61,7 @@ function App() {
 
   const token = Cookies.get("jwtToken"); 
   const [listaClientes, setListaClientes] = useState([]);
-
+  
   useEffect(() => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   
@@ -106,6 +106,8 @@ function App() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  
 
   const validarToken = (token) => {
     if (token) {
