@@ -1,9 +1,17 @@
 import React from "react";
 import Header from "../Header/Header";
+import Cookies from "js-cookie";
 
-const Detail = ({ order, detail, invoice, company, product, title, subtitle }) => {
-
-
+const Detail = ({
+  order,
+  detail,
+  invoice,
+  company,
+  product,
+  title,
+  subtitle,
+}) => {
+  const role = Cookies.get("role");
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
     style: "currency",
@@ -16,7 +24,7 @@ const Detail = ({ order, detail, invoice, company, product, title, subtitle }) =
       const day = date.getDate();
       const month = date.getMonth() + 1; // Sumamos 1 para ajustar el índice del mes
       const year = date.getFullYear();
-  
+
       return `${day}/${month}/${year}`;
     }
     return ""; // O cualquier valor predeterminado que desees en caso de que la fecha no sea válida
@@ -51,6 +59,16 @@ const Detail = ({ order, detail, invoice, company, product, title, subtitle }) =
     }
   };
 
+  const validateRole = () => {
+    console.log(role);
+    if (role !== "Visor") {
+      return true;
+    }
+
+    return false;
+  };
+
+  const showAmount = validateRole();
 
   return (
     <React.Fragment>
@@ -149,49 +167,63 @@ const Detail = ({ order, detail, invoice, company, product, title, subtitle }) =
             <th>Producto</th>
             <th>Descripción</th>
             <th>Cantidad</th>
-            <th>Precio unitario</th>
-            <th>Precio total</th>
+            {showAmount ? (
+              <>
+                <th>Precio unitario</th> <th>Precio total</th>
+              </>
+            ) : null}
           </tr>
         </thead>
 
         <tbody>
-          {Array.isArray(detail) && detail.map((item) => (
-            <tr key={item.id_producto}>
-              <td>{nameProduct(item.id_producto)}</td>
-              <td>{item.descripcion}</td>
-              <td>{item.cantidad}</td>
-              <td>{formatCurrencyCRC.format(item.subtotal / item.cantidad)}</td>
-              <td>{formatCurrencyCRC.format(item.subtotal)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <hr></hr>
-
-      <Header title="Facturación" />
-      <table className="tabla-medidas">
-        <thead>
-          <tr>
-            <th>Subtotal</th>
-            <th>IVA 13%</th>
-            <th>Total</th>
-            <th>Monto pendiente</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {Array.isArray(invoice) &&
-            invoice.map((item) => (
-              <tr key={item.subtotal}>
-                <td>{formatCurrencyCRC.format(item.subtotal)}</td>
-                <td>{formatCurrencyCRC.format(item.iva)}</td>
-                <td>{formatCurrencyCRC.format(item.monto)}</td>
-                <td>{formatCurrencyCRC.format(item.saldo_restante)}</td>
+          {Array.isArray(detail) &&
+            detail.map((item) => (
+              <tr key={item.id_producto}>
+                <td>{nameProduct(item.id_producto)}</td>
+                <td>{item.descripcion}</td>
+                <td>{item.cantidad}</td>
+                {showAmount ? (
+                  <>
+                    {" "}
+                    <td>
+                      {formatCurrencyCRC.format(item.subtotal / item.cantidad)}
+                    </td>
+                    <td>{formatCurrencyCRC.format(item.subtotal)}</td>
+                  </>
+                ) : null}
               </tr>
             ))}
         </tbody>
       </table>
+
+      <hr></hr>
+      {showAmount ? (
+        <>
+          <Header title="Facturación" />
+          <table className="tabla-medidas">
+            <thead>
+              <tr>
+                <th>Subtotal</th>
+                <th>IVA 13%</th>
+                <th>Total</th>
+                <th>Monto pendiente</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {Array.isArray(invoice) &&
+                invoice.map((item) => (
+                  <tr key={item.subtotal}>
+                    <td>{formatCurrencyCRC.format(item.subtotal)}</td>
+                    <td>{formatCurrencyCRC.format(item.iva)}</td>
+                    <td>{formatCurrencyCRC.format(item.monto)}</td>
+                    <td>{formatCurrencyCRC.format(item.saldo_restante)}</td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
 
       <hr></hr>
     </React.Fragment>
