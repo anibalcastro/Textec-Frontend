@@ -8,7 +8,7 @@ const CreateProduct = () => {
   const [product, setProduct] = useState([]);
 
   useEffect(() => {
-    validateRole();
+    alertInvalidatePermission();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -16,11 +16,32 @@ const CreateProduct = () => {
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
 
-  const validateRole = () => {
-    if (!role === "Admin" || !role === "Colaborador") {
-      navigate("/productos");
+  const validateUserPermission = () => {
+    if (role !== "Visor"){
+      return true
     }
-  };
+
+    return false
+  }
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()){
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if(result.isConfirmed){
+          navigate("/inicio")
+        }
+        else{
+          navigate("/inicio")
+        }
+      })
+
+    }
+
+  }
 
   const handleSubmit = (event) => {
     event.preventDefault();

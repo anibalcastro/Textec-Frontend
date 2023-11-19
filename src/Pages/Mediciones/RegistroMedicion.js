@@ -16,6 +16,7 @@ const RegistroMedicion = ({ clientes }) => {
 
   const navigate = useNavigate();
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
 
   /**Lista de mediciones inferiores */
   const medicionesInferior = ["Short", "Pantalon", "Enagua"];
@@ -33,11 +34,40 @@ const RegistroMedicion = ({ clientes }) => {
   const prendaInferior = medicionesInferior.includes(prenda);
 
   useEffect(() => {
+    alertInvalidatePermission();
     obtenerDatosClientes();
     obtenerMedidasAgregar();
     obtenerMediciones();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  const validateUserPermission = () => {
+    if (role !== "Visor"){
+      return true
+    }
+
+    return false
+  }
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()){
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if(result.isConfirmed){
+          navigate("/inicio")
+        }
+        else{
+          navigate("/inicio")
+        }
+      })
+
+    }
+
+  }
 
   /**
    *

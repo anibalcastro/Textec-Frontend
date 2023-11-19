@@ -36,9 +36,11 @@ const EditRepair = () => {
 
   const { repairId } = useParams();
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
   const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     fetchOrder();
     fetchProducts();
     getCompany();
@@ -46,6 +48,33 @@ const EditRepair = () => {
    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const validateUserPermission = () => {
+    if (role !== "Visor"){
+      return true
+    }
+
+    return false
+  }
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()){
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if(result.isConfirmed){
+          navigate("/inicio")
+        }
+        else{
+          navigate("/inicio")
+        }
+      })
+
+    }
+
+  }
 
   const fetchOrder = () => {
     var myHeaders = new Headers();

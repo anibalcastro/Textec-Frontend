@@ -12,8 +12,10 @@ const ModificarMedicion = () => {
     const idDetalle = useParams();
     const navigate = useNavigate();
     const token = Cookies.get("jwtToken");
+    const role = Cookies.get("role");
 
     useEffect(() => {
+        alertInvalidatePermission();
         obtenetInformacionMedidas(idDetalle);
 
         return () => {
@@ -24,6 +26,34 @@ const ModificarMedicion = () => {
         };
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+
+    const validateUserPermission = () => {
+      if (role !== "Visor"){
+        return true
+      }
+  
+      return false
+    }
+  
+    const alertInvalidatePermission = () => {
+      if (!validateUserPermission()){
+        Swal.fire(
+          "Acceso denegado",
+          "No tienes los permisos necesarios para realizar esta acción.",
+          "info"
+        ).then((result) => {
+          if(result.isConfirmed){
+            navigate("/inicio")
+          }
+          else{
+            navigate("/inicio")
+          }
+        })
+  
+      }
+  
+    }
 
     /**Lista de mediciones superiores */
     const medicionesSuperior = [

@@ -12,10 +12,39 @@ const EditProduct = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        alertInvalidatePermission();
         clearState();
         getInformationProduct(productId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+
+    const validateUserPermission = () => {
+      if (role !== "Visor"){
+        return true
+      }
+  
+      return false
+    }
+  
+    const alertInvalidatePermission = () => {
+      if (!validateUserPermission()){
+        Swal.fire(
+          "Acceso denegado",
+          "No tienes los permisos necesarios para realizar esta acción.",
+          "info"
+        ).then((result) => {
+          if(result.isConfirmed){
+            navigate("/inicio")
+          }
+          else{
+            navigate("/inicio")
+          }
+        })
+  
+      }
+  
+    }
 
     const clearState = () => {
         setProduct([]);

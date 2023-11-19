@@ -17,11 +17,41 @@ const ModificarCliente = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     //Llenar la infrmacion del cliente por mediio de identificador
     informacionCliente(userId)
     obtenerEmpresas();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const role = Cookies.get("role");
+
+  const validateUserPermission = () => {
+    if (role !== "Visor"){
+      return true
+    }
+
+    return false
+  }
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()){
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if(result.isConfirmed){
+          navigate("/inicio")
+        }
+        else{
+          navigate("/inicio")
+        }
+      })
+
+    }
+
+  }
 
   const informacionCliente = (identificador) => {
     let datos = localStorage.getItem('data');
