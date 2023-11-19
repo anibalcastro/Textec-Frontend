@@ -3,6 +3,7 @@ import Header from '../../components/Header/Header';
 import FilterInvoice from "../../components/Filters/Filter-invoice";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 const Payments = () => {
       // State to store products
@@ -13,7 +14,7 @@ const Payments = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
+    alertInvalidatePermission();
     validateRole();
     
     const fetchInvoices = () => {
@@ -44,6 +45,35 @@ const Payments = () => {
     fetchInvoices();
     
   }, []);
+
+  
+
+  const validateUserPermission = () => {
+    if (role !== "Visor"){
+      return true
+    }
+
+    return false
+  }
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()){
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if(result.isConfirmed){
+          navigate("/inicio")
+        }
+        else{
+          navigate("/inicio")
+        }
+      })
+
+    }
+
+  }
 
   const validateRole = () => {
     if (!role === "Admin" || !role === "Colaborador") {

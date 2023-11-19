@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ProductFilter  from "../../components/Filters/Filtro-productos";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2";
 
 const Productos = () => {
     // State to store products
@@ -10,8 +11,10 @@ const Productos = () => {
     //Token activo
     const token = Cookies.get("jwtToken");
     const role = Cookies.get("role");
+    const navigate = useNavigate();
 
     useEffect(() => {
+        alertInvalidatePermission();
         const fetchProducts = () => {
             var myHeaders = new Headers();
             myHeaders.append("Authorization", `Bearer ${token}`);
@@ -35,7 +38,35 @@ const Productos = () => {
         }
 
         fetchProducts();
-    }, [])
+    }, []);
+
+
+    const validateUserPermission = () => {
+        if (role !== "Visor"){
+          return true
+        }
+    
+        return false
+      }
+    
+      const alertInvalidatePermission = () => {
+        if (!validateUserPermission()){
+          Swal.fire(
+            "Acceso denegado",
+            "No tienes los permisos necesarios para realizar esta acción.",
+            "info"
+          ).then((result) => {
+            if(result.isConfirmed){
+              navigate("/inicio")
+            }
+            else{
+              navigate("/inicio")
+            }
+          })
+    
+        }
+    
+      }
 
 
     const validatePermissions = () => {
