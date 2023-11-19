@@ -157,11 +157,6 @@ const Sidebar = ({ children }) => {
       icon: <FaCropAlt />,
     },
     {
-      path: "/productos",
-      name: "Productos",
-      icon: <GiClothes />,
-    },
-    {
       path: "/orden",
       name: "Pedidos",
       icon: <FaClipboardList />,
@@ -170,11 +165,6 @@ const Sidebar = ({ children }) => {
       path: "/reparaciones",
       name: "Reparar",
       icon: <BsTools />,
-    },
-    {
-      path: "/proveedores",
-      name: "Proveedores",
-      icon: <FaCube />,
     },
     {
       path: "/inventario",
