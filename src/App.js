@@ -51,6 +51,11 @@ import SupplierDetail from "./Pages/Proveedor/SupplierDetail";
 import CreateProductSuplier from "./Pages/Proveedor/Productos/CreateProduct";
 import EditProductSuplier from "./Pages/Proveedor/Productos/EditProduct";
 
+import Inventory from "./Pages/Inventario/Inventory.jsx";
+import InputInventory from "./Pages/Inventario/InputInventory.jsx";
+
+import Categories from "./Pages/Categorias/Categories.jsx";
+
 
 import NuevosModulos from "./Pages/NuevosModulos";
 import NoEncotrada from "./Pages/NoEncontrada";
@@ -192,9 +197,13 @@ function App() {
                   <Route exact path="/proveedor/editar/:supplierId" element={<EditSupplier />} /> 
                   <Route exact path="/proveedor/productos/registrar/:supplierId" element={<CreateProductSuplier />} /> 
                   <Route exact path="/proveedor/productos/editar" element={<EditProductSuplier />} /> 
-                  
 
-                  <Route exact path="/inventario" element={<NuevosModulos />} />
+                  <Route exact path="/inventario" element={<Inventory />} />  
+                  <Route exact path="/inventario/entrada" element={<InputInventory />} />  
+                  
+                  <Route exact path="/categorias" element={<Categories />} />  
+
+      
                   <Route exact path="/reportes" element={<NuevosModulos />} />
                   <Route exact path="*" element={<NoEncotrada />} />
                 </Routes>

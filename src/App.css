@@ -2,34 +2,33 @@ html {
   margin: 0, 0, 0, 0;
 }
 
-.logo-textec{
+.logo-textec {
   width: 400px;
   height: auto;
 }
 /***************************************************/
 /* Menu vertical */
-*{
-  margin:0;
-  padding:0;
+* {
+  margin: 0;
+  padding: 0;
   text-decoration: none;
 }
 
-.container{
-  display:flex;
+.container {
+  display: flex;
 }
 
-main{
+main {
   width: 100%;
   padding: 20px;
   margin-left: 20px;
 }
 
-.lb_login{
+.lb_login {
   color: white;
 }
 
-
-.sidebar{
+.sidebar {
   background: #6e959c;
   color: #fff;
   height: 100vh;
@@ -41,24 +40,23 @@ main{
   transition: all 0.5s;
 }
 
-
-.top_section{
+.top_section {
   display: flex;
-  align-items:center;
-  padding:20px 15px;
+  align-items: center;
+  padding: 20px 15px;
 }
 
-.logo-menu{
+.logo-menu {
   width: 50px;
   height: auto;
 }
 
-.bars{
+.bars {
   display: flex;
   font-size: 25px;
 }
 
-.link{
+.link {
   display: flex;
   color: #fff;
   padding: 10px 15px;
@@ -67,22 +65,22 @@ main{
   text-decoration: none !important;
 }
 
-.link:hover{
-  background:lightskyblue;
+.link:hover {
+  background: lightskyblue;
   color: #000;
   transition: all 0.5s;
 }
 
-.active{
+.active {
   background: #fff;
   color: #000;
 }
 
-.icon, .link_text{
+.icon,
+.link_text {
   font-size: 17px;
   text-decoration: none;
 }
-
 
 .sidebar::-webkit-scrollbar {
   width: 6px; /* Ancho de la barra de desplazamiento */
@@ -90,12 +88,9 @@ main{
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background:#6e959c; /* Color del botón de la barra de desplazamiento */
+  background: #6e959c; /* Color del botón de la barra de desplazamiento */
   border-radius: 3px; /* Borde redondeado del botón de la barra de desplazamiento */
 }
-
-
-
 
 /***************************************************/
 /*Contenido*/
@@ -104,7 +99,7 @@ main{
   background-color: #f4f4f4;
 }
 
-.sc-filter{
+.sc-filter {
   margin-left: 5px;
   width: 100px;
 }
@@ -113,7 +108,7 @@ main{
 
 /*Titulo de las pantallas*/
 .titulo-encabezado {
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   margin: 1rem;
   font-weight: 700;
 }
@@ -129,7 +124,7 @@ main{
 /*Cuerpo de las tarjetas*/
 .card-body {
   height: 115px;
-  width: 210PX;
+  width: 210px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,7 +135,7 @@ main{
 
 /*Titulo de las tarjetas*/
 .card-title {
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   color: white;
   font-size: 20px;
   font-weight: 700;
@@ -151,7 +146,7 @@ main{
 
 /*Numero de la tarjeta*/
 .card-number {
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   color: white;
   font-size: 20px;
   font-weight: 400;
@@ -166,6 +161,14 @@ main{
 /***************************************************/
 /*Mediciones*/
 
+.cbtn_inven {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-direction: row;
+  gap: 5px;
+}
+
 .division {
   background-color: #6e959c;
   height: 2px;
@@ -177,61 +180,63 @@ main{
   justify-content: flex-end;
 }
 
-.btn-registrar, .btn {
+.btn-registrar,
+.btn {
   background-color: #6e959c;
   color: white;
   width: 160px;
   height: 50px;
   border-radius: 15px;
-  font-family: 'Montserrat', sans-serif; 
-  font-size: medium ;
+  font-family: "Montserrat", sans-serif;
+  font-size: medium;
   border: #6e959c;
 }
 
-.btn-eliminar, .btnEdit-eliminar {
+.btn-eliminar,
+.btnEdit-eliminar {
   /* Estilos comunes para el botón de eliminar */
   background-color: red;
   width: 150px;
   height: 40px;
   border-radius: 15px;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   font-size: medium;
   border: none;
-  color:white
+  color: white;
 }
 
-.btnEdit{
-   /* Estilos comunes para el botón de eliminar */
-   background-color: #6e959c;
-   width: 150px;
-   height: 40px;
-   border-radius: 15px;
-   font-family: 'Montserrat', sans-serif; 
-   font-size: medium;
-   border: none;
-   color:white
+.btnEdit {
+  /* Estilos comunes para el botón de eliminar */
+  background-color: #6e959c;
+  width: 150px;
+  height: 40px;
+  border-radius: 15px;
+  font-family: "Montserrat", sans-serif;
+  font-size: medium;
+  border: none;
+  color: white;
 }
 
-.btn-observar{
+.btn-observar {
   background-color: #6e959c;
   color: white;
   width: 100px;
   height: 25px;
   border-radius: 15px;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   font-size: medium;
   text-align: center;
   border: #6e959c;
 }
 
-.container-filtro{
+.container-filtro {
   padding-top: 20px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-.container-filtro-ordenes{
+.container-filtro-ordenes {
   padding-top: 20px;
   display: flex;
   align-items: flex-end;
@@ -239,31 +244,29 @@ main{
   flex-direction: column;
 }
 
-.filtro-mediciones, .filtro-pedidos{
+.filtro-mediciones,
+.filtro-pedidos {
   width: 400px;
   height: auto;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
 }
 
-
-
-.boton-mediciones{
+.boton-mediciones {
   background-color: transparent;
   border: none;
   cursor: pointer;
 }
-
-
 
 .tabla-medidas {
   margin-top: 20px;
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
 }
 
-.tabla-medidas th, .tabla-medidas td {
+.tabla-medidas th,
+.tabla-medidas td {
   padding: 8px;
   border: 1px solid #ccc;
 }
@@ -277,7 +280,7 @@ main{
   background-color: #f9f9f9;
 }
 
-.table-button-content{
+.table-button-content {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -289,23 +292,23 @@ main{
 }
 
 /*Nuevos modulos*/
-.textech{
-  font-family: 'Montserrat', sans-serif; 
+.textech {
+  font-family: "Montserrat", sans-serif;
   font-size: medium;
 }
 
-.btn-regresar{
+.btn-regresar {
   color: white;
   border: #6e959c;
   background-color: #6e959c;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   border-radius: 20px;
   width: 100px;
   height: 25px;
 }
 
 /*Login*/
-.login{
+.login {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -318,7 +321,7 @@ main{
   border-radius: 15px;
 }
 
-.form-login{
+.form-login {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -326,26 +329,26 @@ main{
   gap: 5px;
 }
 
-.icono-textech{
+.icono-textech {
   height: auto;
   width: 80px;
   border-radius: 50%;
   margin-bottom: 20px;
 }
 
-.btn-ingresar{
+.btn-ingresar {
   background-color: white;
   color: #6e959c;
   width: 120px;
   height: 40px;
   border-radius: 15px;
-  font-family: 'Montserrat', sans-serif; 
-  font-size: medium ;
+  font-family: "Montserrat", sans-serif;
+  font-size: medium;
   border: white;
 }
 
-.label-input{
-  font-family: 'Montserrat', sans-serif; 
+.label-input {
+  font-family: "Montserrat", sans-serif;
   font-size: larger;
   display: flex;
   align-items: center;
@@ -355,57 +358,57 @@ main{
   color: white;
 }
 
-#username, #password{
+#username,
+#password {
   width: 350px;
   text-align: center;
-  
 }
 
 /*Registro Clientes*/
 
-.form-contenedor{
+.form-contenedor {
   display: flex;
   flex-direction: row; /* Cambiamos a dirección de columna para evitar superposiciones */
   align-items: center; /* Alineamos los elementos al principio */
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
 }
 
-.opciones-medidas{
+.opciones-medidas {
   display: contents;
 }
 
-.form-registro-clientes, .detalle-clientes {
+.form-registro-clientes,
+.detalle-clientes {
   display: grid;
   gap: 10px;
   margin: 1rem;
 }
 
-.form-order-detail{
+.form-order-detail {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin: 1rem;
 }
 
-.div-inp, .div-inp-detail {
+.div-inp,
+.div-inp-detail {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 }
 
-
 .div-inp label {
   width: 152px;
-  font-weight: bold; 
-
+  font-weight: bold;
 }
 
-.div-inp-detail label{
+.div-inp-detail label {
   width: 100px;
   font-weight: bold;
 }
 
-.div-inp-detail input{
+.div-inp-detail input {
   flex: 1;
   width: 180px;
   height: 24px;
@@ -416,21 +419,21 @@ main{
 .div-inp select {
   flex: 1;
   width: 320px;
-  height: 24px ;
+  height: 24px;
 }
 
-textarea{
+textarea {
   width: 320px;
 }
 
-.img-contenedor{
+.img-contenedor {
   width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.detail-container{
+.detail-container {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -438,7 +441,7 @@ textarea{
   flex-wrap: wrap;
 }
 
-.botones-contenedor{
+.botones-contenedor {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -448,18 +451,17 @@ textarea{
   padding-bottom: 20px;
 }
 
-.isologo{
+.isologo {
   height: auto;
   width: 150px;
 }
 
-
 /*Detalle Cliente*/
-.contenedor-card-mediciones{
+.contenedor-card-mediciones {
   width: fit-content;
 }
 
-.mediciones-card{
+.mediciones-card {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -468,21 +470,21 @@ textarea{
 }
 
 /*Detalle Medicion*/
-.resultado-medida{
+.resultado-medida {
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.lista-mediciones{
+.lista-mediciones {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Montserrat', sans-serif; 
+  font-family: "Montserrat", sans-serif;
   font-size: larger;
   flex-wrap: nowrap;
 }
 
-.btn-transparente{
+.btn-transparente {
   background-color: transparent;
   border: none;
   color: #000; /* Color del texto */
@@ -591,7 +593,6 @@ textarea{
   left: 20px; /* Mueve el indicador a la posición de encendido */
 }
 
-
 /* Estilo para el texto del label */
 label {
   font-size: 16px;
@@ -603,19 +604,17 @@ input[type="checkbox"]:checked + label {
   color: #007bff; /* Cambiar el color del texto cuando está marcado */
 }
 
-.btn-agregar-detalle{
+.btn-agregar-detalle {
   margin-top: 10px;
   background-color: #6e959c;
   color: white;
   width: 200px;
   height: 50px;
   border-radius: 15px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: medium;
   border: #6e959c;
-
 }
-
 
 .swal2-popup-payment {
   max-width: 500px;
@@ -629,7 +628,9 @@ input[type="checkbox"]:checked + label {
   color: #6e959c;
 }
 
-.swal2-input-payment, .swal2-textarea-payment, .swal2-select-payment {
+.swal2-input-payment,
+.swal2-textarea-payment,
+.swal2-select-payment {
   width: 100%;
   padding: 10px;
   margin: 10px 0;
@@ -653,7 +654,7 @@ input[type="checkbox"]:checked + label {
 }
 
 .swal2-button-payment:hover {
-  background-color:#6e959c;
+  background-color: #6e959c;
 }
 
 /* Mostrar iconos y ocultar texto en Navbar colapsado */
@@ -667,53 +668,55 @@ input[type="checkbox"]:checked + label {
   }
 }
 
-
 @media (max-width: 600px) {
-
-  main{
+  main {
     margin-left: 25px;
   }
 
-  .botones-contenedor{
+  .botones-contenedor {
     flex-direction: column;
   }
 
-  .form-contenedor{
+  .form-contenedor {
     justify-content: center;
     flex-direction: column-reverse;
   }
 
-  .detail-container{
+  .detail-container {
     flex-direction: column;
   }
 
-  .division{
+  .division {
     width: -1px;
   }
 
-  .login{
+  .login {
     width: auto;
     margin-left: 5px;
     margin-right: 5px;
   }
 
-  #txtArea{
+  #txtArea {
     width: 207px;
   }
 
-  .div-inp{
+  .div-inp {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
   }
 
-  .div-inp label{
+  .div-inp label {
     width: 215px;
     text-align: center;
   }
 
-  .div-inp input, textarea, #empresa, #producto, .div-inp-detail input{
+  .div-inp input,
+  textarea,
+  #empresa,
+  #producto,
+  .div-inp-detail input {
     width: 256px !important;
     text-align: center;
     color: black;
@@ -738,13 +741,13 @@ input[type="checkbox"]:checked + label {
     font-weight: bold;
   }
 
-  .filtro-pedidos, .filtro-mediciones{
+  .filtro-pedidos,
+  .filtro-mediciones {
     width: 300px;
   }
 
-  .btn-agregar-detalle{
+  .btn-agregar-detalle {
     margin: auto;
     margin-top: 10px;
   }
-
 }
