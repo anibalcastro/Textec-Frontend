@@ -1,37 +1,44 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
+import Lapiz from "../../Images/Icon/lapiz.png";
+import { useNavigate } from "react-router-dom";
 
+const FilterInventory = ({ datos }) => {
+  const [filter, setFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 25; // Número de mediciones por página
 
+  const navigate = useNavigate();
 
-const FilterInventory = ({datos}) => {
+  useEffect(() => {
+    setFilter("");
+    setCurrentPage(1);
 
-    const [filter, setFilter] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 25; // Número de mediciones por página
+    loadingData();
+  }, []);
 
-    useEffect(() => {
-        setFilter("");
-        setCurrentPage(1);
+  const handleEditarClick = (id) => {
 
-        loadingData();
-    },[]);
+    navigate(`/inventario/editar/${id}`)
 
-    const handleFilterChange = (event) => {
-        setFilter(event.target.value);
-        setCurrentPage(1);
-    }
+  };
 
-    const filterData = () => {
-        const datosFiltrados = datos.filter((dato) => {
-            const nombreProveedor = `${dato.nomb}`;
-            return nombreProveedor.toLowerCase().includes(filter.toLowerCase());
-          });
-          return datosFiltrados;
-    };
+  const handleFilterChange = (event) => {
+    setFilter(event.target.value);
+    setCurrentPage(1);
+  };
 
-    const loadingData = () => {
-        let timerInterval;
-  
+  const filterData = () => {
+    const datosFiltrados = datos.filter((dato) => {
+      const nombreInventario = `${dato.nombre_producto}`;
+      return nombreInventario.toLowerCase().includes(filter.toLowerCase());
+    });
+    return datosFiltrados;
+  };
+
+  const loadingData = () => {
+    let timerInterval;
+
     const showLoadingAlert = () => {
       Swal.fire({
         title: "Cargando datos!",
@@ -62,26 +69,27 @@ const FilterInventory = ({datos}) => {
         }
       });
     };
-  
+
     showLoadingAlert(); // Mostrar la primera alerta
+  };
 
-    }
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentFilteredItems = filterData()
+    .reverse()
+    .slice(indexOfFirstItem, indexOfLastItem);
 
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentFilteredItems = filterData().reverse().slice(indexOfFirstItem, indexOfLastItem);
-  
-    const totalPages = Math.ceil(filterData().length / itemsPerPage);
-  
-    const handleClick = (page) => {
-      setCurrentPage(page);
-    };
-  
-    let iterador = indexOfFirstItem;
+  const totalPages = Math.ceil(filterData().length / itemsPerPage);
 
-    return(
-        <React.Fragment>
-            <div className="container-filtro">
+  const handleClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  let iterador = indexOfFirstItem;
+
+  return (
+    <React.Fragment>
+      <div className="container-filtro">
         <input
           className="filtro-mediciones"
           type="text"
@@ -101,6 +109,7 @@ const FilterInventory = ({datos}) => {
             <th>Categoria</th>
             <th>Proveedor</th>
             <th>Comentario</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -109,10 +118,18 @@ const FilterInventory = ({datos}) => {
               <td>{iterador + index + 1}</td>
               <td>{dato.nombre_producto}</td>
               <td>{dato.cantidad}</td>
-              <td><input type="color" value={dato.color} disabled></input></td>
+              <td style={{ backgroundColor: dato.color }}></td>
               <td>{dato.nombre_categoria}</td>
               <td>{dato.nombre_proveedor}</td>
               <td>{dato.comentario}</td>
+              <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                <button
+                  style={{ background: "none", border: "none" }}
+                  onClick={() => handleEditarClick(dato.id)}
+                >
+                  <img src={Lapiz} alt="lapiz-icono" />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -129,9 +146,8 @@ const FilterInventory = ({datos}) => {
           </button>
         ))}
       </div>
-
-        </React.Fragment>
-    )
-}
+    </React.Fragment>
+  );
+};
 
 export default FilterInventory;
