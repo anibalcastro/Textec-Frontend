@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/Header/Header";
 import TableCategories from "../../components/Tables/TableCategories";
 import 'sweetalert2/dist/sweetalert2.min.css';
@@ -40,6 +40,7 @@ const Categories = () => {
         };
 
         fetchCategory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     //Validate role
