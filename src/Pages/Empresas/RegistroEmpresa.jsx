@@ -20,6 +20,7 @@ const RegistroEmpresa = () => {
   useEffect(() => {
     alertInvalidatePermission();
     obtenerEmpresas();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const navigate = useNavigate();
