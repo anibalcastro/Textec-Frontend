@@ -168,7 +168,7 @@ const CreateProduct = () => {
               >
                 Registrar
               </button>
-              <Link to="/empresas">
+              <Link to="/productos">
                 <button className="btn-registrar">Regresar</button>
               </Link>
             </div>
