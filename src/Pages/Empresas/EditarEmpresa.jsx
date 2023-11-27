@@ -71,24 +71,40 @@ const EditarEmpresa = () => {
   const handleInputChangeCedula = (event) => {
     const valorCedula = event.target.value;
 
-    const usuarioExistente = todasEmpresas.find(
-      (usuario) => usuario.cedula == valorCedula
-    );
+    if (valorCedula.length >= 10) {
+      const empresaExiste =
+      todasEmpresas &&
+      todasEmpresas.find(
+          (item) => parseInt(item.cedula) === parseInt(valorCedula)
+        );
 
-    if (usuarioExistente) {
-      const inputElement = document.getElementById("cedula");
-      if (inputElement) {
-        inputElement.value = "";
+      if (empresaExiste) {
+        // Mostrar un mensaje de error
+        Swal.fire(
+          "Error!",
+          "La cédula ya está asignada a una empresa",
+          "error"
+        );
+
+        const resetearEstado = {
+          nombre_empresa: '',
+          razon_social: '',
+          cedula: '',
+          email: '',
+          nombre_encargado: '',
+          telefono_encargado: '',
+          direccion: '',
+          comentarios: 'NA',
+        }
+
+        setEmpresa(resetearEstado)
+      } else {
+        // La empresa no existe, actualizar el estado
+        setEmpresa((prevInput) => ({ ...prevInput, cedula: valorCedula }));
       }
-
-      Swal.fire(
-        "Error!",
-        "La cédula que dijitaste ya existe en la base de datos",
-        "error"
-      );
     } else {
-      const { name, value } = event.target;
-      setEmpresa({ ...empresa, [name]: value });
+      // Asegurarnos de manejar el caso cuando la longitud es menor a 10
+      setEmpresa((prevInput) => ({ ...prevInput, cedula: valorCedula }));
     }
   };
 
