@@ -5,7 +5,7 @@ import Logo from "../../Images/Logos/Icono (1).webp";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
-const InputInventory = () => {
+const OutputInventory = () => {
   //Estados
   const [data, setData] = useState({
     nombre_producto: "",
@@ -19,7 +19,9 @@ const InputInventory = () => {
   const [category, setCategory] = useState([]);
   const [supplier, setSupplier] = useState([]);
   const [inventory, setInventory] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [filterCategory, setFilterCategory] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [filterSupplier, setFilterSupplier] = useState("");
   const [filterInventory, setFilterInventory] = useState("");
   const [consecutive, setConsecutive] = useState(1);
@@ -150,13 +152,6 @@ const InputInventory = () => {
     });
   };
 
-  const handleInputChangeFilterCategory = (event) => {
-    setFilterCategory(event.target.value);
-  };
-
-  const handleInputChangeFilterSupplier = (event) => {
-    setFilterSupplier(event.target.value);
-  };
 
   const handleInputChangeFilterInventory = (event) => {
     setFilterInventory(event.target.value);
@@ -219,7 +214,7 @@ const InputInventory = () => {
   };
 
   //Peticion de agregar entradas de inventario
-  const fetchInventory = () => {
+  const fetchOutInventory = () => {
     Swal.fire({
       title: "El inventario se está actualizando...",
       icon: "info",
@@ -230,10 +225,6 @@ const InputInventory = () => {
     const inputInventoryJSON = inputInventory.map((item) => ({
       nombre_producto: item.nombre_producto,
       cantidad: item.cantidad,
-      color: item.color,
-      id_categoria: item.id_categoria,
-      id_proveedor: item.id_proveedor,
-      comentario: item.comentario,
     }));
 
 
@@ -251,7 +242,7 @@ const InputInventory = () => {
     };
 
     fetch(
-      "https://api.textechsolutionscr.com/api/v1/inventario/registrar/entrada",
+      "https://api.textechsolutionscr.com/api/v1/inventario/registrar/salida",
       requestOptions
     )
       .then((response) => response.json())
@@ -261,7 +252,7 @@ const InputInventory = () => {
         if (parseInt(status) === 200) {
           Swal.fire(
             "Inventario actualizado con éxito!",
-            `Las entradas se han registrado exitosamente!`,
+            `Las salidas se han registrado exitosamente!`,
             "success"
           ).then((result) => {
             if (result.isConfirmed) {
@@ -358,7 +349,7 @@ const InputInventory = () => {
 
   return (
     <React.Fragment>
-      <Header title="Entrada de Inventario" />
+      <Header title="Salida de Inventario" />
 
       <div className="container form-contenedor">
         <form className="form-registro-clientes" onSubmit={handleSubmit}>
@@ -391,18 +382,6 @@ const InputInventory = () => {
           </div>
 
           <div className="div-inp">
-            <label htmlFor="label">Nombre Producto:</label>
-            <input
-              onChange={handleInputChange}
-              type="text"
-              name="nombre_producto"
-              id="nombre_producto"
-              value={data.nombre_producto}
-              required
-            />
-          </div>
-
-          <div className="div-inp">
             <label htmlFor="label">Cantidad:</label>
             <input
               onChange={handleInputChange}
@@ -422,19 +401,10 @@ const InputInventory = () => {
               name="color"
               id="color"
               value={data.color}
+              disabled
             />
           </div>
 
-          <div className="div-inp">
-            <label htmlFor="label">Buscar Categoria:</label>
-            <input
-              onChange={handleInputChangeFilterCategory}
-              type="text"
-              name="titulo"
-              id="titulo"
-              autoComplete="current-password"
-            />
-          </div>
 
           <div className="div-inp">
             <label htmlFor="empresa">Categoria:</label>
@@ -442,6 +412,7 @@ const InputInventory = () => {
               onChange={handleInputChange}
               name="id_categoria"
               id="id_categoria"
+              disabled
             >
               <option value="">Selecciona la categoria</option>
               {Array.isArray(filterDataCategory()) &&
@@ -458,23 +429,14 @@ const InputInventory = () => {
           </div>
 
           <div className="div-inp">
-            <label htmlFor="label">Buscar Proveedor:</label>
-            <input
-              onChange={handleInputChangeFilterSupplier}
-              type="text"
-              name="proveedor"
-              id="titulo"
-              autoComplete="current-password"
-            />
-          </div>
-
-          <div className="div-inp">
             <label htmlFor="empresa">Proveedor:</label>
             <select
               onChange={handleInputChange}
               name="id_proveedor"
               id="id_proveedor"
+              disabled
               required
+
             >
               <option value="">Selecciona el proveedor</option>
               {Array.isArray(filterDataSupplier()) &&
@@ -499,6 +461,7 @@ const InputInventory = () => {
               rows="5"
               cols="60"
               value={data.comentario}
+              disabled
             ></textarea>
           </div>
           <button className="btn-agregar-detalle">Agregar</button>
@@ -510,7 +473,7 @@ const InputInventory = () => {
 
       <hr className="division"></hr>
 
-      <Header title="Inventario por agregar" />
+      <Header title="Inventario por salir" />
       <table className="tabla-medidas">
         <thead>
           <tr>
@@ -552,7 +515,7 @@ const InputInventory = () => {
         <button
           className="btn-agregar-detalle"
           type="submit"
-          onClick={fetchInventory}
+          onClick={fetchOutInventory}
         >
           Guardar
         </button>
@@ -561,4 +524,4 @@ const InputInventory = () => {
   );
 };
 
-export default InputInventory;
+export default OutputInventory;

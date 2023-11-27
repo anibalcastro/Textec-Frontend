@@ -15,30 +15,34 @@ const Inventory = () => {
   useEffect(() => {
     alertInvalidatePermission();
     const fetchInventory = () => {
-        var myHeaders = new Headers();
-        myHeaders.append("Authorization", `Bearer ${token}`);
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
 
-        var requestOptions = {
-        method: 'GET',
+      var requestOptions = {
+        method: "GET",
         headers: myHeaders,
-        redirect: 'follow'
-        };
+        redirect: "follow",
+      };
 
-        fetch("https://api.textechsolutionscr.com/api/v1/inventario/info", requestOptions)
-        .then(response => response.json())
-        .then(result => {
-            if(result.hasOwnProperty("data")){
-                const { data, status } = result;
-                setInventory(data);
-                if(status === 200){
-                    Swal.close();
-                }
+      fetch(
+        "https://api.textechsolutionscr.com/api/v1/inventario/info",
+        requestOptions
+      )
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.hasOwnProperty("data")) {
+            const { data, status } = result;
+            setInventory(data);
+            if (status === 200) {
+              Swal.close();
             }
+          }
         })
-        .catch(error => console.log('error', error));
+        .catch((error) => console.log("error", error));
     };
 
     fetchInventory();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //Validate role
@@ -68,36 +72,83 @@ const Inventory = () => {
   };
 
   const validarPermisos = () => {
-    if (role === 'Admin' || role === 'Colaborador') {
+    if (role === "Admin" || role === "Colaborador") {
       return true;
     }
 
-    return false
-}
+    return false;
+  };
 
-const permisosColaborador = validarPermisos();
+  const downloadInventory = () => {
+    Swal.fire({
+      title: 'Generando el PDF',
+      text: 'Espere un momento...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
 
-  return <React.Fragment>
-    <Header title="Inventario" />
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer  ${token}`);
 
-    <div className="container cbtn_inven">
-                    {permisosColaborador && (  <Link to='/categorias'>
-                                        <button className="btn-registrar">Categorias</button>
-                                    </Link>)}
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+      };
 
-                    {permisosColaborador && (  <Link to='/inventario/entrada'>
-                        <button className="btn-registrar">Entradas</button>
-                    </Link>)}
+      fetch(`https://api.textechsolutionscr.com/api/v1/reporte-inventario`, requestOptions)
+        .then(response => response.json())
+        .then(result => {
+          const download_url = decodeURIComponent(result.download_url);
+          const downloadLink = document.createElement("a");
+          downloadLink.href = download_url;
+          downloadLink.target = "_self"; // Abrir en una nueva pestaña
+          document.body.appendChild(downloadLink);
+          downloadLink.click();
+          document.body.removeChild(downloadLink);
+          Swal.close();
+        })
+        .catch(error => console.log('error', error));
+  }
 
-                    {permisosColaborador && (  <Link to='/inventario/salida'>
-                        <button className="btn-registrar">Salidas</button>
-                    </Link>)}
-                </div>
+  const permisosColaborador = validarPermisos();
 
-    <FilterInventory datos={inventory} />
+  return (
+    <React.Fragment>
+      <Header title="Inventario" />
 
 
-  </React.Fragment>;
+      <FilterInventory datos={inventory} />
+
+      <div className="container cbtn_inven">
+        {permisosColaborador && (
+          <Link to="/inventario/entrada">
+            <button className="btn-registrar">Entradas</button>
+          </Link>
+        )}
+
+        {permisosColaborador && (
+          <Link to="/inventario/salida">
+            <button className="btn-registrar">Salidas</button>
+          </Link>
+        )}
+
+        {permisosColaborador && (
+          <Link to="/categorias">
+            <button className="btn-registrar">Categorias</button>
+          </Link>
+        )}
+
+        {permisosColaborador && (
+          
+            <button className="btn-registrar" onClick={() => downloadInventory()}>Descargar Inventario</button>
+        
+        )}
+      </div>
+    </React.Fragment>
+  );
 };
 
 export default Inventory;
