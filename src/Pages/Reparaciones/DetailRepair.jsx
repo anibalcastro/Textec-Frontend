@@ -323,7 +323,7 @@ const RepairDetail = () => {
           const download_url = decodeURIComponent(result.download_url);
           const downloadLink = document.createElement("a");
           downloadLink.href = download_url;
-          downloadLink.target = "_blank"; // Abrir en una nueva pestaña
+          downloadLink.target = "_self"; // Abrir en una nueva pestaña
           document.body.appendChild(downloadLink);
           downloadLink.click();
           document.body.removeChild(downloadLink);
