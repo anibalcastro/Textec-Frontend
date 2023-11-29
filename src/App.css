@@ -106,6 +106,20 @@ main {
 
 /***************************************************/
 
+.chart-container {
+  width: 800px;
+  margin: 0 auto; 
+  margin-top: 20px;
+}
+
+.tabla-ventas{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 830px;
+}
+
 /*Titulo de las pantallas*/
 .titulo-encabezado {
   font-family: "Montserrat", sans-serif;
@@ -125,6 +139,17 @@ main {
 .card-body {
   height: 115px;
   width: 210px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  border-radius: 16px;
+  margin: 1rem;
+}
+
+.card-body-reportes{
+  height: 130px;
+  width: 250px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -162,11 +187,11 @@ main {
 /*Mediciones*/
 
 .cbtn_inven {
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  flex-direction: row;
-  gap: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .division {
@@ -244,11 +269,19 @@ main {
   flex-direction: column;
 }
 
+.date-filter{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
 .filtro-mediciones,
 .filtro-pedidos {
   width: 400px;
   height: auto;
   font-family: "Montserrat", sans-serif;
+  margin-bottom: 10px;
 }
 
 .boton-mediciones {
@@ -285,6 +318,15 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 5px;
+}
+
+.inpDates{
+  margin-top: 19px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .link-nombre {
@@ -657,6 +699,14 @@ input[type="checkbox"]:checked + label {
   background-color: #6e959c;
 }
 
+
+.transparent-btn {
+  opacity: 0; /* Define el nivel de opacidad deseado (0 a 1) */
+  background: none; /* Elimina el fondo del botón */
+  border: none; /* Elimina el borde del botón */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+}
+
 /* Mostrar iconos y ocultar texto en Navbar colapsado */
 @media (max-width: 992px) {
   .navbar-nav .nav-link .text {
@@ -668,7 +718,7 @@ input[type="checkbox"]:checked + label {
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 760px) {
   main {
     margin-left: 25px;
   }
@@ -724,6 +774,8 @@ input[type="checkbox"]:checked + label {
 
   .tabla-medidas table {
     width: 100%;
+    margin-left: 0;
+
   }
 
   .tabla-medidas thead {
@@ -749,5 +801,20 @@ input[type="checkbox"]:checked + label {
   .btn-agregar-detalle {
     margin: auto;
     margin-top: 10px;
+  }
+
+  .cbtn_inven{
+    flex-direction: column;
+    align-items: center;
+
+  }
+
+  .chart-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 350px;
+    height: auto;
   }
 }
