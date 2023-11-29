@@ -53,11 +53,21 @@ import EditProductSuplier from "./Pages/Proveedor/Productos/EditProduct";
 
 import Inventory from "./Pages/Inventario/Inventory.jsx";
 import InputInventory from "./Pages/Inventario/InputInventory.jsx";
+import OutputInventory from "./Pages/Inventario/OutputInventory.jsx";
+import EditInventory from "./Pages/Inventario/EditInventory.jsx";
 
 import Categories from "./Pages/Categorias/Categories.jsx";
 
+import Reportes from "./Pages/Reportes/Reportes.jsx";
+import CustomerMeasurements from "./Pages/Reportes/CustomerMeasurements.jsx";
+import ReportSales from "./Pages/Reportes/ReportSales.jsx";
+import AccountsReceivable from "./Pages/Reportes/AccountsReceivable.jsx";
+import ReportInventory from "./Pages/Reportes/ReportInventory.jsx";
+import BestProductSelling from "./Pages/Reportes/BestProductSelling.jsx";
+import ReportCustomers from "./Pages/Reportes/ReportCustomers.jsx";
 
-import NuevosModulos from "./Pages/NuevosModulos";
+
+
 import NoEncotrada from "./Pages/NoEncontrada";
 
 import { useEffect, useState } from "react";
@@ -200,11 +210,21 @@ function App() {
 
                   <Route exact path="/inventario" element={<Inventory />} />  
                   <Route exact path="/inventario/entrada" element={<InputInventory />} />  
+                  <Route exact path="/inventario/salida" element={<OutputInventory />} />  
+                  <Route exact path="/inventario/editar/:inventarioId" element={<EditInventory />} />  
                   
                   <Route exact path="/categorias" element={<Categories />} />  
-
       
-                  <Route exact path="/reportes" element={<NuevosModulos />} />
+                  <Route exact path="/reportes" element={<Reportes />} />
+                  <Route exact path="/reporte/mediciones/clientes/empresa" element={<CustomerMeasurements />} />
+                  <Route exact path="/reporte/ventas" element={<ReportSales />} />
+                  <Route exact path="/reporte/saldos_pendientes" element={<AccountsReceivable />} />
+                  <Route exact path="/reporte/inventario" element={<ReportInventory />} />
+                  <Route exact path="/reporte/producto_vendido" element={<BestProductSelling />} />
+                  <Route exact path="/reporte/clientes" element={<ReportCustomers />} />
+                  
+
+
                   <Route exact path="*" element={<NoEncotrada />} />
                 </Routes>
                 </Sidebar>
