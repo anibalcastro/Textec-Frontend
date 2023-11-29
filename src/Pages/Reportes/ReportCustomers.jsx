@@ -11,6 +11,7 @@ const ReportCustomers = () => {
   useEffect(() => {
     getCustomer();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   const getCustomer = () => {
@@ -28,12 +29,10 @@ const ReportCustomers = () => {
       .then((result) => {
         if (result.hasOwnProperty("data")) {
           const { data } = result;
-          console.log(data);
           setCustomers(data);
         }
       })
       .catch((error) => console.log("error", error));
-
   }
 
 

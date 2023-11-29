@@ -130,7 +130,6 @@ export default function CustomerMeasurements() {
 
   const downloadPDF = () => {
     if (companySelect !== ''){
-
       Swal.fire({
         title: "Generando el PDF",
         text: "Espere un momento...",
