@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TableReportCustomersMeasurement = ({ datos }) => {
+const TableOutstandingBalance = ({ datos }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 60; // Número de mediciones por página
 
@@ -14,13 +14,10 @@ const TableReportCustomersMeasurement = ({ datos }) => {
         setCurrentPage(page);
     };
 
-    const formatDate = (fecha) => {
-        const fechaObjeto = new Date(fecha);
-        const año = fechaObjeto.getFullYear();
-        const mes = ('0' + (fechaObjeto.getMonth() + 1)).slice(-2);
-        const dia = ('0' + fechaObjeto.getDate()).slice(-2);
-        return `${año}-${mes}-${dia}`;
-      };
+    const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
+        style: "currency",
+        currency: "CRC",
+      });
 
     return (
         <React.Fragment>
@@ -28,9 +25,10 @@ const TableReportCustomersMeasurement = ({ datos }) => {
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
-                        <th>Prenda</th>
+                        <th>Titulo</th>
                         <th>Empresa</th>
+                        <th>Monto total</th>
+                        <th>Saldo Pendiente</th>
                         <th>Fecha</th>
                     </tr>
                 </thead>
@@ -39,10 +37,11 @@ const TableReportCustomersMeasurement = ({ datos }) => {
                         datos.slice(indexOfFirstItem, indexOfLastItem).map((dato, index) => (
                             <tr key={index}>
                                 <td>{iterador + index + 1}</td>
-                                <td>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</td>
-                                <td>{dato.articulo}</td>
-                                <td>{dato.empresa}</td>
-                                <td>{formatDate(dato.created_at)}</td>
+                                <td>{dato.titulo}</td>
+                                <td>{dato.nombre_empresa}</td>
+                                <td>{formatCurrencyCRC.format(dato.monto)}</td>
+                                <td>{formatCurrencyCRC.format(dato.saldo_restante)}</td>
+                                <td>{dato.created_at}</td>
                             </tr>
                         ))}
                 </tbody>
@@ -63,4 +62,4 @@ const TableReportCustomersMeasurement = ({ datos }) => {
     );
 };
 
-export default TableReportCustomersMeasurement;
+export default TableOutstandingBalance;

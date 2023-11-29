@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TableReportCustomersMeasurement = ({ datos }) => {
+const TableProducts = ({ datos }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 60; // Número de mediciones por página
 
@@ -14,24 +14,14 @@ const TableReportCustomersMeasurement = ({ datos }) => {
         setCurrentPage(page);
     };
 
-    const formatDate = (fecha) => {
-        const fechaObjeto = new Date(fecha);
-        const año = fechaObjeto.getFullYear();
-        const mes = ('0' + (fechaObjeto.getMonth() + 1)).slice(-2);
-        const dia = ('0' + fechaObjeto.getDate()).slice(-2);
-        return `${año}-${mes}-${dia}`;
-      };
-
     return (
         <React.Fragment>
             <table id="tabla-reparacion" className="tabla-medidas">
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Nombre</th>
-                        <th>Prenda</th>
-                        <th>Empresa</th>
-                        <th>Fecha</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,10 +29,8 @@ const TableReportCustomersMeasurement = ({ datos }) => {
                         datos.slice(indexOfFirstItem, indexOfLastItem).map((dato, index) => (
                             <tr key={index}>
                                 <td>{iterador + index + 1}</td>
-                                <td>{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</td>
-                                <td>{dato.articulo}</td>
-                                <td>{dato.empresa}</td>
-                                <td>{formatDate(dato.created_at)}</td>
+                                <td>{`${dato.nombre_producto}`}</td>
+                                <td>{dato.cantidad}</td>
                             </tr>
                         ))}
                 </tbody>
@@ -63,4 +51,4 @@ const TableReportCustomersMeasurement = ({ datos }) => {
     );
 };
 
-export default TableReportCustomersMeasurement;
+export default TableProducts;
