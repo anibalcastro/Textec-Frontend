@@ -3,17 +3,45 @@ import Header from "../../components/Header/Header";
 import Cookies from "js-cookie";
 import TableOutstandingBalance from "../../components/Tables/TableOutstandingBalance";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const AccountsReceivable = () => {
 
   const [OutstandingBalance, setOutstandingBalance] = useState([]);
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     getOutstandingBalance();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
+
+  const validateUserPermission = () => {
+    if (role === "Admin") {
+      return true;
+    }
+
+    return false;
+  };
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()) {
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
+        }
+      });
+    }
+  };
 
   const getOutstandingBalance = () => {
     var myHeaders = new Headers();

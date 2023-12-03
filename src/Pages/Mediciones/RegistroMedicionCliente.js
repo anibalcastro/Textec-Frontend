@@ -23,35 +23,35 @@ const RegistroMedicionCliente = ({ clientes }) => {
         obtenerInformacionCliente(userId);
         let data = obtenerMediciones();
         validarExistenciaProducto(idCliente, prenda, data);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
     const validateUserPermission = () => {
-      if (role !== "Visor"){
-        return true
-      }
-  
-      return false
+        if (role !== "Visor") {
+            return true
+        }
+
+        return false
     }
-  
+
     const alertInvalidatePermission = () => {
-      if (!validateUserPermission()){
-        Swal.fire(
-          "Acceso denegado",
-          "No tienes los permisos necesarios para realizar esta acción.",
-          "info"
-        ).then((result) => {
-          if(result.isConfirmed){
-            navigate("/inicio")
-          }
-          else{
-            navigate("/inicio")
-          }
-        })
-  
-      }
-  
+        if (!validateUserPermission()) {
+            Swal.fire(
+                "Acceso denegado",
+                "No tienes los permisos necesarios para realizar esta acción.",
+                "info"
+            ).then((result) => {
+                if (result.isConfirmed) {
+                    navigate("/inicio")
+                }
+                else {
+                    navigate("/inicio")
+                }
+            })
+
+        }
+
     }
 
     /**Lista de mediciones superiores */
@@ -178,147 +178,135 @@ const RegistroMedicionCliente = ({ clientes }) => {
         return fecha;
     };
 
-    /**
-     * Registra las mediciones y hace las solicitudes al api
-     */
-    const registrarMedicion = async () => {
+
+    //Registrar nuevas mediciones
+    const registrarMedicion = () => {
         Swal.fire({
             title: 'Las mediciones se están guardando...',
             icon: 'info',
             showConfirmButton: false,
             timer: 5000 // Duración en milisegundos (5 segundos)
-          });
-    
-    
-        let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
-        let totalRegistros = datos.length;
+        });
+       
+        let totalRegistros = arrayMediciones.length;
         let registrosEnviados = 0;
         let registrosFallidos = [];
-    
-        try {
-            for (let i = 0; i < totalRegistros; i++) {
-                let nuevoRegistro = datos[i];
-                let fecha = obtenerFecha();
-                let formdata = new FormData();
-                var myHeaders = new Headers();
-                myHeaders.append("Authorization", `Bearer ${token}`);
-    
-    
-                // ... código para construir el formData
-                formdata.append("id_cliente", nuevoRegistro.idCliente);
-                formdata.append("articulo", nuevoRegistro.prenda);
-                formdata.append("fecha", fecha);
-                formdata.append(
-                    "observaciones",
-                    nuevoRegistro.mediciones.observaciones || "NA"
-                );
-                formdata.append("talla", nuevoRegistro.mediciones.talla);
-                formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
-    
-                if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
-                    // Agregar las demás append() correspondientes a las mediciones superiores
-                    formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
-                    formdata.append(
-                        "talle_espalda_superior",
-                        nuevoRegistro.mediciones.talle_espalda
-                    );
-                    formdata.append(
-                        "talle_frente_superior",
-                        nuevoRegistro.mediciones.talle_frente
-                    );
-                    formdata.append("busto_superior", nuevoRegistro.mediciones.busto);
-                    formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura);
-                    formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera);
-                    formdata.append(
-                        "ancho_manga_corta_superior",
-                        nuevoRegistro.mediciones.ancho_manga_corta
-                    );
-                    formdata.append(
-                        "ancho_manga_larga_superior",
-                        nuevoRegistro.mediciones.ancho_manga_larga
-                    );
-                    formdata.append(
-                        "largo_manga_corta_superior",
-                        nuevoRegistro.mediciones.largo_manga_corta
-                    );
-                    formdata.append(
-                        "largo_manga_larga_superior",
-                        nuevoRegistro.mediciones.largo_manga_larga
-                    );
-                    formdata.append(
-                        "largo_total_superior",
-                        nuevoRegistro.mediciones.largo_total
-                    );
-                    formdata.append(
-                        "alto_pinza_superior",
-                        nuevoRegistro.mediciones.alto_pinza
-                    );
-                } else {
-                    // Agregar las demás append() correspondientes a las mediciones inferiores
-                    formdata.append("largo_inferior", nuevoRegistro.mediciones.largo);
-                    formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura);
-                    formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera);
-                    formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna);
-                    formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
-                    formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
-                    formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
-                }
-    
-                const requestOptions = {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                    body: formdata,
-                    redirect: "follow",
-                };
-    
-                const response = await fetch(
-                    "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
-                    requestOptions
-                );
-    
-                const result = await response.json();
-                const status = result.status;
-    
-                if (parseInt(status) === 200) {
-                    registrosEnviados++;
-                } else {
-                    registrosFallidos.push(nuevoRegistro);
-                }
+
+        const enviarMedicion = (nuevoRegistro) => {
+            let fecha = obtenerFecha();
+            let formdata = new FormData();
+            formdata.append("id_cliente", nuevoRegistro.idCliente);
+            formdata.append("articulo", nuevoRegistro.prenda);
+            formdata.append("fecha", fecha);
+            formdata.append(
+                "observaciones",
+                nuevoRegistro.mediciones.observaciones || "NA"
+            );
+            formdata.append("talla", nuevoRegistro.mediciones.talla);
+            formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
+
+            if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
+                formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
+                formdata.append("talle_espalda_superior",nuevoRegistro.mediciones.talle_espalda);
+                formdata.append("talle_frente_superior",nuevoRegistro.mediciones.talle_frente);
+                formdata.append("busto_superior", nuevoRegistro.mediciones.busto);
+                formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura);
+                formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera);
+                formdata.append("ancho_manga_corta_superior",nuevoRegistro.mediciones.ancho_manga_corta);
+                formdata.append("ancho_manga_larga_superior",nuevoRegistro.mediciones.ancho_manga_larga);
+                formdata.append("largo_manga_corta_superior",nuevoRegistro.mediciones.largo_manga_corta);
+                formdata.append("largo_manga_larga_superior",nuevoRegistro.mediciones.largo_manga_larga);
+                formdata.append("largo_total_superior",nuevoRegistro.mediciones.largo_total);
+                formdata.append("alto_pinza_superior",nuevoRegistro.mediciones.alto_pinza);
+            } else {
+                formdata.append("largo_inferior", nuevoRegistro.mediciones.largo);
+                formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura);
+                formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera);
+                formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna);
+                formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
+                formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
+                formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
             }
-    
-            if (registrosEnviados === totalRegistros) {
-                Swal.fire(
-                    "Mediciones creadas con éxito!",
-                    `Se han registrado todas las mediciones.`,
-                    "success"
-                  ).then((result) => {
-                    if (result.isConfirmed) {
-                      localStorage.removeItem("nuevosRegistros");
-                      limpiarEstados();
-                      setMediciones([]);
-                      limpiarCampos();
-                      navigate("/mediciones");
+
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                body: formdata,
+                redirect: "follow",
+            };
+
+            return fetch(
+                "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
+                requestOptions
+            )
+                .then((response) => response.json())
+                .then((result) => {
+                    const status = result.status;
+                    if (parseInt(status) === 200) {
+                        registrosEnviados++;
+                    } else {
+                        registrosFallidos.push(nuevoRegistro);
+                    }
+                })
+                .catch((error) => {
+                    console.log("error", error);
+                });
+        };
+
+        try {
+            arrayMediciones.forEach((nuevoRegistro) => {
+                enviarMedicion(nuevoRegistro).then(() => {
+                    // Comprobación después de enviar cada medición (opcional)
+                    if (registrosEnviados === totalRegistros) {
+                        // Hacer algo después de enviar todas las mediciones
+                        Swal.fire(
+                            "Mediciones creadas con éxito!",
+                            `Se han registrado todas las mediciones.`,
+                            "success"
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                localStorage.removeItem("nuevosRegistros");
+                                limpiarEstados();
+                                setMediciones([]);
+                                limpiarCampos();
+                                navigate(`/mediciones/cliente/${idCliente}`);
+                            } else {
+                                localStorage.removeItem("nuevosRegistros");
+                                limpiarEstados();
+                                setMediciones([]);
+                                limpiarCampos();
+                                navigate(`/mediciones/cliente/${idCliente}`);
+                            }
+                        });
                     }
                     else {
-                      localStorage.removeItem("nuevosRegistros");
-                      limpiarEstados();
-                      setMediciones([]);
-                      limpiarCampos();
-                      navigate("/mediciones");
-                    }
-                  });
-            } else {
-                // Algunos registros no se han enviado correctamente
-                console.log("Registros fallidos:", registrosFallidos);
-                // ...
-            }
+                        // Formatear los objetos en registrosFallidos a cadenas JSON
+                        const registrosFallidosString = registrosFallidos.map(JSON.stringify);
+                            
+                        Swal.fire(
+                            "Hubo errores al crear las mediciones!",
+                            `Las mediciones que no se registraron ${registrosFallidosString}`,
+                            "error"
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                localStorage.removeItem("nuevosRegistros");
+                                limpiarEstados();
+                                setMediciones([]);
+                                limpiarCampos();
+                                }
+                            });
+                                }
+                            });
+            });
         } catch (error) {
             console.log("error", error);
         }
+        
     };
-      
+
+
 
 
     /**
@@ -420,93 +408,93 @@ const RegistroMedicionCliente = ({ clientes }) => {
 
     return (
         <React.Fragment>
-            
-                <h2 className="titulo-encabezado">Registrar mediciones a {cliente.nombre} {cliente.apellido1} {cliente.apellido2}</h2>
-                <hr className="division"></hr>
-                <div className="container form-contenedor">
-                    <form
-                        className="form-registro-clientes"
-                        id="form-registro-medicion"
-                        onSubmit={handleSubmit}
-                    >
 
-                        <div className="div-inp">
-                            <label htmlFor="text">Prenda:</label>
-                            <select
-                                value={prenda}
-                                id="prenda"
-                                autoComplete="prenda"
-                                onChange={handleOptionChange}
-                                required
-                            >
-                                <option value="" disabled hidden>
-                                    Selecione una opción
-                                </option>
-                                <option value="Camisa">Camisa</option>
-                                <option value="Gabacha">Gabacha</option>
-                                <option value="Camiseta">Camiseta</option>
-                                <option value="Jacket">Jacket</option>
-                                <option value="Chaleco">Chaleco</option>
-                                <option value="Gabacha medica">Gabacha medica</option>
-                                <option value="Vestido">Vestido</option>
+            <h2 className="titulo-encabezado">Registrar mediciones a {cliente.nombre} {cliente.apellido1} {cliente.apellido2}</h2>
+            <hr className="division"></hr>
+            <div className="container form-contenedor">
+                <form
+                    className="form-registro-clientes"
+                    id="form-registro-medicion"
+                    onSubmit={handleSubmit}
+                >
 
-                                <option value="Pantalon">Pantalon</option>
-                                <option value="Enagua">Enagua</option>
-                                <option value="Short">Short</option>
-                            </select>
-                        </div>
+                    <div className="div-inp">
+                        <label htmlFor="text">Prenda:</label>
+                        <select
+                            value={prenda}
+                            id="prenda"
+                            autoComplete="prenda"
+                            onChange={handleOptionChange}
+                            required
+                        >
+                            <option value="" disabled hidden>
+                                Selecione una opción
+                            </option>
+                            <option value="Camisa">Camisa</option>
+                            <option value="Gabacha">Gabacha</option>
+                            <option value="Camiseta">Camiseta</option>
+                            <option value="Jacket">Jacket</option>
+                            <option value="Chaleco">Chaleco</option>
+                            <option value="Gabacha medica">Gabacha medica</option>
+                            <option value="Vestido">Vestido</option>
 
-                        <hr className="division"></hr>
-
-                        {prendaSuperior && (
-                            <FormMedicionesSuperior handleInputChange={handleInputChange} />
-                        )}
-
-                        {prendaInferior && (
-                            <FormMedicionesInferior handleInputChange={handleInputChange} />
-                        )}
-
-                        <div className="container botones-contenedor">
-                            <button className="btn-registrar" type="submit">
-                                Agregar medida
-                            </button>
-                        </div>
-                    </form>
-
-                    <div className="container img-contenedor">
-                        <img className="isologo" src={Logo} alt="imagen" />
+                            <option value="Pantalon">Pantalon</option>
+                            <option value="Enagua">Enagua</option>
+                            <option value="Short">Short</option>
+                        </select>
                     </div>
+
+                    <hr className="division"></hr>
+
+                    {prendaSuperior && (
+                        <FormMedicionesSuperior handleInputChange={handleInputChange} />
+                    )}
+
+                    {prendaInferior && (
+                        <FormMedicionesInferior handleInputChange={handleInputChange} />
+                    )}
+
+                    <div className="container botones-contenedor">
+                        <button className="btn-registrar" type="submit">
+                            Agregar medida
+                        </button>
+                    </div>
+                </form>
+
+                <div className="container img-contenedor">
+                    <img className="isologo" src={Logo} alt="imagen" />
                 </div>
+            </div>
 
-                <hr className="division"></hr>
-                <h2 className="titulo-encabezado">Lista de medidas por agregar</h2>
+            <hr className="division"></hr>
+            <h2 className="titulo-encabezado">Lista de medidas por agregar</h2>
 
-                <table className="tabla-medidas">
-                    <thead>
-                        <tr>
-                            <th>Nombre del Cliente</th>
-                            <th>Prenda</th>
-                            <th>Acciones</th>
+            <table className="tabla-medidas">
+                <thead>
+                    <tr>
+                        <th>Nombre del Cliente</th>
+                        <th>Prenda</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {arrayMediciones.map((datos) => (
+                        <tr key={datos.idCliente}>
+                            <td>{datos.nombre}</td>
+                            <td>{datos.prenda}</td>
+                            <td><button className="btn-eliminar" onClick={() => eliminarMedicion(datos.idCliente, datos.prenda)}>Eliminar</button></td>
+
                         </tr>
-                    </thead>
-                    <tbody>
-                        {arrayMediciones.map((datos) => (
-                            <tr key={datos.idCliente}>
-                                <td>{datos.nombre}</td>
-                                <td>{datos.prenda}</td>
-                                <td><button className="btn-eliminar" onClick={() => eliminarMedicion(datos.idCliente, datos.prenda)}>Eliminar</button></td>
+                    ))}
+                </tbody>
+            </table>
 
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="container botones-contenedor">
+                <button className="btn-registrar" type="submit" onClick={registrarMedicion}>
+                    Guardar
+                </button>
+            </div>
 
-                <div className="container botones-contenedor">
-                    <button className="btn-registrar" type="submit" onClick={registrarMedicion}>
-                        Guardar
-                    </button>
-                </div>
-         
         </React.Fragment>
     );
 };

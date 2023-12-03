@@ -3,16 +3,44 @@ import Header from "../../components/Header/Header";
 import Cookies from "js-cookie";
 import TableProducts from "../../components/Tables/TableProducts";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const BestProductSelling = () => {
   const [products, setProducts] = useState([]);
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     getProducts();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+
+  const validateUserPermission = () => {
+    if (role === "Admin") {
+      return true;
+    }
+
+    return false;
+  };
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()) {
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
+        }
+      });
+    }
+  };
 
   const getProducts = () => {
     var myHeaders = new Headers();

@@ -57,7 +57,7 @@ export default function CustomerMeasurements() {
   };
 
   const validateUserPermission = () => {
-    if (role !== "Visor") {
+    if (role === "Admin") {
       return true;
     }
 

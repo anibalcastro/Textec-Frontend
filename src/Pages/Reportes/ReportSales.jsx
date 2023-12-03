@@ -4,6 +4,7 @@ import LineChart from "../../components/Graphics/LineChart";
 import Cookies from "js-cookie";
 import TableSales from "../../components/Tables/TableSales";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const ReportSales = () => {
   const [startDate, setStartDate] = useState("");
@@ -13,11 +14,38 @@ const ReportSales = () => {
   const [amounts, setAmount] = useState([]);
 
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
+  const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     getSales();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const validateUserPermission = () => {
+    if (role === "Admin") {
+      return true;
+    }
+
+    return false;
+  };
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()) {
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
+        }
+      });
+    }
+  };
 
   const getSales = () => {
     var myHeaders = new Headers();
