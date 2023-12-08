@@ -310,18 +310,23 @@ const CreateRepair = () => {
                 const { status, error } = result;
 
                 if (parseInt(status) === 200) {
-                    Swal.fire(
-                        "Reparación creada con éxito",
-                        "Se ha registrado la reparacion y se ha generado una factura.",
-                        "success"
-                    ).then((result) => {
-                        if (result.isConfirmed) {
-                            navigate("/reparaciones");
-                        }
-                        else {
-                            navigate("/reparaciones");
-                        }
-                    });
+
+                    let resultNotify = notify();
+
+                    if (resultNotify){
+                        Swal.fire(
+                            "Reparación creada con éxito",
+                            "Se ha registrado la reparacion y se ha generado una factura.",
+                            "success"
+                        ).then((result) => {
+                            if (result.isConfirmed) {
+                                navigate("/reparaciones");
+                            }
+                            else {
+                                navigate("/reparaciones");
+                            }
+                        });
+                    }
                 }
                 else {
                     let errorMessage = "";
@@ -335,6 +340,111 @@ const CreateRepair = () => {
             })
             .catch(error => console.log('error', error));
     };
+
+    const returnEmailCompany = (idCompany) => {
+        const data = company.find(company => company.id === idCompany);
+
+        if (data) {
+            return data.email;
+        } else {
+            return "anibalcastro1515@gmail.com"; // Puedes manejar el caso donde la compañía no existe
+        }
+    }
+
+    const returnPhoneCompany = (idCompany) => {
+        const data = company.find(company => company.id === idCompany);
+
+        if (data) {
+            return data.telefono_encargado;
+        } else {
+            return "85424471"; // Puedes manejar el caso donde la compañía no existe
+        }
+    }
+
+    const notify = () => {
+        Swal.fire({
+            title: "¿Cómo desea notificar a la empresa?",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "WhatsApp",
+            confirmButtonColor: 'black',
+            cancelButtonText: "Correo electrónico",
+            showCloseButton: true,
+            showCloseButtonText: "No notificar",
+            showCloseButtonColor: 'black',
+            reverseButtons: true,
+        }).then((result) => {
+            
+                const mensaje =  "Estimado cliente, espero que se encuentre bien. Le informamos que la reparación a su prenda ha sido registrada en nuestro sistema. Estamos a su disposición para cualquier consulta o ajuste necesario. ¡Gracias por su preferencia!";
+            
+            if (result.isConfirmed) {
+                // Acción si el usuario elige WhatsApp
+                let phoneNumber = returnPhoneCompany(order.id_empresa);
+                phoneNumber = phoneNumber.replace(/[\s-]+/g, ""); // Número de teléfono de destino
+                const url = `https://api.whatsapp.com/send?phone=+506${phoneNumber}&text=${encodeURIComponent(
+                    mensaje
+                )}`;
+
+                window.open(url, "_blank");
+                return true
+
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                const email = returnEmailCompany(order.id_empresa);
+                sendEmail(email, mensaje);
+                return true
+            }
+            else if(result.dismiss === Swal.DismissReason.close){
+                return true;
+            }
+            else{
+                return true;
+            }
+        });
+    }
+
+    const sendEmail = (email, body) => {
+        var myHeaders = new Headers();
+        myHeaders.append(
+            "Authorization",
+            `Bearer ${token}`
+        );
+
+        var formdata = new FormData();
+        formdata.append("email", email);
+        formdata.append(
+            "body", body
+        );
+
+        var requestOptions = {
+            method: "POST",
+            headers: myHeaders,
+            body: formdata,
+            redirect: "follow",
+        };
+
+        fetch("https://api.textechsolutionscr.com/api/v1/email/notificacion", requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+                console.log(result);
+                const { mensaje } = result;
+
+                if (mensaje === "Correo electrónico enviado con éxito") {
+                    Swal.fire(
+                        "¡Email enviado con éxito!",
+                        `Se ha enviado un email a ${email}!`,
+                        "success"
+                    );
+                }
+                else {
+                    Swal.fire(
+                        "¡Error!",
+                        `Ocurrio un error al enviar el email, intente luego!`,
+                        "error"
+                    );
+                }
+            })
+            .catch((error) => console.log("Error durante la petición:", error));
+    }
 
     return (
         <React.Fragment>
