@@ -67,7 +67,7 @@ const ReportSales = () => {
           const { data } = result;
 
           const fechasExtraidas = data.map((item) => item.fecha);
-          const montosExtraidos = data.map((item) => item.monto_total);
+          const montosExtraidos = data.map((item) => item.monto_facturado);
           // Almacenar en estados correspondientes
           setDates(fechasExtraidas);
           setAmount(montosExtraidos);
@@ -107,7 +107,20 @@ const ReportSales = () => {
     return oldest === null || currentDate < oldest ? currentDate : oldest;
   }, null);
 
-  const downloadPDF = () => {
+  const generateEndDate = () => {
+    // Formatear la fecha más antigua en formato año-mes-día
+    const currentDate = new Date();
+    const formattedEndDate = currentDate.toISOString().split("T")[0];
+    return formattedEndDate;
+  };
+
+  const generateStartDate = () => {
+    // Formatear la fecha más antigua en formato año-mes-día
+    const formattedOldestDate = oldestDate.toISOString().split("T")[0];
+    return formattedOldestDate;
+  }
+
+  const validateDates = () => {
     // Formatear la fecha más antigua en formato año-mes-día
     const currentDate = new Date();
     const formattedEndDate = currentDate.toISOString().split("T")[0];
@@ -116,56 +129,74 @@ const ReportSales = () => {
       // Formatear la fecha más antigua en formato año-mes-día
       const formattedOldestDate = oldestDate.toISOString().split("T")[0];
       setStartDate(formattedOldestDate);
+      console.log("entra");
     }
 
     // Si endDate está vacío, asigna la fecha actual
     if (!endDate) {
       setEndDate(formattedEndDate);
+      console.log("entra");
     }
 
     if (new Date(endDate) < new Date(startDate)) {
       setStartDate(oldestDate);
       setEndDate(formattedEndDate);
+      console.log("entra");
     }
+  };
+
+  const downloadPDF = () => {
+    validateDates();
 
     //Arreglar la reparación...
     Swal.fire({
-      title: 'Generando el PDF',
-      text: 'Espere un momento...',
+      title: "Generando el PDF",
+      text: "Espere un momento...",
       allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer  ${token}`);
 
-      var formdata = new FormData();
+
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer  ${token}`);
+    var formdata = new FormData();
+
+    if (!startDate && !endDate) {
+      formdata.append("fechaInicio", generateStartDate());
+      formdata.append("fechaFinal", generateEndDate());
+    }
+    else{
       formdata.append("fechaInicio", startDate);
       formdata.append("fechaFinal", endDate);
+    }
 
-      var requestOptions = {
-        method: 'POST',
-        headers: myHeaders,
-        body: formdata,
-        redirect: 'follow'
-      };
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
 
-      fetch(`https://api.textechsolutionscr.com/api/v1/pdf/ventas`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          console.log(result);
-          const download_url = decodeURIComponent(result.download_url);
-          const downloadLink = document.createElement("a");
-          downloadLink.href = download_url;
-          downloadLink.target = "_self"; // Abrir en una nueva pestaña
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-          Swal.close();
-        })
-        .catch(error => console.log(error));
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/pdf/ventas`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const download_url = decodeURIComponent(result.download_url);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = download_url;
+        downloadLink.target = "_self"; // Abrir en una nueva pestaña
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        Swal.close();
+      })
+      .catch((error) => console.log(error));
   };
 
   return (
