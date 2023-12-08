@@ -26,7 +26,8 @@ const TableSales = ({ datos }) => {
                     <tr>
                         <th>#</th>
                         <th>Fecha</th>
-                        <th>Monto total</th>
+                        <th>Monto Facturado</th>
+                        <th>Monto Pagado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,7 +36,8 @@ const TableSales = ({ datos }) => {
                             <tr key={index}>
                                 <td>{iterador + index + 1}</td>
                                 <td>{dato.fecha}</td>
-                                <td>{formatCurrencyCRC.format(dato.monto_total)}</td>
+                                <td>{formatCurrencyCRC.format(dato.monto_facturado)}</td>
+                                <td>{formatCurrencyCRC.format(dato.monto_pagado)}</td>
                             </tr>
                         ))}
                 </tbody>
