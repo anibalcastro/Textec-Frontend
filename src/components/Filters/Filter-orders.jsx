@@ -44,6 +44,7 @@ const FilterOrders = ({ datos, showMonto }) => {
 
     fetchCompany();
     loadingData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFiltroChange = (event) => {
@@ -71,16 +72,21 @@ const FilterOrders = ({ datos, showMonto }) => {
       });
       return datosFiltrados;
     }
-    else if (typeFilter === "Empresa"){
-      const  idEmpresa = getIdCompany(filter);
+    else if (typeFilter === "Empresa") {
+      const datosConNombreEmpresa = datos.map((dato) => {
+        // Obten el nombre de la empresa basado en id_empresa (asumiendo que tienes una función para esto)
+        const nombreEmpresa = nameCompany(dato.id_empresa);
+      
+        // Retorna un nuevo objeto con el nombre de la empresa agregado
+        return { ...dato, nombre_empresa: nombreEmpresa };
+      });
 
-      console.log(idEmpresa)
-
-      const datosFiltrados = datos.filter((dato) => {
-        const empresa = `${dato.id_empresa}`;
-        return empresa.includes(idEmpresa);
+      const datosFiltrados = datosConNombreEmpresa.filter((dato) => {
+        const nombreEmpresa = `${dato.nombre_empresa}`;
+        return nombreEmpresa.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
+      
     }
     else {
       const datosFiltrados = datos.filter((dato) => {
