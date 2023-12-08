@@ -89,14 +89,77 @@ const SupplierDetail = () => {
     return false;
   };
 
-  const contactByWhatsApp = () => {
-    const phoneNumber = supplier.telefono.replace(/[\s-]+/g, ""); // Número de teléfono de destino
-    const message = "¡Hola! ¿Cómo estás?, Quiero realizarte un pedido de ..."; // Mensaje personalizado
+  const contact = () => {
+    Swal.fire({
+      title: "¿Cómo desea contactar al proveedor?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "WhatsApp",
+      confirmButtonColor: 'black',
+      cancelButtonText: "Correo electrónico",
+      reverseButtons: true,
+      html: '<textarea id="mensaje" placeholder="Escribe tu mensaje aquí" rows="4" style="width: 100%; margin-top: 10px;"></textarea>',
+    }).then((result) => {
+      let mensaje = document.getElementById("mensaje").value;
+      if (mensaje.trim() === ''){
+        mensaje = "Estimado proveedor, espero que este mensaje le encuentre bien. Me gustaría contactarlo para discutir algunos detalles importantes. ¿Podríamos programar una llamada o discutir a través de correo electrónico? Quedo a la espera de su pronta respuesta. ¡Gracias!"
+      }
+      if (result.isConfirmed) {
+        // Acción si el usuario elige WhatsApp
+        const phoneNumber = supplier.telefono.replace(/[\s-]+/g, ""); // Número de teléfono de destino
+        const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
+          mensaje
+        )}`;
+        window.open(url, "_blank");
+      } else if (result.dismiss === Swal.DismissReason.cancel) {        
+        const email = supplier.email;
+        sendEmail(email, mensaje);
+      }
+    });
+  };
 
-    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
-      message
-    )}`;
-    window.open(url, "_blank");
+  const sendEmail = (email, body) => {
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
+
+    var formdata = new FormData();
+    formdata.append("email", email);
+    formdata.append(
+      "body", body
+    );
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/email/notificacion", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        const {mensaje} = result;
+
+        if (mensaje === "Correo electrónico enviado con éxito"){
+          Swal.fire(
+            "¡Email enviado con éxito!",
+            `Se ha enviado un email a ${email}!`,
+            "success"
+          );
+        }
+        else{
+          Swal.fire(
+            "¡Error!",
+            `Ocurrio un error al enviar el email, intente luego!`,
+            "error"
+          );
+        }
+      })
+      .catch((error) => console.log("Error durante la petición:", error));
   };
 
   const handleRedirect = (data) => {
@@ -221,7 +284,7 @@ const SupplierDetail = () => {
         )}
 
         {collaboratorPermissions && (
-          <button className="btn" onClick={() => contactByWhatsApp()}>
+          <button className="btn" onClick={() => contact()}>
             Contactar
           </button>
         )}
