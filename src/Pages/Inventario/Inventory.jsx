@@ -79,16 +79,83 @@ const Inventory = () => {
     return false;
   };
 
-  const downloadInventory = () => {
+  const notifyAdmin = () => {
+
+    generateInventory();
+
+
     Swal.fire({
-      title: 'Generando el PDF',
-      text: 'Espere un momento...',
-      allowOutsideClick: false,
-      onBeforeOpen: () => {
-        Swal.showLoading();
+      title: "¿Cómo desea notificar al administrador?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "WhatsApp",
+      confirmButtonColor: 'black',
+      cancelButtonText: "Correo electrónico",
+      reverseButtons: true,
+    }).then((result) => {
+      
+      const mensaje = 'Estimado administrador, espero que este mensaje le encuentre bien. Adjunto link: https://api.textechsolutionscr.com/storage/reportes/Inventario.pdf, para que pueda observar el inventario actualizado. Quedo a la espera de su pronta respuesta. ¡Gracias!';
+
+      if (result.isConfirmed) {
+        // Acción si el usuario elige WhatsApp
+        const phoneNumber = "+50685424471"; // Número de teléfono de destino
+        const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(
+          mensaje
+        )}`;
+        window.open(url, "_blank");
+      } else if (result.dismiss === Swal.DismissReason.cancel) {        
+        const email = 'anibalcastro1515@gmail.com';
+        sendEmail(email, mensaje);
       }
     });
+  };
 
+  const sendEmail = (email, body) => {
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
+
+    var formdata = new FormData();
+    formdata.append("email", email);
+    formdata.append(
+      "body", body
+    );
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/email/notificacion", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        console.log(result);
+        const {mensaje} = result;
+
+        if (mensaje === "Correo electrónico enviado con éxito"){
+          Swal.fire(
+            "¡Email enviado con éxito!",
+            `Se ha enviado un email a ${email}!`,
+            "success"
+          );
+        }
+        else{
+          Swal.fire(
+            "¡Error!",
+            `Ocurrio un error al enviar el email, intente luego!`,
+            "error"
+          );
+        }
+      })
+      .catch((error) => console.log("Error durante la petición:", error));
+  };
+
+  const generateInventory = () => {
+ 
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `Bearer  ${token}`);
 
@@ -101,14 +168,7 @@ const Inventory = () => {
       fetch(`https://api.textechsolutionscr.com/api/v1/reporte-inventario`, requestOptions)
         .then(response => response.json())
         .then(result => {
-          const download_url = decodeURIComponent(result.download_url);
-          const downloadLink = document.createElement("a");
-          downloadLink.href = download_url;
-          downloadLink.target = "_self"; // Abrir en una nueva pestaña
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-          Swal.close();
+          console.log(result);
         })
         .catch(error => console.log('error', error));
   }
@@ -143,7 +203,7 @@ const Inventory = () => {
 
         {permisosColaborador && (
           
-            <button className="btn-registrar" onClick={() => downloadInventory()}>Descargar Inventario</button>
+            <button className="btn-registrar" onClick={() => notifyAdmin()}>Notificar</button>
         
         )}
       </div>
