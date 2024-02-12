@@ -68,9 +68,16 @@ const ReportSales = () => {
 
           const fechasExtraidas = data.map((item) => item.fecha);
           const montosExtraidos = data.map((item) => item.monto_facturado);
+
+          // Invierte el array de fechas
+          const fechasInvertidas = fechasExtraidas.reverse();
+
+          // Invierte el array de montos
+          const montosInvertidos = montosExtraidos.reverse();
+
           // Almacenar en estados correspondientes
-          setDates(fechasExtraidas);
-          setAmount(montosExtraidos);
+          setDates(fechasInvertidas);
+          setAmount(montosInvertidos);
           setSales(data);
         }
       })
@@ -169,7 +176,7 @@ const ReportSales = () => {
       formdata.append("fechaInicio", generateStartDate());
       formdata.append("fechaFinal", generateEndDate());
     }
-    else{
+    else {
       formdata.append("fechaInicio", startDate);
       formdata.append("fechaFinal", endDate);
     }
