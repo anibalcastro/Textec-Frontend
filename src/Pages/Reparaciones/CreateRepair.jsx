@@ -385,19 +385,37 @@ const CreateRepair = () => {
                     mensaje
                 )}`;
 
-                window.open(url, "_blank");
-                return true
+                Swal.fire(
+                    "Reparación creada con éxito",
+                    "Se ha registrado la reparación y se ha generado una factura. Se abrirá la aplicación de WhatsApp para notificar al cliente.",
+                    "success"
+                ).then((result) => {
+                    // Este bloque se ejecutará después de que el usuario haya cerrado la alerta
+                    if (result.isConfirmed || result.isDismissed) {
+                        window.open(url, "_blank");
+                        navigate("/reparaciones");
+                    }
+                });
+
 
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 const email = returnEmailCompany(order.id_empresa);
                 sendEmail(email, mensaje);
-                return true
+                navigate("/reparaciones");
             }
             else if(result.dismiss === Swal.DismissReason.close){
-                return true;
-            }
-            else{
-                return true;
+                Swal.fire(
+                    "Reparación creada con éxito",
+                    "Se ha registrado la reparacion y se ha generado una factura.",
+                    "success"
+                ).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate("/reparaciones");
+                    }
+                    else {
+                        navigate("/reparaciones");
+                    }
+                });
             }
         });
     }
@@ -430,8 +448,8 @@ const CreateRepair = () => {
 
                 if (mensaje === "Correo electrónico enviado con éxito") {
                     Swal.fire(
-                        "¡Email enviado con éxito!",
-                        `Se ha enviado un email a ${email}!`,
+                        "¡Reparación creada con éxito!",
+                        `Se ha registrado la reparación y se ha generado una factura, se ha notificado al correo ${email}!`,
                         "success"
                     );
                 }
@@ -459,18 +477,6 @@ const CreateRepair = () => {
                             type="text"
                             name="titulo"
                             id="titulo"
-                            autoComplete="current-password"
-                            required
-                        />
-                    </div>
-
-                    <div className="div-inp">
-                        <label htmlFor="password">Teléfono:</label>
-                        <input
-                            onChange={handleInputChange}
-                            type="text"
-                            name="telefono"
-                            id="telefono"
                             autoComplete="current-password"
                             required
                         />

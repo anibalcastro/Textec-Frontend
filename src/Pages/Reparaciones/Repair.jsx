@@ -27,7 +27,8 @@ const Repairs = () => {
             .then(result => {
                 if(result.hasOwnProperty("reparaciones")) {
                     const { reparaciones } = result;
-                    setRepairs(reparaciones)
+                    const reversedData = [...reparaciones].reverse(); // Create a reversed copy of the array
+                    setRepairs(reversedData)
                 }
             })
             .catch(error => console.log('error', error));
