@@ -1,45 +1,61 @@
+
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const FiltroMediciones = ({ datos }) => {
+const FiltroMediciones = ({ datos, filter, type }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 40; // Número de mediciones por página
   const [typeFilter, setTypeFilter] = useState("Nombre");
 
-
   useEffect(() => {
-    setFiltro(""); // Resetear el filtro cuando los datos cambian
     setCurrentPage(1); // Resetear la página cuando los datos cambian
-    loadingData()
+    getDataFilter();
+    loadingData();
   }, []);
+
+  const getDataFilter = () => {
+    let storedFiltro = localStorage.getItem("filtro");
+    let storedTipoFiltro = localStorage.getItem("tipoFiltro");
+
+    if (storedFiltro !== null && storedTipoFiltro !== null) {
+      // Ambos valores existen en el localStorage
+      setFiltro(storedFiltro || "");
+      setTypeFilter(storedTipoFiltro || "Nombre");
+    } else {
+      // Uno o ambos valores no existen en el localStorage
+      // Puedes manejar esto de acuerdo a tus necesidades, por ejemplo, establecer valores predeterminados.
+      setFiltro("");
+      setTypeFilter("Nombre");
+    }
+  };
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
+    localStorage.setItem("filtro", event.target.value);
+
     setCurrentPage(1); // Resetear la página cuando se aplica un filtro
   };
 
   const filtrarDatos = () => {
-    if (!datos){
+    if (!datos) {
       return [];
     }
 
-    if (typeFilter === "Nombre"){
+    if (typeFilter === "Nombre") {
       const datosFiltrados = datos.filter((dato) => {
         const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
         return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Empresa"){
+    } else if (typeFilter === "Empresa") {
       const datosFiltrados = datos.filter((dato) => {
         const nombreEmpresa = `${dato.empresa}`;
         return nombreEmpresa.toLowerCase().includes(filtro.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Cedula"){
+    } else if (typeFilter === "Cedula") {
       const datosFiltrados = datos.filter((dato) => {
         const numeroCedula = `${dato.cedula}`;
         return numeroCedula.toLowerCase().includes(filtro.toLowerCase());
@@ -50,8 +66,8 @@ const FiltroMediciones = ({ datos }) => {
 
   const handleInputFilterSelect = (event) => {
     setTypeFilter(event.target.value);
-  }
-  
+    localStorage.setItem("tipoFiltro", event.target.value);
+  };
 
   const loadingData = () => {
     let timerInterval;
@@ -79,11 +95,15 @@ const FiltroMediciones = ({ datos }) => {
     });
   };
 
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentFilteredItems = filtrarDatos().reverse().slice(indexOfFirstItem, indexOfLastItem);
+  const currentFilteredItems = filtrarDatos()
+    .reverse()
+    .slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filtrarDatos().length / itemsPerPage);
+
 
   const handleClick = (page) => {
     setCurrentPage(page);
@@ -93,7 +113,7 @@ const FiltroMediciones = ({ datos }) => {
 
   return (
     <React.Fragment>
-           <div className="container-filtro-ordenes">
+      <div className="container-filtro-ordenes">
         <input
           className="filtro-pedidos"
           type="text"
@@ -106,7 +126,7 @@ const FiltroMediciones = ({ datos }) => {
           {" "}
           {/* Añade la clase 'align-items-center' para centrar verticalmente */}
           <label>Buscar por: </label>
-          <select className="sc-filter" onChange={handleInputFilterSelect}>
+          <select className="sc-filter" onChange={handleInputFilterSelect} value={typeFilter}>
             <option value={"Nombre"}>Nombre</option>
             <option value={"Empresa"}>Empresa</option>
             <option value={"Cedula"}>Cédula</option>

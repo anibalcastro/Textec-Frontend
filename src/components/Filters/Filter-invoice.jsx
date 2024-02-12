@@ -51,6 +51,18 @@ const FilterOrders = ({ datos, showMonto }) => {
     currency: "CRC",
   });
 
+  const nameCompany = (companyId) => {
+    const empresaEncontrada = company.find(
+        (item) => parseInt(item.id) == parseInt(companyId)
+    );
+
+    if (empresaEncontrada) {
+        return empresaEncontrada.nombre_empresa;
+    } else {
+        return "Empresa no encontrada";
+    }
+};
+
   const handleFiltroChange = (event) => {
     setFilter(event.target.value);
     setCurrentPage(1);
@@ -77,8 +89,6 @@ const FilterOrders = ({ datos, showMonto }) => {
       return datosFiltrados;
     }
     else if (typeFilter === "Empresa"){
-    
-
       const datosFiltrados = datos.filter((dato) => {
         const empresa = `${dato.nombre_empresa}`;
         return empresa.toLowerCase().includes(filter.toLowerCase());

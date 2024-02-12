@@ -8,6 +8,7 @@ const FilterRepair = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [company, setCompany] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [typeFilter, setTypeFilter] = useState("Titulo");
   const itemsPerPage = 25; // Número de mediciones por página
   const token = Cookies.get("jwtToken");
 
@@ -42,12 +43,17 @@ const FilterRepair = ({ datos }) => {
   
       fetchCompany();
       loadingData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
     setCurrentPage(1); 
   };
+
+  const handleInputFilterSelect = (event) => {
+    setTypeFilter(event.target.value);
+  }
 
   const formatDate = (inputDate) => {
     if (inputDate) {
@@ -62,11 +68,53 @@ const FilterRepair = ({ datos }) => {
   };
 
   const filtrarDatos = () => {
-    const datosFiltrados = datos.filter((dato) => {
-      const nombreProveedor = `${dato.nombre_proveedor}`;
-      return nombreProveedor.toLowerCase().includes(filtro.toLowerCase());
-    });
-    return datosFiltrados;
+    // Comprobar si datos está definido antes de filtrar
+    if (!datos) {
+      return [];
+    }
+
+    //Titulo
+    if (typeFilter === "Titulo"){
+      const datosFiltrados = datos.filter((dato) => {
+        const titulo = `${dato.titulo}`;
+        return titulo.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+
+    }
+    //Estado
+    else if( typeFilter === "Estado"){
+      const datosFiltrados = datos.filter((dato) => {
+        const estado = `${dato.estado}`;
+        return estado.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+    //Empresa
+    else if (typeFilter === "Empresa"){
+      const datosConNombreEmpresa = datos.map((dato) => {
+        // Obten el nombre de la empresa basado en id_empresa (asumiendo que tienes una función para esto)
+        const nombreEmpresa = nameCompany(dato.id_empresa);
+      
+        // Retorna un nuevo objeto con el nombre de la empresa agregado
+        return { ...dato, nombre_empresa: nombreEmpresa };
+      });
+
+      const datosFiltrados = datosConNombreEmpresa.filter((dato) => {
+        const nombreEmpresa = `${dato.nombre_empresa}`;
+        return nombreEmpresa.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+      
+    }
+    else {
+      const datosFiltrados = datos.filter((dato) => {
+        const nombreOrden = `${dato.titulo}`;
+        return nombreOrden.toLowerCase().includes(filtro.toLowerCase());
+      });
+      return datosFiltrados;
+    }
+
   };
 
   const loadingData = () => {
@@ -131,58 +179,65 @@ const FilterRepair = ({ datos }) => {
 
   let iterador = indexOfFirstItem;
 
-  return (
-    <React.Fragment>
-      <div className="container-filtro">
-        <input
-          className="filtro-mediciones"
-          type="text"
-          value={filtro}
-          onChange={handleFiltroChange}
-          placeholder="Buscar reparaciones"
-        />
+  return (<React.Fragment>
+    <div className="container-filtro-ordenes">
+      <input
+        className="filtro-mediciones"
+        type="text"
+        value={filtro}
+        onChange={handleFiltroChange}
+        placeholder="Buscar reparaciones"
+      />
+  
+      <div className="d-flex align-items-center">
+        <label>Buscar por: </label>
+        <select className="sc-filter" onChange={handleInputFilterSelect}>
+          <option value="Titulo">Titulo</option>
+          <option value="Estado">Estado</option>
+          <option value="Empresa">Empresa</option>
+        </select>
       </div>
-
-      <table id="tabla-reparacion" className="tabla-medidas">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Titulo</th>
-            <th>Empresa</th>
-            <th>Estado</th>
-            <th>Fecha</th>
+    </div>
+  
+    <table id="tabla-reparacion" className="tabla-medidas">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Titulo</th>
+          <th>Empresa</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        {currentFilteredItems.map((dato, index) => (
+          <tr key={index}>
+            <td>{iterador + index + 1}</td>
+            <td>
+              <Link className="link-nombre" to={`/reparacion/${dato.id}`}>
+                {`${dato.titulo}`}
+              </Link>
+            </td>
+            <td>{nameCompany(dato.id_empresa)}</td>
+            <td>{dato.estado}</td>
+            <td>{formatDate(dato.fecha)}</td>
           </tr>
-        </thead>
-        <tbody>
-          {currentFilteredItems.map((dato, index) => (
-            <tr key={index}>
-              <td>{iterador + index + 1}</td>
-              <td>
-                <Link
-                  className="link-nombre"
-                  to={`/reparacion/${dato.id}`}
-                >{`${dato.titulo}`}</Link>
-              </td>
-              <td>{nameCompany(dato.id_empresa)}</td>
-              <td>{dato.estado}</td>
-              <td>{formatDate(dato.fecha)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index}
-            className={currentPage === index + 1 ? "active" : ""}
-            onClick={() => handleClick(index + 1)}
-          >
-            {index + 1}
-          </button>
         ))}
-      </div>
-    </React.Fragment>
+      </tbody>
+    </table>
+  
+    <div className="pagination">
+      {Array.from({ length: totalPages }, (_, index) => (
+        <button
+          key={index}
+          className={currentPage === index + 1 ? "active" : ""}
+          onClick={() => handleClick(index + 1)}
+        >
+          {index + 1}
+        </button>
+      ))}
+    </div>
+  </React.Fragment>
   );
 };
 
