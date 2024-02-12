@@ -142,6 +142,10 @@ const DetalleMedicion = () => {
 
   const permisos = validarRol(role);
 
+  const goBack = () => {
+    navigate(-1);
+  }
+
   return (
     <React.Fragment>
         <h2 className="titulo-encabezado">{`${medicion.nombre} ${medicion.apellido1} ${medicion.apellido2} - ${medicion.articulo}`}</h2>
@@ -445,9 +449,14 @@ const DetalleMedicion = () => {
         </div>
 
         <div className="container botones-contenedor">
-          <Link to="/mediciones">
-            <button className="btn-registrar">Regresar</button>
-          </Link>
+          {/*
+            <Link to="/mediciones">
+              <button className="btn-registrar">Regresar</button>
+            </Link>
+            */
+          }
+
+          <button className="btn-registrar" onClick={() => goBack()}>Regresar</button>
 
           {permisosColaborador && (
             <Link to={`/mediciones/editar/${medicion.id}`}>

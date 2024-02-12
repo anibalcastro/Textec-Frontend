@@ -26,6 +26,27 @@ const RegistroMedicionCliente = ({ clientes }) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    useEffect(() => {
+        const guardarEnLocalStorage = () => {
+            setArrayMediciones(prevArray => [...prevArray, mediciones]);
+
+            guardarMedicionesEnLocalStorage(arrayMediciones);
+        };
+
+        // Agregar el listener para el evento beforeunload
+        window.addEventListener("beforeunload", guardarEnLocalStorage);
+
+        return () => {
+            window.removeEventListener("beforeunload", guardarEnLocalStorage);
+        };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[mediciones]);
+
+    const guardarMedicionesEnLocalStorage = (nuevasMediciones) => {
+        localStorage.setItem("medicionesNoGuardadas", JSON.stringify(nuevasMediciones));
+    };
+
 
     const validateUserPermission = () => {
         if (role !== "Visor") {

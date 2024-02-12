@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate  } from "react-router-dom";
 import CardMediciones from "../../components/card-mediciones/Card-Mediciones";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
@@ -10,6 +10,7 @@ const DetalleClienteMediciones = () => {
     const token = Cookies.get("jwtToken");
     const role = Cookies.get("role");
     let userId = useParams();
+    const navigate = useNavigate();
 
     useEffect(() => {
         obtenerInformacionCliente(userId);
@@ -20,8 +21,6 @@ const DetalleClienteMediciones = () => {
     const obtenerInformacionCliente = (parametro) => {
         let datos = localStorage.getItem('data');
         datos = JSON.parse(datos);
-
-        //console.log(parametro.userId);
 
         let encontrado = false;
 
@@ -80,6 +79,10 @@ const DetalleClienteMediciones = () => {
         });
     }
 
+    const goBack = () => {
+        navigate(-1);
+    }
+
   const validarPermisos = () => {
     if (role === 'Admin' || role === 'Colaborador') {
       return true;
@@ -119,9 +122,12 @@ return (
         <hr className="division"></hr>
 
         <div className="container botones-contenedor">
-            <Link to="/mediciones">
+            
+            {/*<Link to="/mediciones">
                 <button className="btn-registrar">Regresar</button>
-            </Link>
+                    </Link>*/}
+
+            <button className="btn-registrar" onClick={() => goBack()}>Regresar</button>        
             
             {permisosColaborador && (<Link to={`/mediciones/registro/cliente/${cliente.id}`}>
                 <button className="btn-registrar">Agregar</button>
