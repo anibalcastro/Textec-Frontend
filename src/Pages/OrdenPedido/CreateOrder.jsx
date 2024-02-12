@@ -389,19 +389,35 @@ const CreateOrder = () => {
                     mensaje
                 )}`;
 
-                window.open(url, "_blank");
-                return true
+                Swal.fire(
+                    "Orden creada con éxito",
+                    "Se ha registrado la orden y se ha generado una factura. Se abrirá la aplicación de WhatsApp para notificar al cliente.",
+                    "success"
+                ).then((result) => {
+                    if (result.isConfirmed || result.isDismissed) {
+                        window.open(url, "_blank");
+                        navigate("/orden");
+                    }
+                })
 
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 const email = returnEmailCompany(orderCompany.id_empresa);
                 sendEmail(email, mensaje);
-                return true
+                navigate("/orden");
             }
             else if(result.dismiss === Swal.DismissReason.close){
-                return true;
-            }
-            else{
-                return true;
+                Swal.fire(
+                    "Orden creada con éxito",
+                    "Se ha registrado la orden y se ha generado una factura.",
+                    "success"
+                ).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate("/orden");
+                    }
+                    else {
+                        navigate("/orden");
+                    }
+                });
             }
         });
     }
@@ -434,8 +450,8 @@ const CreateOrder = () => {
 
                 if (mensaje === "Correo electrónico enviado con éxito") {
                     Swal.fire(
-                        "¡Email enviado con éxito!",
-                        `Se ha enviado un email a ${email}!`,
+                        "¡Orden creada con éxito!",
+                        `Se ha registrado la orden de pedido y se ha generado una factura, se ha notificado al correo,${email}!`,
                         "success"
                     );
                 }

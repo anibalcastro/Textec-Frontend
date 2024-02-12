@@ -165,21 +165,31 @@ const OrderDetail = () => {
 
       if (result.isConfirmed) {
         // Acción si el usuario elige WhatsApp
-        const phoneNumber = returnPhoneCompany(order.id_empresa).replace(/[\s-]+/g, ""); // Número de teléfono de destino
+        const phoneNumber = returnPhoneCompany(order.id_empresa).replace(
+          /[\s-]+/g,
+          ""
+        ); // Número de teléfono de destino
         const encodedMessage = encodeURIComponent(mensaje);
         const url = `https://api.whatsapp.com/send?phone=+506${phoneNumber}&text=${encodedMessage}`;
 
-        window.open(url, "_blank");
-        return true;
-
+        Swal.fire(
+          "Estado modificado!",
+          `Se ha a modificado el estado de la orden a ${state}, se abrirá la aplicación de WhatsApp para notificar`,
+          "success"
+        ).then((result) => {
+          if (result.isConfirmed || result.isDismissed) {
+            window.open(url, "_blank");
+          }
+        });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         const email = returnEmailCompany(order.id_empresa);
         sendEmail(email, mensaje);
-        return true;
       } else if (result.dismiss === Swal.DismissReason.close) {
-        return true;
-      } else {
-        return true;
+        Swal.fire(
+          "Estado modificado!",
+          `Se ha a modificado el estado de la orden a ${state}, se abrirá la aplicación de WhatsApp para notificar`,
+          "success"
+        )
       }
     });
   };
@@ -210,8 +220,8 @@ const OrderDetail = () => {
 
         if (mensaje === "Correo electrónico enviado con éxito") {
           Swal.fire(
-            "¡Email enviado con éxito!",
-            `Se ha enviado un email a ${email}!`,
+            "¡Estado modificado con éxito!",
+            `Se ha cambiado el estado y se notificó mediante un email a ${email}!`,
             "success"
           );
         } else {
@@ -264,15 +274,13 @@ const OrderDetail = () => {
           if (parseInt(status) === 200) {
             let result = notify(nextState);
 
-            if(result === true){
+            if (result === true) {
               Swal.fire(
                 "Estado modificado!",
                 `Se ha a modificado el estado de la orden a ${nextState}!`,
                 "success"
               );
             }
-
-
           } else {
             let errorMessage = "";
             for (const message of error) {
