@@ -65,6 +65,12 @@ main {
   text-decoration: none !important;
 }
 
+.linkAddActivity{
+  color: white;
+  text-decoration: none !important;
+}
+
+
 .link:hover {
   background: lightskyblue;
   color: #000;
@@ -108,11 +114,11 @@ main {
 
 .chart-container {
   width: 800px;
-  margin: 0 auto; 
+  margin: 0 auto;
   margin-top: 20px;
 }
 
-.tabla-ventas{
+.tabla-ventas {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -147,7 +153,7 @@ main {
   margin: 1rem;
 }
 
-.card-body-reportes{
+.card-body-reportes {
   height: 130px;
   width: 250px;
   display: flex;
@@ -183,15 +189,63 @@ main {
   justify-content: center;
 }
 
+.weekly-section-container {
+  margin-top: 20px;
+  width: 350px;
+}
+
+.weekly-section-card {
+  width: 100%; /* Cambia el ancho según sea necesario */
+  margin: auto; /* Centra el card horizontalmente */
+  transition: height 0.5s ease-in-out; /* Transición suave para la altura */
+  overflow: hidden; /* Evitar que el contenido ocultado afecte el diseño */
+  padding-bottom: 10px;
+}
+
+.weekly-section-card.expanded {
+  height: auto !important; /* Establecer altura automática al expandirse */
+}
+
+.weekly-section-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centra verticalmente */
+}
+
+.weekly-section-card-header {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.card-title-weekly {
+  width: 100%;
+}
+
+.weekly-section-button {
+  margin-top: 10px;
+}
+
+.container-Weeks {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
 /***************************************************/
 /*Mediciones*/
 
 .cbtn_inven {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .division {
@@ -269,7 +323,7 @@ main {
   flex-direction: column;
 }
 
-.date-filter{
+.date-filter {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -320,7 +374,7 @@ main {
   gap: 5px;
 }
 
-.inpDates{
+.inpDates {
   margin-top: 19px;
   display: flex;
   align-items: center;
@@ -400,6 +454,58 @@ main {
   color: white;
 }
 
+.form-check,
+.form-check2 {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-left: -32px;
+}
+
+.checkboxContainer {
+  gap: 20px;
+}
+
+/* Ocultar el checkbox predeterminado */
+.form-check-input {
+  display: none;
+}
+
+/* Estilo del checkbox personalizado */
+.custom-checkbox {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  background-color: #fff;
+  border: 1px solid #000;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+/* Estilo del marcador dentro del checkbox personalizado */
+.custom-checkbox::after {
+  content: "\2714"; /* Código Unicode de una flecha (✔) */
+  font-size: 16px;
+  color: #007bff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none; /* Ocultar el marcador por defecto */
+}
+
+/* Cambiar el color del marcador cuando el checkbox está marcado */
+.form-check-input:checked + .form-check-label .custom-checkbox::after {
+  display: block; /* Mostrar el marcador cuando el checkbox está marcado */
+}
+
+/* Estilo del texto del label */
+.form-check-label strong {
+  color: #333333; /* Color del texto del label */
+}
+
 #username,
 #password {
   width: 350px;
@@ -460,12 +566,12 @@ main {
 .div-inp input,
 .div-inp select {
   flex: 1;
-  width: 320px;
+  width: 370px;
   height: 24px;
 }
 
 textarea {
-  width: 320px;
+  width: 370px;
 }
 
 .img-contenedor {
@@ -491,6 +597,7 @@ textarea {
   gap: 10px;
   padding-top: 20px;
   padding-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .isologo {
@@ -699,7 +806,6 @@ input[type="checkbox"]:checked + label {
   background-color: #6e959c;
 }
 
-
 .transparent-btn {
   opacity: 0; /* Define el nivel de opacidad deseado (0 a 1) */
   background: none; /* Elimina el fondo del botón */
@@ -716,9 +822,19 @@ input[type="checkbox"]:checked + label {
   .navbar-nav .nav-link .icon {
     display: inline; /* Mostrar iconos */
   }
+
+  .container-Weeks {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 760px) {
+  .form-check {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   main {
     margin-left: 25px;
   }
@@ -775,7 +891,6 @@ input[type="checkbox"]:checked + label {
   .tabla-medidas table {
     width: 100%;
     margin-left: 0;
-
   }
 
   .tabla-medidas thead {
@@ -803,18 +918,20 @@ input[type="checkbox"]:checked + label {
     margin-top: 10px;
   }
 
-  .cbtn_inven{
+  .cbtn_inven {
     flex-direction: column;
     align-items: center;
-
   }
 
-  .chart-container{
+  .chart-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     width: 350px;
     height: auto;
+  }
+  .container-Weeks {
+    justify-content: center;
   }
 }
