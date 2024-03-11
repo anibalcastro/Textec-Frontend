@@ -135,14 +135,6 @@ const FilterOrders = ({ datos, showMonto }) => {
     }
 };
 
-  const getIdCompany = (nameCompany) => {
-    const empresa = company.find((item) => item.nombre_empresa == nameCompany);
-
-    if (empresa){
-      return empresa.id;
-    }
-  }
-
 const handleInputFilterSelect = (event) => {
   setTypeFilter(event.target.value);
 }
@@ -197,6 +189,8 @@ const handleInputFilterSelect = (event) => {
               <th>Titulo</th>
               <th>Empresa</th>
               <th>Estado</th>
+              <th>Pizarra</th>
+              <th>Telas</th>
               {showMonto && ( <th>Monto</th>)}
               <th>Fecha</th>
             </tr>
@@ -217,6 +211,8 @@ const handleInputFilterSelect = (event) => {
                 </td>
                 <td>{nameCompany(dato.id_empresa)}</td>
                 <td>{dato.estado}</td>
+                <td>{dato.pizarra ? 'SI' : 'NO'}</td>
+                <td>{dato.tela ? 'SI' : 'NO'}</td>
                 {showMonto && <td>{dato.precio_total}</td>}
                 <td>{formatDate(dato.fecha_orden)}</td>
               </tr>
