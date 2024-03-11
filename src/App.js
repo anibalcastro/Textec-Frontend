@@ -66,6 +66,11 @@ import ReportInventory from "./Pages/Reportes/ReportInventory.jsx";
 import BestProductSelling from "./Pages/Reportes/BestProductSelling.jsx";
 import ReportCustomers from "./Pages/Reportes/ReportCustomers.jsx";
 
+import CreatePerson from "./Pages/Personas/CreatePerson.jsx";
+
+import Calendar from "./Pages/Calendar/Calendar.jsx";
+import AddActivity from "./Pages/Calendar/AddActivity.jsx";
+
 
 
 import NoEncotrada from "./Pages/NoEncontrada";
@@ -223,7 +228,10 @@ function App() {
                   <Route exact path="/reporte/producto_vendido" element={<BestProductSelling />} />
                   <Route exact path="/reporte/clientes" element={<ReportCustomers />} />
                   
+                  <Route exact path="/orden/:ordenId/registrar/persona" element={<CreatePerson />} /> 
 
+                  <Route exact path="/calendario" element={<Calendar />} />
+                  <Route exact path="/semana/actividades/:idWeek" element={<AddActivity />} />
 
                   <Route exact path="*" element={<NoEncotrada />} />
                 </Routes>
