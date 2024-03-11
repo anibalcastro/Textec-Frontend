@@ -97,7 +97,7 @@ const ModificarMedicion = () => {
         formdata.append("id_cliente", mediciones.id_cliente);
         formdata.append("articulo", mediciones.articulo);
         formdata.append("fecha", mediciones.fecha);
-        formdata.append("observaciones", mediciones.observaciones);
+        formdata.append("observaciones", mediciones.observaciones || "NA");
         formdata.append("espalda_superior", mediciones.espalda_superior);
         formdata.append("talle_espalda_superior", mediciones.talle_espalda_superior);
         formdata.append("talle_frente_superior", mediciones.talle_frente_superior);
