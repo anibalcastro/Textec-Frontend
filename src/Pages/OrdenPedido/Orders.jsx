@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 import FilterOrders from "../../components/Filters/Filter-orders";
 
+
 const Orders = () => {
   // State to store products
   const [orders, setOrders] = useState([]);
@@ -34,6 +35,7 @@ const Orders = () => {
     };
 
     fetchOrders();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const validatePermissions = () => {

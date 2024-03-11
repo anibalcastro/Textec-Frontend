@@ -445,17 +445,6 @@ const EditOrder = () => {
             />
           </div>
 
-          <div className="div-inp">
-            <label htmlFor="password">Comentario:</label>
-            <textarea
-              id="txtArea"
-              name="descripcion"
-              rows="5"
-              cols="60"
-              value={order.descripcion}
-              disabled
-            ></textarea>
-          </div>
 
           <div className="div-inp">
             <label htmlFor="password">Estado:</label>

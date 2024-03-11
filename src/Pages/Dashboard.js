@@ -9,10 +9,9 @@ export default function Dashboard() {
   const [cantidadMedidas, setCantidadMedidas] = useState("");
   const [cantidadEmpresas, setCantidadEmpresas] = useState("");
   const [cantidadOrdenes, setCantidadOrdenes] = useState("");
-  const [ordenesProceso, setOrdenesProceso] = useState("");
-  const [ordenesEntregadas, setOrdenesEntregadas] = useState("");
-  const [ordenesListas, setOrdenesListas] = useState("");
-  const [ordenesPendientes, setOrdenesPendientes] = useState("");
+  const [ordenesTaller, setOrdenesTaller] = useState(0);
+  const [ordenesEntregaTienda, setOrdenesEntregaTienda] = useState(0);
+  const [ordenesEntregadaCliente, setOrdenesEntregadaCliente] = useState(0);
 
   useEffect(() => {
     const consultaCantidadClientes = async () => {
@@ -95,16 +94,14 @@ export default function Dashboard() {
       )
         .then((response) => response.json())
         .then((result) => {
-          setOrdenesPendientes(result.cantidad_pendientes);
-          setOrdenesProceso(result.cantidad_enproceso);
-          setOrdenesListas(result.cantidad_listos);
-          setOrdenesEntregadas(result.cantidad_entragados);
+          setOrdenesTaller(result.cantidad_taller);
+          setOrdenesEntregaTienda(result.cantidad_entrega_tienda);
+          setOrdenesEntregadaCliente(result.cantidad_entrega_cliente);
 
           const sumaTotal =
-            parseInt(result.cantidad_pendientes) +
-            parseInt(result.cantidad_enproceso) +
-            parseInt(result.cantidad_listos) +
-            parseInt(result.cantidad_entragados);
+            parseInt(result.cantidad_taller) +
+            parseInt(result.cantidad_entrega_tienda) +
+            parseInt(result.cantidad_entrega_cliente);
 
           setCantidadOrdenes(sumaTotal);
         })
@@ -130,34 +127,28 @@ export default function Dashboard() {
         />
 
         <Card
-          titulo="Orden de Pedidos Pendientes"
-          numero={ordenesPendientes}
+          titulo="Orden de Pedidos Taller"
+          numero={ordenesTaller}
           color="#94744C"
         />
 
         <Card
-          titulo="Orden de Pedidos En Proceso"
-          numero={ordenesProceso}
+          titulo="Orden de Pedidos Entregada tienda"
+          numero={ordenesEntregaTienda}
           color="#6d949c"
         />
 
         <Card
-          titulo="Orden de Pedidos Listos"
-          numero={ordenesListas}
+          titulo="Orden de Pedidos Entregada cliente"
+          numero={ordenesEntregadaCliente}
           color="#94744C"
         />
 
-        <Card
-          titulo="Orden de Pedidos Entregados"
-          numero={ordenesEntregadas}
-          color="#6d949c"
-        />
+        <Card titulo="Medidas" numero={cantidadMedidas} color="#6d949c" />
 
-        <Card titulo="Medidas" numero={cantidadMedidas} color="#94744C" />
+        <Card titulo="Clientes" numero={cantidadClientes} color="#94744C" />
 
-        <Card titulo="Clientes" numero={cantidadClientes} color="#6d949c" />
-
-        <Card titulo="Empresas" numero={cantidadEmpresas} color="#94744C" />
+        <Card titulo="Empresas" numero={cantidadEmpresas} color="#6d949c" />
       </div>
       <div className="container-logo">
         <img src={Logo} className="logo-textec" alt="Logo" />

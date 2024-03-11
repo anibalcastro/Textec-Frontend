@@ -9,6 +9,7 @@ import {
   FaCropAlt,
   FaChartLine,
   FaCube,
+  FaCalendar,
 } from "react-icons/fa";
 import { BsTools } from "react-icons/bs";
 import { GiRolledCloth, GiClothes } from "react-icons/gi";
@@ -81,6 +82,11 @@ const Sidebar = ({ children }) => {
       name: "Reportes",
       icon: <FaChartLine />,
     },
+    {
+      path: "/calendario",
+      name: "Calendario",
+      icon: <FaCalendar />,
+    },
   ];
   const menuItemColaborator = [
     {
@@ -133,6 +139,11 @@ const Sidebar = ({ children }) => {
       name: "Inventario",
       icon: <GiRolledCloth />,
     },
+    {
+      path: "/calendario",
+      name: "Calendario",
+      icon: <FaCalendar />,
+    },
   ];
 
   const menuItemExpect = [
@@ -170,6 +181,11 @@ const Sidebar = ({ children }) => {
       path: "/inventario",
       name: "Inventario",
       icon: <GiRolledCloth />,
+    },
+    {
+      path: "/calendario",
+      name: "Calendario",
+      icon: <FaCalendar />,
     },
   ];
 

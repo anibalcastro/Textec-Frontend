@@ -9,7 +9,7 @@ const OrderDetail = () => {
     id: 0,
     titulo: "",
     id_empresa: 0,
-    estado: "Pendiente",
+    estado: "Taller",
     fecha_orden: "",
     cajero: "",
   });
@@ -237,7 +237,7 @@ const OrderDetail = () => {
 
   const changeStateOrder = () => {
     let actualStateOrder = order.estado;
-    const states = ["Pendiente", "En Proceso", "Listo", "Entregado"];
+    const states = ["Taller", "Entrega tienda", "Entregada al cliente"];
 
     // Encuentra la posición del estado actual en el array
     const currentPosition = states.indexOf(actualStateOrder);
@@ -436,6 +436,13 @@ const OrderDetail = () => {
     });
   };
 
+  const redirectPayments = () => {
+    navigate(`/orden/${ordenId}/pagos`);
+  }
+  const redirectAddPerson = () => {
+    navigate(`/orden/${ordenId}/registrar/persona`);
+  }
+
   const permissions = validateRole(role);
   const collaboratorPermissions = validatePermissions();
 
@@ -477,6 +484,16 @@ const OrderDetail = () => {
         {collaboratorPermissions && (
           <button className="btn" onClick={() => downloadOrder()}>
             Descargar
+          </button>
+        )}
+        {collaboratorPermissions && (
+          <button className="btn" onClick={() => redirectPayments()}>
+            Pagos
+          </button>
+        )}
+        {collaboratorPermissions && (
+          <button className="btn" onClick={() => redirectAddPerson()}>
+            Agregar persona
           </button>
         )}
       </div>

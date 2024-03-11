@@ -10,7 +10,7 @@ const DetailPayment = () => {
     id: 0,
     titulo: "",
     id_empresa: 0,
-    estado: "Pendiente",
+    estado: "taller",
     fecha_orden: "",
     cajero: "",
   });
@@ -50,6 +50,7 @@ const DetailPayment = () => {
     getCompany();
     getProducts();
     loadingData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   

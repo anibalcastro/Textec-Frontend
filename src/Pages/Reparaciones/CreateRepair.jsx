@@ -269,7 +269,7 @@ const CreateRepair = () => {
             fecha: today,
             precio: total,
             estado: 'Pendiente',
-            comentario: order.comentario,
+            comentario: order.comentario || "NA",
             detalles: detail.map((detalle) => ({
                 id_producto: detalle.IdProducto,
                 precio_unitario: detalle.precio_unitario,
