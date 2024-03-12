@@ -28,6 +28,7 @@ const RegistroMedicion = ({ clientes }) => {
     "Chaleco",
     "Gabacha medica",
     "Vestido",
+    "Filipinas"
   ];
 
   const prendaSuperior = medicionesSuperior.includes(prenda);
@@ -299,50 +300,59 @@ const RegistroMedicion = ({ clientes }) => {
       formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
 
       if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
-        formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda);
+        formdata.append(
+          "espalda_superior",
+          nuevoRegistro.mediciones.espalda || 0
+        );
         formdata.append(
           "talle_espalda_superior",
-          nuevoRegistro.mediciones.talle_espalda
+          nuevoRegistro.mediciones.talle_espalda || 0
         );
         formdata.append(
           "talle_frente_superior",
-          nuevoRegistro.mediciones.talle_frente
+          nuevoRegistro.mediciones.talle_frente || 0
         );
-        formdata.append("busto_superior", nuevoRegistro.mediciones.busto);
-        formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura);
-        formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera);
+        formdata.append("busto_superior", nuevoRegistro.mediciones.busto || 0);
+        formdata.append(
+          "cintura_superior",
+          nuevoRegistro.mediciones.cintura || 0
+        );
+        formdata.append(
+          "cadera_superior",
+          nuevoRegistro.mediciones.cadera || 0
+        );
         formdata.append(
           "ancho_manga_corta_superior",
-          nuevoRegistro.mediciones.ancho_manga_corta
+          nuevoRegistro.mediciones.ancho_manga_corta || 0
         );
         formdata.append(
           "ancho_manga_larga_superior",
-          nuevoRegistro.mediciones.ancho_manga_larga
+          nuevoRegistro.mediciones.ancho_manga_larga || 0
         );
         formdata.append(
           "largo_manga_corta_superior",
-          nuevoRegistro.mediciones.largo_manga_corta
+          nuevoRegistro.mediciones.largo_manga_corta || 0
         );
         formdata.append(
           "largo_manga_larga_superior",
-          nuevoRegistro.mediciones.largo_manga_larga
+          nuevoRegistro.mediciones.largo_manga_larga || 0
         );
         formdata.append(
           "largo_total_superior",
-          nuevoRegistro.mediciones.largo_total
+          nuevoRegistro.mediciones.largo_total || 0
         );
         formdata.append(
           "alto_pinza_superior",
-          nuevoRegistro.mediciones.alto_pinza
+          nuevoRegistro.mediciones.alto_pinza || 0
         );
       } else {
-        formdata.append("largo_inferior", nuevoRegistro.mediciones.largo);
-        formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura);
-        formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera);
-        formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna);
-        formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
-        formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
-        formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro);
+        formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
+        formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura || 0);
+        formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera || 0);
+        formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna || 0);
+        formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla || 0);
+        formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo || 0);
+        formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro || 0);
       }
 
       const requestOptions = {
@@ -427,14 +437,6 @@ const RegistroMedicion = ({ clientes }) => {
    * Funcion para agregar una medida
    */
   const agregarOtraMedida = () => {
-    let cantidadAtributos = medicionesSuperior.includes(prenda) ? 14 : 9;
-    // console.log(cantidadAtributos);
-
-    if (
-      idCliente &&
-      prenda &&
-      Object.keys(mediciones).length >= cantidadAtributos
-    ) {
       const datosCliente = cliente.find(
         (cliente) => parseInt(cliente.id) === parseInt(idCliente)
       );
@@ -466,12 +468,7 @@ const RegistroMedicion = ({ clientes }) => {
       }
 
       limpiarCampos();
-      // Add nuevoRegistro to the queue or perform any other action
-    } else {
-      console.log("Hay datos vacios");
-
-      // Display an error message or handle the case where fields are not filled
-    }
+    
   };
 
   const eliminarMedicion = (idCliente, prenda) => {
@@ -595,6 +592,7 @@ const RegistroMedicion = ({ clientes }) => {
               <option value="Chaleco">Chaleco</option>
               <option value="Gabacha medica">Gabacha medica</option>
               <option value="Vestido">Vestido</option>
+              <option value="Filipinas">Filipinas</option>
 
               <option value="Pantalon">Pantalon</option>
               <option value="Enagua">Enagua</option>

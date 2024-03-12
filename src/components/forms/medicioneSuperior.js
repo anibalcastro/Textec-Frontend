@@ -12,7 +12,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -23,7 +22,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="talle_espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -34,7 +32,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="talle_frente"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -45,7 +42,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="busto"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -56,7 +52,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="cintura"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -67,7 +62,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="cadera"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -78,7 +72,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_manga_corta"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -89,7 +82,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_manga_larga"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -100,7 +92,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="ancho_manga_corta"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -111,7 +102,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="ancho_manga_larga"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -122,7 +112,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_total"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
                 <div className="div-inp">
@@ -133,7 +122,6 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="alto_pinza"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                    required
                   />
                 </div>
 

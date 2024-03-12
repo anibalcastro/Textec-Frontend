@@ -20,6 +20,7 @@ const Detail = ({
   const [inputPizarraDisabled, setInputPizarraDisabled] = useState(false);
   const [inputTelasDisabled, setInputTelasDisabled] = useState(false);
   const [customerOrder, setCustomerOrder] = useState([]);
+  const [urlReparacion, setUrlReparacion] = useState(false);
 
   useEffect(() => {
     getCustomersOrder();
@@ -27,16 +28,26 @@ const Detail = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   useEffect(() => {
     const statePizarra = updateStateInputPizarra(order);
     const stateTela = updateStateInputTela(order);
 
     setInputPizarraDisabled(statePizarra);
-    setInputTelasDisabled(stateTela)
+    setInputTelasDisabled(stateTela);
+    getUrl();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const getUrl = () => {
+    const url = window.location.pathname;
+    const contieneReparacion = /reparacion/.test(url);
+
+    if (contieneReparacion) {
+      console.log(contieneReparacion);
+      setUrlReparacion(true);
+    }
+  }
 
   const getCustomersOrder = () => {
     const myHeaders = new Headers();
@@ -50,19 +61,18 @@ const Detail = ({
 
     let idOrden = 0;
 
-    if (ordenId === undefined){
+    if (ordenId === undefined) {
       const currentURL = window.location.href;
       //console.log(currentURL);
-  
+
       const regex = /\/orden\/(\d+)\/pagos/;
       const match = currentURL.match(regex);
       if (match) {
         const numero = match[1];
         //console.log(numero); // Esto imprimirá "30" en la consola
         idOrden = numero;
-      } 
-    }
-    else{
+      }
+    } else {
       idOrden = ordenId;
     }
 
@@ -85,7 +95,7 @@ const Detail = ({
     }
 
     return false;
-  }
+  };
 
   const updateStateInputTela = (orderDetail) => {
     if (parseInt(orderDetail.tela) === 1) {
@@ -93,7 +103,7 @@ const Detail = ({
     }
 
     return false;
-  }
+  };
 
   const handleDeliveryChange = (itemId) => {
     const myHeaders = new Headers();
@@ -167,7 +177,7 @@ const Detail = ({
         const { status } = result;
 
         if (status === 200) {
-          const checkboxPizarra = document.getElementById('cbPizarra');
+          const checkboxPizarra = document.getElementById("cbPizarra");
           checkboxPizarra.disabled = true;
           checkboxPizarra.checked = true;
 
@@ -179,7 +189,6 @@ const Detail = ({
         }
       })
       .catch((error) => console.error(error));
-
   };
 
   /**Method for check Telas, and change true in the database */
@@ -205,7 +214,7 @@ const Detail = ({
         const { status } = result;
 
         if (status === 200) {
-          const checkboxTela = document.getElementById('cbTela');
+          const checkboxTela = document.getElementById("cbTela");
           checkboxTela.disabled = true;
           checkboxTela.checked = true;
           Swal.fire(
@@ -216,7 +225,6 @@ const Detail = ({
         }
       })
       .catch((error) => console.error(error));
-
   };
 
   /**Format date */
@@ -358,37 +366,48 @@ const Detail = ({
               <span>No hay datos de vendedor disponibles.</span>
             )}
           </div>
-          <div className="checkboxContainer">
-            <div className="form-check">
-              <input
-                id="cbPizarra"
-                className="form-check-input"
-                type="checkbox"
-                checked={inputPizarraDisabled || order.pizarra === 1}
-                disabled={inputPizarraDisabled || order.pizarra === 1}
-                onChange={handleCheckboxPizarraChange}
-              />
-              <label className="form-check-label" htmlFor="cbPizarra">
-                <strong>Pizarra</strong>
-                <span className="custom-checkbox"></span>
-              </label>
-            </div>
+          {
+            urlReparacion ? null : (
 
-            <div className="form-check">
-              <input
-                id="cbTela"
-                className="form-check-input"
-                type="checkbox"
-                checked={inputTelasDisabled || order.tela === 1}
-                disabled={inputTelasDisabled || order.tela === 1}
-                onChange={handleCheckboxTelasChange}
-              />
-              <label className="form-check-label" htmlFor="cbTela">
-                <strong>Tela</strong>
-                <span className="custom-checkbox"></span>
-              </label>
-            </div>
-          </div>
+              <div className="checkboxContainer">
+                <div className="form-check">
+                  <input
+                    id="cbPizarra"
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={inputPizarraDisabled || order.pizarra === 1}
+                    disabled={
+                      inputPizarraDisabled ||
+                      order.pizarra === 1 ||
+                      role === "Visor"
+                    }
+                    onChange={handleCheckboxPizarraChange}
+                  />
+                  <label className="form-check-label" htmlFor="cbPizarra">
+                    <strong>Pizarra</strong>
+                    <span className="custom-checkbox"></span>
+                  </label>
+                </div>
+
+                <div className="form-check">
+                  <input
+                    id="cbTela"
+                    className="form-check-input"
+                    type="checkbox"
+                    checked={inputTelasDisabled || order.tela === 1}
+                    disabled={
+                      inputTelasDisabled || order.tela === 1 || role === "Visor"
+                    }
+                    onChange={handleCheckboxTelasChange}
+                  />
+                  <label className="form-check-label" htmlFor="cbTela">
+                    <strong>Tela</strong>
+                    <span className="custom-checkbox"></span>
+                  </label>
+                </div>
+              </div>
+            )
+          }
         </form>
       </div>
 
@@ -432,8 +451,9 @@ const Detail = ({
       </table>
       <hr></hr>
 
-      {customerOrder ? 
-      (<>
+      {urlReparacion ? null : (
+  customerOrder ? (
+    <>
       <Header title={"Clientes"} />
 
       <table className="tabla-medidas">
@@ -442,7 +462,7 @@ const Detail = ({
             <th>Prenda</th>
             <th>Nombre</th>
             <th>Cantidad</th>
-            <th>Entregado</th>
+            {role === "Visor" ? null : <th>Entregado</th>}
           </tr>
         </thead>
 
@@ -453,26 +473,28 @@ const Detail = ({
                 <td>{item.prenda}</td>
                 <td>{item.nombre}</td>
                 <td>{item.cantidad}</td>
-                <td>
-                  <label>
-                    <input
-                      type="checkbox"
-                      name="cantidad"
-                      value="1"
-                      checked={item.entregado === 1}
-                      disabled={item.entregado === 1}
-                      onChange={() => handleDeliveryChange(item.id)}
-                    />
-                    {item.entregado === 1 ? "Entregado" : "No entregado"}
-                  </label>
-                </td>
+                {role === "Visor" ? null : (
+                  <td>
+                    <label>
+                      <input
+                        type="checkbox"
+                        name="cantidad"
+                        value="1"
+                        checked={item.entregado === 1}
+                        disabled={item.entregado === 1}
+                        onChange={() => handleDeliveryChange(item.id)}
+                      />
+                      {item.entregado === 1 ? "Entregado" : "No entregado"}
+                    </label>
+                  </td>
+                )}
               </tr>
             ))}
         </tbody>
       </table>
-      </>) : null}
-
-
+    </>
+  ) : null
+)}
 
       <hr></hr>
       {showAmount ? (

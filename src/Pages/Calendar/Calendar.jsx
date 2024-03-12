@@ -10,6 +10,7 @@ const WeeklySection = ({ week, dates, activities, weekId }) => {
   const [checkedActivities, setCheckedActivities] = useState([]);
 
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
 
   useEffect(() => {
     // Inicializa checkedActivities con los IDs de las actividades que ya están completadas (estado === true)
@@ -66,70 +67,70 @@ const WeeklySection = ({ week, dates, activities, weekId }) => {
   return (
     <React.Fragment>
 
-    <div className="weekly-section-container">
-      <div
-        className={`weekly-section-card card`}
-        style={{ height: cardHeight }}
-      >
-        <div className="weekly-section-card-header card-header">
-          <h2 className="card-title card-title-weekly">{week}</h2>
-          <p>{dates}</p>
-        </div>
+      <div className="weekly-section-container">
+        <div
+          className={`weekly-section-card card`}
+          style={{ height: cardHeight }}
+        >
+          <div className="weekly-section-card-header card-header">
+            <h2 className="card-title card-title-weekly">{week}</h2>
+            <p>{dates}</p>
+          </div>
 
-        <div className="weekly-section-card-body">
-          <button
-            className="weekly-section-button btn btn-primary mb-3"
-            onClick={toggleHidden}
-          >
-            {isHidden ? "Mostrar" : "Ocultar"}
-          </button>
-          {!isHidden && (
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Orden</th>
-                  <th>Completa</th>
-                </tr>
-              </thead>
-              <tbody>
-                {activities.map((activity, index) => (
-                  <tr key={index}>
-                    <td>
-                      {
+          <div className="weekly-section-card-body">
+            <button
+              className="weekly-section-button btn btn-primary mb-3"
+              onClick={toggleHidden}
+            >
+              {isHidden ? "Mostrar" : "Ocultar"}
+            </button>
+            {!isHidden && (
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th>Orden</th>
+                    <th>Completa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activities.map((activity, index) => (
+                    <tr key={index}>
+                      <td>
+                        {
+                          <Link
+                            className="link-nombre"
+                            to={`/orden/${activity.orden.id}`}
+                          >{`${activity.orden.titulo}`}</Link>
+                        }
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={checkedActivities.includes(activity.id)}
+                          disabled={checkedActivities.includes(activity.id) || role === "Visor"}
+                          onChange={() => handleCheckboxChange(activity.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td colSpan="2" style={{ textAlign: "center" }}>
+                      <button className="weekly-section-button btn btn-success">
                         <Link
-                          className="link-nombre"
-                          to={`/orden/${activity.orden.id}`}
-                        >{`${activity.orden.titulo}`}</Link>
-                      }
-                    </td>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={checkedActivities.includes(activity.id)}
-                        disabled={checkedActivities.includes(activity.id)}
-                        onChange={() => handleCheckboxChange(activity.id)}
-                      />
+                          className="linkAddActivity"
+                          to={`/semana/actividades/${weekId}`}
+                        >
+                          Agregar
+                        </Link>
+                      </button>
                     </td>
                   </tr>
-                ))}
-                <tr>
-                  <td colSpan="2" style={{ textAlign: "center" }}>
-                    <button className="weekly-section-button btn btn-success">
-                      <Link
-                        className="linkAddActivity"
-                        to={`/semana/actividades/${weekId}`}
-                      >
-                        Agregar
-                      </Link>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          )}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </React.Fragment>
   );
 };
@@ -264,18 +265,18 @@ const App = () => {
           const itemEndDate = new Date(week.fechaFinal);
           const startDateObj = new Date(startDate);
           const endDateObj = new Date(endDate);
-        
+
           console.log("itemStartDate:", itemStartDate);
           console.log("itemEndDate:", itemEndDate);
           console.log("startDateObj:", startDateObj);
           console.log("endDateObj:", endDateObj);
           console.log("Comparison result:", itemStartDate >= startDateObj && itemEndDate <= endDateObj);
-          
+
           if (itemStartDate >= startDateObj && itemEndDate <= endDateObj) {
             filtro.push({ ...week });
           }
         });
-        
+
 
         setWeeklyActivities(filtro);
       }
@@ -332,9 +333,8 @@ const App = () => {
             onChange={handleFilterTypeChange}
           />
           <label
-            className={`btn ${
-              filterType === "activityName" ? "btn-dark" : "btn-outline-dark"
-            }`}
+            className={`btn ${filterType === "activityName" ? "btn-dark" : "btn-outline-dark"
+              }`}
             htmlFor="filterTypeActivity"
           >
             Nombre de la Actividad
@@ -350,9 +350,8 @@ const App = () => {
             onChange={handleFilterTypeChange}
           />
           <label
-            className={`btn ${
-              filterType === "dateRange" ? "btn-dark" : "btn-outline-dark"
-            }`}
+            className={`btn ${filterType === "dateRange" ? "btn-dark" : "btn-outline-dark"
+              }`}
             htmlFor="filterTypeDateRange"
           >
             Rango de Fechas

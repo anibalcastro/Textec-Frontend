@@ -14,9 +14,11 @@ const AddActivity = () => {
   const { idWeek } = useParams();
 
   const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
   const navigate = useNavigate();
 
   useEffect(() => {
+    alertInvalidatePermission();
     fetchOrders();
     fetchCompany();
     fetchWeekly();
@@ -35,6 +37,30 @@ const AddActivity = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const validateUserPermission = () => {
+    if (role !== "Visor") {
+      return true;
+    }
+
+    return false;
+  };
+
+  const alertInvalidatePermission = () => {
+    if (!validateUserPermission()) {
+      Swal.fire(
+        "Acceso denegado",
+        "No tienes los permisos necesarios para realizar esta acción.",
+        "info"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
+        }
+      });
+    }
+  };
 
   const fetchWeekly = () => {
     const requestOptions = {
@@ -79,6 +105,7 @@ const AddActivity = () => {
 
     const idOrdenSemana = semana.map(item => item.idOrden);
     setActivitiesSaved(idOrdenSemana);
+    setActivitiesDB(idOrdenSemana);
   };
 
   const getNSemana = (semana) => {

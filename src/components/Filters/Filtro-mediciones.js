@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 const FiltroMediciones = ({ datos, filter, type }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 40; // Número de mediciones por página
+  const itemsPerPage = 80; // Número de mediciones por página
   const [typeFilter, setTypeFilter] = useState("Nombre");
 
   useEffect(() => {

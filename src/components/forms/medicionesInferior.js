@@ -12,7 +12,7 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="largo"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
+
           />
         </div>
         <div className="div-inp">
@@ -23,7 +23,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="cintura"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">
@@ -34,7 +33,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="cadera"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">
@@ -45,7 +43,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="pierna"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">
@@ -56,7 +53,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="rodilla"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">
@@ -67,7 +63,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="ruedo"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">
@@ -78,7 +73,6 @@ const MedicionesInferior = ({handleInputChange}) => {
             name="tiro"
             autoComplete="current-text"
             onChange={handleInputChange}
-            required
           />
         </div>
         <div className="div-inp">

@@ -9,7 +9,7 @@ const FilterRepair = ({ datos }) => {
   const [company, setCompany] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [typeFilter, setTypeFilter] = useState("Titulo");
-  const itemsPerPage = 25; // Número de mediciones por página
+  const itemsPerPage = 80; // Número de mediciones por página
   const token = Cookies.get("jwtToken");
 
   useEffect(() => {

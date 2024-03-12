@@ -8,7 +8,7 @@ const FilterOrders = ({ datos, showMonto }) => {
   
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 25; // Número de ordenes por página
+  const itemsPerPage = 80; // Número de ordenes por página
   const [company, setCompany] = useState([]);
   const [typeFilter, setTypeFilter] = useState("Titulo");
 

@@ -51,7 +51,7 @@ const FiltroEmpresa = ({ datos }) => {
     });
   };
 
-  const itemsPerPage = 20; // Número de empresas por página
+  const itemsPerPage = 80; // Número de empresas por página
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentFilteredItems = filtrarDatos().slice(indexOfFirstItem, indexOfLastItem);
