@@ -350,6 +350,22 @@ const Detail = ({
             />
           </div>
 
+          {!urlReparacion ? null : (
+            <div className="div-inp">
+              <label htmlFor="password">Telefono:</label>
+              <input
+                type="text"
+                name="cajero"
+                id="titulo"
+                autoComplete="current-password"
+                disabled
+                value={order.telefono}
+                required
+              />
+            </div>
+          )}
+
+
           <div className="div-inp">
             <label htmlFor="password">Vendedor:</label>
             {Array.isArray(invoice) && invoice && invoice.length > 0 ? (
@@ -452,49 +468,49 @@ const Detail = ({
       <hr></hr>
 
       {urlReparacion ? null : (
-  customerOrder ? (
-    <>
-      <Header title={"Clientes"} />
+        customerOrder ? (
+          <>
+            <Header title={"Clientes"} />
 
-      <table className="tabla-medidas">
-        <thead>
-          <tr>
-            <th>Prenda</th>
-            <th>Nombre</th>
-            <th>Cantidad</th>
-            {role === "Visor" ? null : <th>Entregado</th>}
-          </tr>
-        </thead>
+            <table className="tabla-medidas">
+              <thead>
+                <tr>
+                  <th>Prenda</th>
+                  <th>Nombre</th>
+                  <th>Cantidad</th>
+                  {role === "Visor" ? null : <th>Entregado</th>}
+                </tr>
+              </thead>
 
-        <tbody>
-          {Array.isArray(customerOrder) &&
-            customerOrder.map((item) => (
-              <tr key={item.id}>
-                <td>{item.prenda}</td>
-                <td>{item.nombre}</td>
-                <td>{item.cantidad}</td>
-                {role === "Visor" ? null : (
-                  <td>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name="cantidad"
-                        value="1"
-                        checked={item.entregado === 1}
-                        disabled={item.entregado === 1}
-                        onChange={() => handleDeliveryChange(item.id)}
-                      />
-                      {item.entregado === 1 ? "Entregado" : "No entregado"}
-                    </label>
-                  </td>
-                )}
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </>
-  ) : null
-)}
+              <tbody>
+                {Array.isArray(customerOrder) &&
+                  customerOrder.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.prenda}</td>
+                      <td>{item.nombre}</td>
+                      <td>{item.cantidad}</td>
+                      {role === "Visor" ? null : (
+                        <td>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="cantidad"
+                              value="1"
+                              checked={item.entregado === 1}
+                              disabled={item.entregado === 1}
+                              onChange={() => handleDeliveryChange(item.id)}
+                            />
+                            {item.entregado === 1 ? "Entregado" : "No entregado"}
+                          </label>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </>
+        ) : null
+      )}
 
       <hr></hr>
       {showAmount ? (

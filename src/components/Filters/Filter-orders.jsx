@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 
 const FilterOrders = ({ datos, showMonto }) => {
   const [filter, setFilter] = useState("");
-  
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 80; // Número de ordenes por página
@@ -44,7 +43,7 @@ const FilterOrders = ({ datos, showMonto }) => {
 
     fetchCompany();
     loadingData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleFiltroChange = (event) => {
@@ -58,25 +57,23 @@ const FilterOrders = ({ datos, showMonto }) => {
       return [];
     }
 
-    if (typeFilter ==="Titulo"){
+    if (typeFilter === "Titulo") {
       const datosFiltrados = datos.filter((dato) => {
         const nombreOrden = `${dato.titulo}`;
         return nombreOrden.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Estado"){
+    } else if (typeFilter === "Estado") {
       const datosFiltrados = datos.filter((dato) => {
         const estado = `${dato.estado}`;
         return estado.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Empresa") {
+    } else if (typeFilter === "Empresa") {
       const datosConNombreEmpresa = datos.map((dato) => {
         // Obten el nombre de la empresa basado en id_empresa (asumiendo que tienes una función para esto)
         const nombreEmpresa = nameCompany(dato.id_empresa);
-      
+
         // Retorna un nuevo objeto con el nombre de la empresa agregado
         return { ...dato, nombre_empresa: nombreEmpresa };
       });
@@ -86,9 +83,7 @@ const FilterOrders = ({ datos, showMonto }) => {
         return nombreEmpresa.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-      
-    }
-    else {
+    } else {
       const datosFiltrados = datos.filter((dato) => {
         const nombreOrden = `${dato.titulo}`;
         return nombreOrden.toLowerCase().includes(filter.toLowerCase());
@@ -125,20 +120,19 @@ const FilterOrders = ({ datos, showMonto }) => {
 
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
-        (item) => parseInt(item.id) == parseInt(companyId)
+      (item) => parseInt(item.id) == parseInt(companyId)
     );
 
     if (empresaEncontrada) {
-        return empresaEncontrada.nombre_empresa;
+      return empresaEncontrada.nombre_empresa;
     } else {
-        return "Empresa no encontrada";
+      return "Empresa no encontrada";
     }
-};
+  };
 
-const handleInputFilterSelect = (event) => {
-  setTypeFilter(event.target.value);
-}
-
+  const handleInputFilterSelect = (event) => {
+    setTypeFilter(event.target.value);
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -152,7 +146,7 @@ const handleInputFilterSelect = (event) => {
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     const day = date.getDate();
-    const month = date.getMonth() + 1
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
@@ -191,47 +185,73 @@ const handleInputFilterSelect = (event) => {
               <th>Estado</th>
               <th>Pizarra</th>
               <th>Telas</th>
-              {showMonto && ( <th>Monto</th>)}
+              {showMonto && <th>Monto</th>}
               <th>Fecha</th>
             </tr>
           </thead>
           <tbody>
-            {filterData().map((dato, index) => (
-              <tr key={index}>
-                <td>{iterador + index + 1}</td>
-                <td>
-                  {showMonto ? ( <Link
-                    className="link-nombre"
-                    to={`/orden/${dato.id}/pagos`}
-                  >{`${dato.titulo}`}</Link>) : ( <Link
-                    className="link-nombre"
-                    to={`/orden/${dato.id}`}
-                  >{`${dato.titulo}`}</Link>)}
-                
-                </td>
-                <td>{nameCompany(dato.id_empresa)}</td>
-                <td>{dato.estado}</td>
-                <td>{dato.pizarra ? 'SI' : 'NO'}</td>
-                <td>{dato.tela ? 'SI' : 'NO'}</td>
-                {showMonto && <td>{dato.precio_total}</td>}
-                <td>{formatDate(dato.fecha_orden)}</td>
-              </tr>
-            ))}
+            {filterData()
+              .slice() // Crear una copia para no modificar el array original
+              .sort((a, b) => {
+                const order = {
+                  Taller: 1,
+                  "Entrega tienda": 2,
+                  "Entregada al cliente": 3,
+                };
+
+                // Ordenar por estado
+                const estadoOrderA = order[a.estado] || 0;
+                const estadoOrderB = order[b.estado] || 0;
+                if (estadoOrderA !== estadoOrderB) {
+                  return estadoOrderA - estadoOrderB;
+                }
+
+                // Si el estado es "Taller" o "Entrega tienda", ordenar por fecha en orden descendente
+                if (a.estado === "Taller" || a.estado === "Entrega tienda") {
+                  return new Date(b.fecha_orden) - new Date(a.fecha_orden);
+                }
+
+                return 0; // Si el estado es "Entregada al cliente" o no está definido en el orden, mantener el orden original
+              })
+              .map((dato, index) => (
+                <tr key={index}>
+                  <td>{iterador + index + 1}</td>
+                  <td>
+                    {showMonto ? (
+                      <Link
+                        className="link-nombre"
+                        to={`/orden/${dato.id}/pagos`}
+                      >{`${dato.titulo}`}</Link>
+                    ) : (
+                      <Link
+                        className="link-nombre"
+                        to={`/orden/${dato.id}`}
+                      >{`${dato.titulo}`}</Link>
+                    )}
+                  </td>
+                  <td>{nameCompany(dato.id_empresa)}</td>
+                  <td>{dato.estado}</td>
+                  <td>{dato.pizarra ? "SI" : "NO"}</td>
+                  <td>{dato.tela ? "SI" : "NO"}</td>
+                  {showMonto && <td>{dato.precio_total}</td>}
+                  <td>{formatDate(dato.fecha_orden)}</td>
+                </tr>
+              ))}
           </tbody>
         </table>
-          </div>
+      </div>
 
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={currentPage === index + 1 ? "active" : ""}
-              onClick={() => handleClick(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={currentPage === index + 1 ? "active" : ""}
+            onClick={() => handleClick(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </React.Fragment>
   );
 };

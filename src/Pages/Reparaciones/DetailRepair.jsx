@@ -238,7 +238,7 @@ const RepairDetail = () => {
 
   const changeStateOrder = () => {
     let actualStateOrder = order.estado;
-    const states = ["Pendiente", "En Proceso", "Listo", "Entregado"];
+    const states = ["Taller", "Entregado"];
 
     // Encuentra la posición del estado actual en el array
     const currentPosition = states.indexOf(actualStateOrder);
@@ -273,15 +273,12 @@ const RepairDetail = () => {
         .then((result) => {
           const { status, error } = result;
           if (parseInt(status) === 200) {
-            const resultNotify = notify(nextState);
-
-            if (resultNotify) {
+            
               Swal.fire(
                 "Estado modificado!",
                 `Se ha a modificado el estado de la orden a ${nextState}!`,
                 "success"
               );
-            }
           } else {
             let errorMessage = "";
             for (const message of error) {
@@ -300,113 +297,6 @@ const RepairDetail = () => {
         "No hay un estado siguiente o el estado actual no se encuentra en el array de estados."
       );
     }
-  };
-
-  const returnEmailCompany = (idCompany) => {
-    const data = company.find((company) => company.id === idCompany);
-
-    if (data) {
-      return data.email;
-    } else {
-      return "anibalcastro1515@gmail.com"; // Puedes manejar el caso donde la compañía no existe
-    }
-  };
-
-  const returnPhoneCompany = (idCompany) => {
-    const data = company.find((company) => company.id === idCompany);
-
-    if (data) {
-      return data.telefono_encargado;
-    } else {
-      return "85424471"; // Puedes manejar el caso donde la compañía no existe
-    }
-  };
-
-  const notify = (state) => {
-    Swal.fire({
-      title: "¿Cómo desea notificar a la empresa?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "WhatsApp",
-      confirmButtonColor: "black",
-      cancelButtonText: "Correo electrónico",
-      showCloseButton: true,
-      showCloseButtonText: "No notificar",
-      showCloseButtonColor: "black",
-      reverseButtons: true,
-    }).then((result) => {
-      const mensaje = `Estimado cliente, espero que se encuentre bien. Le informamos que su  pedido se encuentra en ${state}. Estamos a su disposición para cualquier consulta. ¡Gracias por su preferencia!`;
-
-      if (result.isConfirmed) {
-        // Acción si el usuario elige WhatsApp
-        let phoneNumber = returnPhoneCompany(order.id_empresa);
-        phoneNumber = phoneNumber.replace(/[\s-]+/g, ""); // Número de teléfono de destino
-        const url = `https://api.whatsapp.com/send?phone=+506${phoneNumber}&text=${encodeURIComponent(
-          mensaje
-        )}`;
-
-        Swal.fire(
-          "Estado modificado!",
-          `Se ha a modificado el estado de la orden a ${state}, se abrirá la aplicación de WhatsApp para notificar!`,
-          "success"
-        ).then((result) => {
-          if (result.isConfirmed || result.isDismissed) {
-            window.open(url, "_blank");
-          }
-        });
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        const email = returnEmailCompany(order.id_empresa);
-        sendEmail(email, mensaje);
-        return true;
-      } else if (result.dismiss === Swal.DismissReason.close) {
-        Swal.fire(
-          "Estado modificado!",
-          `Se ha a modificado el estado de la orden a ${state}!`,
-          "success"
-        )
-      }
-    });
-  };
-
-  const sendEmail = (email, body) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    var formdata = new FormData();
-    formdata.append("email", email);
-    formdata.append("body", body);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(
-      "https://api.textechsolutionscr.com/api/v1/email/notificacion",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        const { mensaje } = result;
-
-        if (mensaje === "Correo electrónico enviado con éxito") {
-          Swal.fire(
-            "¡Estado modificado con éxito!",
-            `Se ha cambiado el estado y se ha notificado por medio de email a ${email}!`,
-            "success"
-          );
-        } else {
-          Swal.fire(
-            "¡Error!",
-            `Ocurrio un error al enviar el email, intente luego!`,
-            "error"
-          );
-        }
-      })
-      .catch((error) => console.log("Error durante la petición:", error));
   };
 
   const downloadOrder = () => {

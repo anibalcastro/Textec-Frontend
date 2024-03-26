@@ -164,6 +164,8 @@ const EditRepair = () => {
       subtotal: 0,
     });
 
+
+    document.getElementById("producto").value = "";
     calculateTaxAndSubt(subtotal);
   };
 
@@ -249,6 +251,7 @@ const EditRepair = () => {
       precio: total,
       estado: "Pendiente",
       comentario: order.comentario,
+      telefono: order.telefono || "NA",
       detalles: detail.map((detalle) => ({
         id_producto: detalle.id_producto,
         precio_unitario: detalle.precio_unitario,
