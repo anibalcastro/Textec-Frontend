@@ -5,10 +5,9 @@ import Cookies from "js-cookie";
 
 const FilterOrders = ({ datos, showMonto }) => {
   const [filter, setFilter] = useState("");
-  
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 25; // Número de ordenes por página
+  const itemsPerPage = 60; // Número de ordenes por página
   const [company, setCompany] = useState([]);
   const [typeFilter, setTypeFilter] = useState("Titulo");
 
@@ -51,6 +50,7 @@ const FilterOrders = ({ datos, showMonto }) => {
     currency: "CRC",
   });
 
+  /*
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
         (item) => parseInt(item.id) == parseInt(companyId)
@@ -62,6 +62,7 @@ const FilterOrders = ({ datos, showMonto }) => {
         return "Empresa no encontrada";
     }
 };
+*/
 
   const handleFiltroChange = (event) => {
     setFilter(event.target.value);
@@ -74,28 +75,25 @@ const FilterOrders = ({ datos, showMonto }) => {
       return [];
     }
 
-    if (typeFilter ==="Titulo"){
+    if (typeFilter === "Titulo") {
       const datosFiltrados = datos.filter((dato) => {
         const nombreOrden = `${dato.titulo}`;
         return nombreOrden.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Estado"){
+    } else if (typeFilter === "Estado") {
       const datosFiltrados = datos.filter((dato) => {
         const estado = `${dato.estado}`;
         return estado.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else if (typeFilter === "Empresa"){
+    } else if (typeFilter === "Empresa") {
       const datosFiltrados = datos.filter((dato) => {
         const empresa = `${dato.nombre_empresa}`;
         return empresa.toLowerCase().includes(filter.toLowerCase());
       });
       return datosFiltrados;
-    }
-    else {
+    } else {
       const datosFiltrados = datos.filter((dato) => {
         const nombreOrden = `${dato.titulo}`;
         return nombreOrden.toLowerCase().includes(filter.toLowerCase());
@@ -133,19 +131,20 @@ const FilterOrders = ({ datos, showMonto }) => {
   const formatDate = (inputDate) => {
     const date = new Date(inputDate);
     const day = date.getDate();
-    const month = date.getMonth() + 1
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     return `${day}/${month}/${year}`;
   };
 
-const handleInputFilterSelect = (event) => {
-  setTypeFilter(event.target.value);
-}
+  const handleInputFilterSelect = (event) => {
+    setTypeFilter(event.target.value);
+  };
 
+  const indexOfFirstItem = (currentPage - 1) * itemsPerPage;
+  const indexOfLastItem = indexOfFirstItem + itemsPerPage;
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentData = filterData().slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filterData().length / itemsPerPage);
 
@@ -184,71 +183,66 @@ const handleInputFilterSelect = (event) => {
               <th>Titulo</th>
               <th>Empresa</th>
               <th>Estado</th>
-              {showMonto && ( <th>Monto</th>)}
+              {showMonto && <th>Monto</th>}
               <th>Fecha</th>
             </tr>
           </thead>
           <tbody>
-          {filterData().map((dato, index) => (
-  <tr key={index}>
-    <td>{iterador + index + 1}</td>
-    <td>
-      {showMonto ? (
-        dato.orden_id ? (
-          <Link
-            className="link-nombre"
-            to={`/orden/${dato.orden_id}/pagos`}
-          >
-            {`${dato.titulo} - Orden`}
-          </Link>
-        ) : (
-          <Link
-            className="link-nombre"
-            to={`/reparaciones/${dato.reparacion_id}/pagos`}
-          >
-            {`${dato.titulo} - Reparación`}
-          </Link>
-        )
-      ) : (
-        dato.orden_id ? (
-          <Link
-            className="link-nombre"
-            to={`/orden/${dato.id}`}
-          >
-            {`${dato.titulo}`}
-          </Link>
-        ) : (
-          <Link
-            className="link-nombre"
-            to={`/reparacion/${dato.id}`}
-          >
-            {`${dato.titulo}`}
-          </Link>
-        )
-      )}
-    </td>
-    <td>{dato.nombre_empresa}</td>
-    <td>{dato.estado}</td>
-    {showMonto && <td>{formatCurrencyCRC.format(dato.monto)}</td>}
-    <td>{dato.fecha_orden ? formatDate(dato.fecha_orden) : formatDate(dato.fecha)}</td>
-  </tr>
-))}
-
+            {currentData.map((dato, index) => (
+              <tr key={index}>
+                <td>{iterador + index + 1}</td>
+                <td>
+                  {showMonto ? (
+                    dato.orden_id ? (
+                      <Link
+                        className="link-nombre"
+                        to={`/orden/${dato.orden_id}/pagos`}
+                      >
+                        {`${dato.titulo} - Orden`}
+                      </Link>
+                    ) : (
+                      <Link
+                        className="link-nombre"
+                        to={`/reparaciones/${dato.reparacion_id}/pagos`}
+                      >
+                        {`${dato.titulo} - Reparación`}
+                      </Link>
+                    )
+                  ) : dato.orden_id ? (
+                    <Link className="link-nombre" to={`/orden/${dato.id}`}>
+                      {`${dato.titulo}`}
+                    </Link>
+                  ) : (
+                    <Link className="link-nombre" to={`/reparacion/${dato.id}`}>
+                      {`${dato.titulo}`}
+                    </Link>
+                  )}
+                </td>
+                <td>{dato.nombre_empresa}</td>
+                <td>{dato.estado}</td>
+                {showMonto && <td>{formatCurrencyCRC.format(dato.monto)}</td>}
+                <td>
+                  {dato.fecha_orden
+                    ? formatDate(dato.fecha_orden)
+                    : formatDate(dato.fecha)}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
-          </div>
+      </div>
 
-        <div className="pagination">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              className={currentPage === index + 1 ? "active" : ""}
-              onClick={() => handleClick(index + 1)}
-            >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+      <div className="pagination">
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            className={currentPage === index + 1 ? "active" : ""}
+            onClick={() => handleClick(index + 1)}
+          >
+            {index + 1}
+          </button>
+        ))}
+      </div>
     </React.Fragment>
   );
 };

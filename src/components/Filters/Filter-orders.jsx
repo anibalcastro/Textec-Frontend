@@ -197,6 +197,7 @@ const FilterOrders = ({ datos, showMonto }) => {
                   Taller: 1,
                   "Entrega tienda": 2,
                   "Entregada al cliente": 3,
+                  "Anulada":4
                 };
 
                 // Ordenar por estado
