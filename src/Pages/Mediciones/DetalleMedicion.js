@@ -21,6 +21,7 @@ const DetalleMedicion = () => {
     "Chaleco",
     "Gabacha medica",
     "Vestido",
+    "Filipinas"
   ];
 
   /**Lista de mediciones inferiores */
