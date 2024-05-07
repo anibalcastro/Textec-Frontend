@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 const Detail = ({
   order,
@@ -21,6 +21,7 @@ const Detail = ({
   const [inputTelasDisabled, setInputTelasDisabled] = useState(false);
   const [customerOrder, setCustomerOrder] = useState([]);
   const [urlReparacion, setUrlReparacion] = useState(false);
+  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     getCustomersOrder();
@@ -35,6 +36,7 @@ const Detail = ({
     setInputPizarraDisabled(statePizarra);
     setInputTelasDisabled(stateTela);
     getUrl();
+    getFiles();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -47,7 +49,32 @@ const Detail = ({
       console.log(contieneReparacion);
       setUrlReparacion(true);
     }
-  }
+  };
+
+  const getFiles = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/orders/${ordenId}/files`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { data, status } = result;
+
+        if (status === 200) {
+          setFiles(data);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
   const getCustomersOrder = () => {
     const myHeaders = new Headers();
@@ -82,7 +109,6 @@ const Detail = ({
     )
       .then((response) => response.json())
       .then((result) => {
-        //console.log(result);
         const { data } = result;
         setCustomerOrder(data);
       })
@@ -142,6 +168,55 @@ const Detail = ({
             return item;
           });
 
+          // Actualiza el estado de customerOrder con el nuevo estado de entrega
+          setCustomerOrder(updatedCustomerOrder);
+        }
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const handleDeliveryShop = (itemId) => {
+    //console.log(itemId);
+
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/personas/taller/modificar/estado/${itemId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        //console.log(result);
+        const { status } = result;
+
+        if (status === 200) {
+          Swal.fire(
+            "Notificación",
+            "Se ha marcado que fue entregado correctamente",
+            "success"
+          );
+
+          console.log("entra");
+
+          // Actualiza el estado de customerOrder solo si la solicitud fue exitosa
+          const updatedCustomerOrder = customerOrder.map((item) => {
+            if (item.id === itemId) {
+              // Si el ID del elemento coincide, cambia el estado de entrega
+              return {
+                ...item,
+                taller: item.taller === 1 ? 0 : 1, // Si estaba entregado, cambia a no entregado; si no estaba entregado, cambia a entregado
+              };
+            }
+            return item;
+          });
+          console.log("entra");
           // Actualiza el estado de customerOrder con el nuevo estado de entrega
           setCustomerOrder(updatedCustomerOrder);
         }
@@ -279,6 +354,46 @@ const Detail = ({
     return false;
   };
 
+  const deleteFile = (file_path) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Quieres borrar este archivo?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, borrar',
+      cancelButtonText: 'Cancelar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const requestOptions = {
+          method: 'DELETE',
+          redirect: 'follow'
+        };
+  
+        fetch(`https://api.textechsolutionscr.com/api/v1/files/delete/${file_path}`, requestOptions)
+          .then(response => response.json())
+          .then(result => {
+            const { status } = result;
+  
+            if (parseInt(status) === 200) {
+              // Muestra una alerta SweetAlert indicando que el archivo fue borrado exitosamente
+              Swal.fire('¡Borrado!', 'El archivo fue borrado exitosamente.', 'success').then((confirm) => {
+                if (confirm.isConfirmed){
+                  window.location.reload();
+                }
+              });
+
+            }
+          })
+          .catch(error => {
+            console.error(error);
+            // Muestra una alerta SweetAlert indicando que ocurrió un error
+            Swal.fire('Error', 'Ocurrió un error al borrar el archivo.', 'error');
+          });
+      }
+    });
+
+  }
+
   //Const showAmount
   const showAmount = validateRole();
 
@@ -296,6 +411,17 @@ const Detail = ({
               id="titulo"
               autoComplete="current-password"
               value={order.id}
+              disabled
+            />
+          </div>
+          <div className="div-inp">
+            <label htmlFor="password">Proforma:</label>
+            <input
+              type="text"
+              name="titulo"
+              id="titulo"
+              autoComplete="current-password"
+              value={order.proforma}
               disabled
             />
           </div>
@@ -365,7 +491,6 @@ const Detail = ({
             </div>
           )}
 
-
           <div className="div-inp">
             <label htmlFor="password">Vendedor:</label>
             {Array.isArray(invoice) && invoice && invoice.length > 0 ? (
@@ -382,48 +507,45 @@ const Detail = ({
               <span>No hay datos de vendedor disponibles.</span>
             )}
           </div>
-          {
-            urlReparacion ? null : (
-
-              <div className="checkboxContainer">
-                <div className="form-check">
-                  <input
-                    id="cbPizarra"
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={inputPizarraDisabled || order.pizarra === 1}
-                    disabled={
-                      inputPizarraDisabled ||
-                      order.pizarra === 1 ||
-                      role === "Visor"
-                    }
-                    onChange={handleCheckboxPizarraChange}
-                  />
-                  <label className="form-check-label" htmlFor="cbPizarra">
-                    <strong>Pizarra</strong>
-                    <span className="custom-checkbox"></span>
-                  </label>
-                </div>
-
-                <div className="form-check">
-                  <input
-                    id="cbTela"
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={inputTelasDisabled || order.tela === 1}
-                    disabled={
-                      inputTelasDisabled || order.tela === 1 || role === "Visor"
-                    }
-                    onChange={handleCheckboxTelasChange}
-                  />
-                  <label className="form-check-label" htmlFor="cbTela">
-                    <strong>Tela</strong>
-                    <span className="custom-checkbox"></span>
-                  </label>
-                </div>
+          {urlReparacion ? null : (
+            <div className="checkboxContainer">
+              <div className="form-check">
+                <input
+                  id="cbPizarra"
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={inputPizarraDisabled || order.pizarra === 1}
+                  disabled={
+                    inputPizarraDisabled ||
+                    order.pizarra === 1 ||
+                    role === "Visor"
+                  }
+                  onChange={handleCheckboxPizarraChange}
+                />
+                <label className="form-check-label" htmlFor="cbPizarra">
+                  <strong>Pizarra</strong>
+                  <span className="custom-checkbox"></span>
+                </label>
               </div>
-            )
-          }
+
+              <div className="form-check">
+                <input
+                  id="cbTela"
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={inputTelasDisabled || order.tela === 1}
+                  disabled={
+                    inputTelasDisabled || order.tela === 1 || role === "Visor"
+                  }
+                  onChange={handleCheckboxTelasChange}
+                />
+                <label className="form-check-label" htmlFor="cbTela">
+                  <strong>Tela</strong>
+                  <span className="custom-checkbox"></span>
+                </label>
+              </div>
+            </div>
+          )}
         </form>
       </div>
 
@@ -467,50 +589,104 @@ const Detail = ({
       </table>
       <hr></hr>
 
-      {urlReparacion ? null : (
-        customerOrder ? (
-          <>
-            <Header title={"Clientes"} />
+      {urlReparacion ? null : customerOrder ? (
+        <>
+          <Header title={"Clientes"} />
 
-            <table className="tabla-medidas">
-              <thead>
-                <tr>
-                  <th>Prenda</th>
-                  <th>Nombre</th>
-                  <th>Cantidad</th>
-                  {role === "Visor" ? null : <th>Entregado</th>}
-                </tr>
-              </thead>
+          <table className="tabla-medidas">
+            <thead>
+              <tr>
+                <th>Prenda</th>
+                <th>Nombre</th>
+                <th>Cantidad</th>
+                {role === "Visor" ? null : <th>Taller</th>}
+                {role === "Visor" ? null : <th>Cliente</th>}
+              </tr>
+            </thead>
 
-              <tbody>
-                {Array.isArray(customerOrder) &&
-                  customerOrder.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.prenda}</td>
-                      <td>{item.nombre}</td>
-                      <td>{item.cantidad}</td>
-                      {role === "Visor" ? null : (
-                        <td>
-                          <label>
-                            <input
-                              type="checkbox"
-                              name="cantidad"
-                              value="1"
-                              checked={item.entregado === 1}
-                              disabled={item.entregado === 1}
-                              onChange={() => handleDeliveryChange(item.id)}
-                            />
-                            {item.entregado === 1 ? "Entregado" : "No entregado"}
-                          </label>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </>
-        ) : null
+            <tbody>
+            {Array.isArray(customerOrder) && customerOrder.map((item) => {
+  // Imprime el objeto 'item' en la consola
+
+
+  // Retorna los elementos JSX
+  return (
+    <tr key={item.id}>
+      {/* Muestra la información de 'prenda', 'nombre' y 'cantidad' */}
+      <td>{item.prenda}</td>
+      <td>{item.nombre}</td>
+      <td>{item.cantidad}</td>
+
+      {/* Manejo de la casilla de verificación para 'taller' */}
+      {role !== "Visor" && (
+        <td>
+          <label>
+            <input
+              type="checkbox"
+              name="taller"
+              value="1"
+              checked={item.taller === 1}
+              disabled={item.taller === 1}
+              onChange={() => handleDeliveryShop( item.id)}
+            />
+            {item.taller === 1 ? "Entregado" : "No entregado"}
+          </label>
+        </td>
       )}
+
+      {/* Manejo de la casilla de verificación para 'entregado' */}
+      {role !== "Visor" && (
+        <td>
+          <label>
+            <input
+              type="checkbox"
+              name="cantidad"
+              value="1"
+              checked={item.entregado === 1}
+              disabled={item.entregado === 1}
+              onChange={() => handleDeliveryChange(item.id)}
+            />
+            {item.entregado === 1 ? "Entregado" : "No entregado"}
+          </label>
+        </td>
+      )}
+    </tr>
+  );
+})}
+
+            </tbody>
+          </table>
+        </>
+      ) : null}
+
+      <hr></hr>
+      {showAmount && Array.isArray(files) && files.length > 0 ? (
+        <>
+          <Header title="Archivos" />
+          <table className="tabla-medidas">
+            <thead>
+              <tr>
+                <th>Nombre Archivo</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {files.map((item) => (
+                <tr key={item.file_path}>
+                  <td>
+                    <Link className="link-nombre" to={item.url}>
+                      {`${item.file_path}`}
+                    </Link>
+                  </td>
+                  <td>
+                    <button className="btn-eliminar" onClick={()=> deleteFile(item.file_path)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
 
       <hr></hr>
       {showAmount ? (
@@ -522,7 +698,9 @@ const Detail = ({
                 <th>Subtotal</th>
                 <th>IVA 13%</th>
                 <th>Total</th>
+                <th>Abono</th>
                 <th>Monto pendiente</th>
+                
               </tr>
             </thead>
 
@@ -533,6 +711,7 @@ const Detail = ({
                     <td>{formatCurrencyCRC.format(item.subtotal)}</td>
                     <td>{formatCurrencyCRC.format(item.iva)}</td>
                     <td>{formatCurrencyCRC.format(item.monto)}</td>
+                    <td>{formatCurrencyCRC.format(item.monto - item.saldo_restante)}</td>
                     <td>{formatCurrencyCRC.format(item.saldo_restante)}</td>
                   </tr>
                 ))}
