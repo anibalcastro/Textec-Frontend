@@ -106,6 +106,7 @@ const PaymentsTable = ({ payments, orderId }) => {
             <th>Fecha</th>
             <th>Estado</th>
             <th>Método de pago</th>
+            <th># / Comentario</th>
             <th>Monto</th>
             <th>Cajero</th>
             {permissions && (<th>Acciones</th>)}
@@ -120,6 +121,7 @@ const PaymentsTable = ({ payments, orderId }) => {
                 <td>{formatDate(item.created_at)}</td>
                 <td>{item.estado}</td>
                 <td>{item.metodo_pago}</td>
+                <td>{item.comentarios}</td>
                 <td>{formatCurrencyCRC.format(item.monto)}</td>
                 <td>{item.cajero}</td>
                 {permissions && (<td className="table-button-content">

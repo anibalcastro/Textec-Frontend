@@ -397,6 +397,7 @@ const DetailPayment = () => {
                   // Recargar la página después de que se cierre la alerta
                   const saldo_restante = invoice.saldo_restante - monto;
                   setInvoice({ ...invoice, saldo_restante });
+                  window.location.reload();
                 });
               } else {
                 Swal.fire(
@@ -426,6 +427,7 @@ const DetailPayment = () => {
                     }
                     const saldo_restante = invoice.saldo_restante - monto;
                     setInvoice({ ...invoice, saldo_restante });
+                    window.location.reload();
                   });
                 } else {
                   Swal.fire(
@@ -450,6 +452,7 @@ const DetailPayment = () => {
                     // Recargar la página después de que se cierre la alerta
                     const saldo_restante = invoice.saldo_restante - monto;
                     setInvoice({ ...invoice, saldo_restante });
+                    window.location.reload();
                   });
                 } else {
                   Swal.fire(
