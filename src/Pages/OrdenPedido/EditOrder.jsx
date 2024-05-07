@@ -9,14 +9,16 @@ const EditOrder = () => {
   const [order, setOrder] = useState({
     id: 0,
     titulo: "",
+    proforma : 0,
     id_empresa: 0,
-    estado: "Pendiente",
+    estado: "Taller",
     fecha_orden: "",
     cajero: "",
     descripcion: "NA",
   });
 
   const [orderDetail, setOrderDetail] = useState({
+    id: 0,
     id_producto: 0,
     cantidad: 0,
     descripcion: "",
@@ -33,7 +35,6 @@ const EditOrder = () => {
   const [total, setTotal] = useState(0);
   const [products, setProducts] = useState([]);
 
-
   const { ordenId } = useParams();
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
@@ -45,37 +46,33 @@ const EditOrder = () => {
     fetchProducts();
     getCompany();
     loadingData();
-   
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-
   const validateUserPermission = () => {
-    if (role !== "Visor"){
-      return true
+    if (role !== "Visor") {
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   const alertInvalidatePermission = () => {
-    if (!validateUserPermission()){
+    if (!validateUserPermission()) {
       Swal.fire(
         "Acceso denegado",
         "No tienes los permisos necesarios para realizar esta acción.",
         "info"
       ).then((result) => {
-        if(result.isConfirmed){
-          navigate("/inicio")
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
         }
-        else{
-          navigate("/inicio")
-        }
-      })
-
+      });
     }
-
-  }
+  };
 
   const fetchOrder = () => {
     var myHeaders = new Headers();
@@ -106,7 +103,7 @@ const EditOrder = () => {
         }
       })
       .catch((error) => console.log("error", error));
-  };  
+  };
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
     style: "currency",
@@ -150,6 +147,8 @@ const EditOrder = () => {
 
     let subtotal = orderDetail.cantidad * orderDetail.precio_unitario;
 
+    console.log(orderDetail);
+
     setDetail([...detail, { ...orderDetail, subtotal }]);
 
     subtotal += total;
@@ -158,10 +157,11 @@ const EditOrder = () => {
 
     // Reinicia el estado de detalleProducto para el próximo detalle
     setOrderDetail({
-      id_producto: "",
-      cantidad: "",
+      id: 0,
+      id_producto: 0,
+      cantidad: 0,
       descripcion: "",
-      precio_unitario: "",
+      precio_unitario: 0,
       subtotal: 0,
     });
 
@@ -179,12 +179,13 @@ const EditOrder = () => {
 
   const handleInputChangeProduct = (event) => {
     const selectedProductId = event.target.value;
+    console.log("Nuevo ID de producto seleccionado:", selectedProductId);
 
-
-    setOrderDetail({
-      ...orderDetail,
-      id_producto: selectedProductId || ""
-    });
+    // Actualiza el estado de orderDetail con el nuevo id_producto
+    setOrderDetail((prevDetail) => ({
+      ...prevDetail,
+      id_producto: selectedProductId,
+    }));
   };
 
   const fetchProducts = () => {
@@ -213,15 +214,14 @@ const EditOrder = () => {
    * @param {*} IdProduct
    * @param {*} count
    */
-  const deleteDetail = (descripcion, IdProducto, cantidad, subtotal) => {
+  const deleteDetail = (id) => {
     const updatedDetail = detail.filter(
-      (item) =>
-        item.descripcion !== descripcion ||
-        item.id_producto !== IdProducto ||
-        item.cantidad !== cantidad
+      (item) => parseInt(item.id) !== parseInt(id)
     );
 
-    let newAmountTotal = total - subtotal;
+    const dataFilter = detail.filter((x) => parseInt(x.id) === parseInt(id));
+
+    let newAmountTotal = total - dataFilter[0].subtotal;
 
     setTotal(newAmountTotal);
     calculateTaxAndSubt(newAmountTotal);
@@ -245,12 +245,14 @@ const EditOrder = () => {
 
     const orden = {
       titulo: order.titulo,
+      proforma: order.proforma,
       id_empresa: order.id_empresa,
       fecha_orden: order.fecha_orden,
       precio_total: total,
-      estado: "Pendiente",
+      estado: order.estado,
       comentario: order.comentario,
       detalles: detail.map((detalle) => ({
+        id: detalle.id,
         id_producto: detalle.id_producto,
         nombre_producto: detalle.nombre_producto,
         precio_unitario: detalle.precio_unitario,
@@ -265,7 +267,7 @@ const EditOrder = () => {
           iva: parseFloat(tax),
           monto: parseFloat(total),
           saldo_restante: parseFloat(total),
-          comentario: "Muchas gracias por su compra",
+          comentario: invoice[0].comentario,
           cajero: invoice[0].cajero,
         },
       ],
@@ -286,7 +288,6 @@ const EditOrder = () => {
     )
       .then((response) => response.json())
       .then((result) => {
-
         const { status, error } = result;
 
         if (parseInt(status) === 200) {
@@ -357,35 +358,36 @@ const EditOrder = () => {
     }
   };
 
-  const editDetailProduct = (
-    nombre_producto,
-    IdProduct,
-    cantidad,
-    descripcion,
-    subtotal
-  ) => {
+  const editDetailProduct = (id) => {
     // Crea un nuevo objeto de detalle con los valores proporcionados
+    const dataDetail = detail.filter(
+      (item) => parseInt(item.id) === parseInt(id)
+    );
 
-    const precio_unitario = subtotal / cantidad;
+    //const precio_unitario = subtotal / cantidad;
 
     const updatedDetail = {
-      nombre_producto: nombre_producto,
-      IdProducto: IdProduct,
-      cantidad: cantidad,
-      descripcion: descripcion,
-      precio_unitario: precio_unitario,
+      id: id,
+      nombre_producto: nameProduct(dataDetail[0].id_producto),
+      id_producto: dataDetail[0].id_producto,
+      cantidad: dataDetail[0].cantidad,
+      descripcion: dataDetail[0].descripcion,
+      precio_unitario: dataDetail[0].precio_unitario,
     };
 
     let amountTotal = total;
 
-    amountTotal = amountTotal - subtotal;
+
+    const subtotalDetalle = dataDetail[0].precio_unitario * dataDetail[0].cantidad;
+ 
+    amountTotal = amountTotal - subtotalDetalle
 
     calculateTaxAndSubt(amountTotal);
     setTotal(amountTotal);
 
     // Actualiza el estado orderDetail con el nuevo detalle
     setOrderDetail(updatedDetail);
-    deleteDetail(descripcion, IdProduct, cantidad, subtotal);
+    deleteDetail(id);
   };
 
   const loadingData = () => {
@@ -414,6 +416,14 @@ const EditOrder = () => {
     });
   };
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setOrder({
+      ...order,
+      [name]: value,
+    });
+  };
 
   return (
     <React.Fragment>
@@ -434,6 +444,18 @@ const EditOrder = () => {
           </div>
 
           <div className="div-inp">
+            <label htmlFor="password">Proforma:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma"
+              id="proforma"
+              autoComplete="current-password"
+              value={order.proforma}
+            />
+          </div>
+
+          <div className="div-inp">
             <label htmlFor="password">Empresa:</label>
             <input
               type="text"
@@ -444,7 +466,6 @@ const EditOrder = () => {
               disabled
             />
           </div>
-
 
           <div className="div-inp">
             <label htmlFor="password">Estado:</label>
@@ -496,20 +517,25 @@ const EditOrder = () => {
       <div className="form-contenedor">
         <form className="form-registro-clientes" onSubmit={handleSubmit}>
           <div className="div-inp">
+            <input
+              onChange={handleInputChangeDetail}
+              type="hidden"
+              name="id"
+              id="id"
+              value={orderDetail.id}
+            ></input>
+
             <label htmlFor="empresa">Producto:</label>
             <select
-              onChange={handleInputChangeProduct}
               name="producto"
               id="producto"
               required
+              value={orderDetail.id_producto} // El valor actual de orderDetail.id_producto selecciona la opción correspondiente
+              onChange={handleInputChangeProduct} // Manejador de cambio
             >
               <option value="">Selecciona un producto</option>
               {products.map((product) => (
-                <option
-                  key={product.id}
-                  value={product.id}
-                  selected={product.id === orderDetail.id_producto}
-                >
+                <option key={product.id} value={product.id} selected={orderDetail.id_producto == product.id}>
                   {product.nombre_producto}
                 </option>
               ))}
@@ -563,6 +589,7 @@ const EditOrder = () => {
       <table className="tabla-medidas">
         <thead>
           <tr>
+            <th style={{ display: "none" }}>ID</th>
             <th>Producto</th>
             <th>Cantidad</th>
             <th>Descripción</th>
@@ -574,7 +601,8 @@ const EditOrder = () => {
         <tbody>
           {Array.isArray(detail) &&
             detail.map((item) => (
-              <tr key={item.id_producto}>
+              <tr key={item.id}>
+                <td style={{ display: "none" }}>{item.id}</td>
                 <td>{nameProduct(item.id_producto)}</td>
                 <td>{item.cantidad}</td>
                 <td>{item.descripcion}</td>
@@ -582,29 +610,14 @@ const EditOrder = () => {
                 <td className="table-button-content">
                   <button
                     className="btnEdit"
-                    onClick={() =>
-                      editDetailProduct(
-                        item.nombre_producto,
-                        item.id_producto,
-                        item.cantidad,
-                        item.descripcion,
-                        item.subtotal
-                      )
-                    }
+                    onClick={() => editDetailProduct(item.id)}
                   >
                     Editar
                   </button>
 
                   <button
                     className="btnEdit-eliminar"
-                    onClick={() =>
-                      deleteDetail(
-                        item.descripcion,
-                        item.id_producto,
-                        item.cantidad,
-                        item.subtotal
-                      )
-                    }
+                    onClick={() => deleteDetail(item.id)}
                   >
                     Eliminar
                   </button>

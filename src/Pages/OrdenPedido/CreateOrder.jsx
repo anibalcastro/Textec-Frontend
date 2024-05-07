@@ -15,8 +15,8 @@ const CreateOrder = () => {
   });
   const [orderDetail, setOrderDetail] = useState({
     nombre_producto: "",
-    IdProducto: 0,
-    cantidad: 0,
+    id_producto: 0,
+    cantidad: 1,
     descripcion: "",
     precio_unitario: 0,
     subtotal: 0,
@@ -97,6 +97,23 @@ const CreateOrder = () => {
   const handleSubmitCustomer = (event) => {
     event.preventDefault();
 
+    // Acceder al valor del campo 'nombre_cliente' del formulario
+    const nombre_cliente = event.target.elements.nombre_cliente.value;
+
+    // Obtener la descripción actual
+    let descripcionActual = orderDetail.descripcion;
+
+    // Agregar el nombre del cliente a la descripción actual, separado por comas
+    descripcionActual = descripcionActual
+      ? `${descripcionActual}, ${nombre_cliente}`
+      : `Para: ${nombre_cliente}`;
+
+    // Actualizar el estado 'orderDetail' con la nueva descripción
+    setOrderDetail((prevState) => ({
+      ...prevState,
+      descripcion: descripcionActual,
+    }));
+
     let array = [];
     array.push(arrayCustomer);
     array.push(customer);
@@ -138,6 +155,7 @@ const CreateOrder = () => {
     // Reinicia el estado de detalleProducto para el próximo detalle
     setOrderDetail({
       producto: "",
+      id_producto: "",
       cantidad: "",
       descripcion: "",
       precio_unitario: "",
@@ -165,13 +183,24 @@ const CreateOrder = () => {
     setCustomer(updatedCustomer); // Asignar el próximo ID al nuevo cliente
   };
 
-  const deleteCustomers = (nombre, prenda, cantidad) => {
+  const deleteCustomers = (id, nombre_cliente) => {
     // Filtrar el array de clientes para excluir el objeto con los valores dados
-    const nuevoArray = arrayCustomer.filter(cliente => {
-      return cliente.nombre_cliente !== nombre || cliente.prenda !== prenda || cliente.cantidad !== cantidad;
-    });
-
+    const nuevoArray = arrayCustomer.filter((cliente, index) => index !== id);
     setArrayCustomer(nuevoArray);
+
+    // Actualizar la descripción del pedido eliminando el nombre del cliente
+    let nuevaDescripcion = orderDetail.descripcion;
+
+    // Buscar y reemplazar el nombre del cliente en la descripción
+   // Reemplazar el nombre del cliente en la descripción con una cadena vacía
+    nuevaDescripcion = nuevaDescripcion.replace(new RegExp(`${nombre_cliente},?\\s*`, 'g'), '');
+
+
+    // Actualizar el estado 'orderDetail' con la nueva descripción
+    setOrderDetail((prevState) => ({
+      ...prevState,
+      descripcion: nuevaDescripcion,
+    }));
   };
 
   const handleInputChange = (event) => {
@@ -201,7 +230,7 @@ const CreateOrder = () => {
 
     setOrderDetail({
       ...orderDetail,
-      IdProducto: parseInt(selectedProductId),
+      id_producto: parseInt(selectedProductId),
       nombre_producto: selectedProduct.nombre_producto,
     });
   };
@@ -322,17 +351,18 @@ const CreateOrder = () => {
     const ordenJSON = {
       orden: {
         titulo: orderCompany.titulo,
+        proforma: orderCompany.proforma || 0,
         id_empresa: orderCompany.id_empresa,
         fecha_orden: today,
-        precio_total: total,
+        precio_total: total || 0,
         estado: "Taller",
         comentario: orderCompany.comentario,
         detalles: detail.map((detalle) => ({
-          id_producto: detalle.IdProducto,
+          id_producto: detalle.id_producto,
           nombre_producto: detalle.nombre_producto,
-          precio_unitario: detalle.precio_unitario,
+          precio_unitario: detalle.precio_unitario || 0 ,
           cantidad: detalle.cantidad,
-          subtotal: detalle.subtotal,
+          subtotal: detalle.subtotal || 0,
           descripcion: detalle.descripcion,
         })),
         factura: [
@@ -347,10 +377,10 @@ const CreateOrder = () => {
           },
         ],
         persona: arrayCustomer.map((item) => ({
-          nombre : item.nombre_cliente,
-          prenda : item.prenda,
-          cantidad : item.cantidad
-        })), 
+          nombre: item.nombre_cliente,
+          prenda: item.prenda,
+          cantidad: item.cantidad,
+        })),
       },
     };
 
@@ -378,21 +408,17 @@ const CreateOrder = () => {
         //console.log(result);
 
         if (parseInt(status) === 200) {
-          const sendNotification = notify();
-
-          if (sendNotification) {
-            Swal.fire(
-              "Orden creada con éxito",
-              "Se ha registrado la orden y se ha generado una factura.",
-              "success"
-            ).then((result) => {
-              if (result.isConfirmed) {
-                navigate("/orden");
-              } else {
-                navigate("/orden");
-              }
-            });
-          }
+          Swal.fire(
+            "Orden creada con éxito",
+            "Se ha registrado la orden y se ha generado una factura.",
+            "success"
+          ).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/orden");
+            } else {
+              navigate("/orden");
+            }
+          });
         } else {
           let errorMessage = "";
 
@@ -404,121 +430,6 @@ const CreateOrder = () => {
         }
       })
       .catch((error) => console.log("error", error));
-  };
-
-  const returnEmailCompany = (idCompany) => {
-    const data = company.find((company) => company.id === idCompany);
-
-    if (data) {
-      return data.email;
-    } else {
-      return "anibalcastro1515@gmail.com"; // Puedes manejar el caso donde la compañía no existe
-    }
-  };
-
-  const returnPhoneCompany = (idCompany) => {
-    const data = company.find((company) => company.id === idCompany);
-
-    if (data) {
-      return data.telefono_encargado;
-    } else {
-      return "85424471"; // Puedes manejar el caso donde la compañía no existe
-    }
-  };
-
-  const notify = () => {
-    Swal.fire({
-      title: "¿Cómo desea notificar a la empresa?",
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "WhatsApp",
-      confirmButtonColor: "black",
-      cancelButtonText: "Correo electrónico",
-      showCloseButton: true,
-      showCloseButtonText: "No notificar",
-      showCloseButtonColor: "black",
-      reverseButtons: true,
-    }).then((result) => {
-      const mensaje =
-        "Estimado cliente, espero que se encuentre bien. Le informamos que su orden de pedido ha sido registrada en nuestro sistema. Estamos a su disposición para cualquier consulta o ajuste necesario. ¡Gracias por su preferencia!";
-
-      if (result.isConfirmed) {
-        // Acción si el usuario elige WhatsApp
-        let phoneNumber = returnPhoneCompany(orderCompany.id_empresa);
-        phoneNumber = phoneNumber.replace(/[\s-]+/g, ""); // Número de teléfono de destino
-        const url = `https://api.whatsapp.com/send?phone=+506${phoneNumber}&text=${encodeURIComponent(
-          mensaje
-        )}`;
-
-        Swal.fire(
-          "Orden creada con éxito",
-          "Se ha registrado la orden y se ha generado una factura. Se abrirá la aplicación de WhatsApp para notificar al cliente.",
-          "success"
-        ).then((result) => {
-          if (result.isConfirmed || result.isDismissed) {
-            window.open(url, "_blank");
-            navigate("/orden");
-          }
-        });
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        const email = returnEmailCompany(orderCompany.id_empresa);
-        sendEmail(email, mensaje);
-        navigate("/orden");
-      } else if (result.dismiss === Swal.DismissReason.close) {
-        Swal.fire(
-          "Orden creada con éxito",
-          "Se ha registrado la orden y se ha generado una factura.",
-          "success"
-        ).then((result) => {
-          if (result.isConfirmed) {
-            navigate("/orden");
-          } else {
-            navigate("/orden");
-          }
-        });
-      }
-    });
-  };
-
-  const sendEmail = (email, body) => {
-    var myHeaders = new Headers();
-    myHeaders.append("Authorization", `Bearer ${token}`);
-
-    var formdata = new FormData();
-    formdata.append("email", email);
-    formdata.append("body", body);
-
-    var requestOptions = {
-      method: "POST",
-      headers: myHeaders,
-      body: formdata,
-      redirect: "follow",
-    };
-
-    fetch(
-      "https://api.textechsolutionscr.com/api/v1/email/notificacion",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        const { mensaje } = result;
-
-        if (mensaje === "Correo electrónico enviado con éxito") {
-          Swal.fire(
-            "¡Orden creada con éxito!",
-            `Se ha registrado la orden de pedido y se ha generado una factura, se ha notificado al correo,${email}!`,
-            "success"
-          );
-        } else {
-          Swal.fire(
-            "¡Error!",
-            `Ocurrio un error al enviar el email, intente luego!`,
-            "error"
-          );
-        }
-      })
-      .catch((error) => console.log("Error durante la petición:", error));
   };
 
   return (
@@ -534,6 +445,17 @@ const CreateOrder = () => {
               type="text"
               name="titulo"
               id="titulo"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+          <div className="div-inp">
+            <label htmlFor="password">Proforma:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma"
+              id="proforma"
               autoComplete="current-password"
               required
             />
@@ -588,14 +510,19 @@ const CreateOrder = () => {
           <div className="div-inp">
             <label htmlFor="empresa">Producto:</label>
             <select
-              onChange={handleInputChangeProduct}
               name="producto"
               id="producto"
               required
+              value={orderDetail.id_producto} // El valor actual de orderDetail.id_producto selecciona la opción correspondiente
+              onChange={handleInputChangeProduct} // Manejador de cambio
             >
               <option value="">Selecciona un producto</option>
               {products.map((product) => (
-                <option key={product.id} value={product.id}>
+                <option
+                  key={product.id}
+                  value={product.id}
+                  selected={orderDetail.id_producto == product.id}
+                >
                   {product.nombre_producto}
                 </option>
               ))}
@@ -609,6 +536,7 @@ const CreateOrder = () => {
               name="cantidad"
               id="cantidad"
               value={orderDetail.cantidad}
+              min={1}
               required
             />
           </div>
@@ -632,6 +560,7 @@ const CreateOrder = () => {
               type="number"
               name="precio_unitario"
               id="cantidad"
+              min={0}
               value={orderDetail.precio_unitario}
             />
           </div>
@@ -730,15 +659,15 @@ const CreateOrder = () => {
 
         <tbody>
           {Array.isArray(arrayCustomer) &&
-            arrayCustomer.map((item) => (
-              <tr key={item.prenda}>
+            arrayCustomer.map((item, index) => (
+              <tr key={index}>
                 <td>{item.prenda}</td>
                 <td>{item.nombre_cliente}</td>
                 <td>{item.cantidad}</td>
                 <td>
                   <button
                     className="btn-eliminar"
-                    onClick={() => deleteCustomers(item.nombre_cliente, item.prenda, item.cantidad)}
+                    onClick={() => deleteCustomers(index, item.nombre_cliente)}
                   >
                     Eliminar
                   </button>

@@ -128,10 +128,9 @@ const OrderDetail = () => {
     });
   };
 
-
   const changeStateOrder = () => {
     let actualStateOrder = order.estado;
-    const states = ["Taller", "Entrega tienda", "Entregada al cliente"];
+    const states = ["Taller", "Entrega Tienda", "Entregada al cliente"];
 
     // Encuentra la posición del estado actual en el array
     const currentPosition = states.indexOf(actualStateOrder);
@@ -166,13 +165,11 @@ const OrderDetail = () => {
         .then((result) => {
           const { status, error } = result;
           if (parseInt(status) === 200) {
-           
-              Swal.fire(
-                "Estado modificado!",
-                `Se ha a modificado el estado de la orden a ${nextState}!`,
-                "success"
-              );
-            
+            Swal.fire(
+              "Estado modificado!",
+              `Se ha a modificado el estado de la orden a ${nextState}!`,
+              "success"
+            );
           } else {
             let errorMessage = "";
             for (const message of error) {
@@ -328,12 +325,92 @@ const OrderDetail = () => {
     });
   };
 
+  const addFile = () => {
+    // Utilizar SweetAlert para mostrar el formulario
+    Swal.fire({
+      title: "Adjuntar archivo",
+      html: `
+          <form id="adjuntar-archivo-form">
+              <input type="file" id="archivo" name="archivo" required>
+          </form>
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Enviar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        const form = document.getElementById("adjuntar-archivo-form");
+        // Aquí puedes agregar validaciones personalizadas si es necesario
+        if (!form.checkValidity()) {
+          Swal.showValidationMessage("Por favor, completa todos los campos.");
+          return false;
+        }
+        const archivo = form.querySelector('input[type="file"]').files[0];
+        return { archivo };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const archivo = result.value.archivo;
+        if (!archivo) {
+          Swal.fire(
+            "Error",
+            "Por favor, selecciona un archivo válido.",
+            "error"
+          );
+          return;
+        }
+
+        // Crear un FormData para enviar el archivo y el ID de la orden
+        var myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        const formData = new FormData();
+        formData.append("order_id", ordenId);
+        formData.append("file", archivo);
+
+        // Realizar la solicitud de API con fetch
+        fetch("https://api.textechsolutionscr.com/api/v1/files/upload-file", {
+          method: "POST",
+          headers: myHeaders,
+          body: formData,
+          redirect: "follow",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+            // Verificar si la respuesta contiene un código de estado
+            if (data.message === 'Archivo subido y almacenado con éxito.') {
+              Swal.fire(
+                "Éxito",
+                "El archivo ha sido guardado con éxito.",
+                "success"
+              );
+              window.location.reload();
+            } else {
+              Swal.fire(
+                "Error",
+                "Hubo un problema al guardar el archivo.",
+                "error"
+              );
+            }
+          })
+          .catch((error) => {
+            // Manejar errores de la solicitud
+            Swal.fire(
+              "Error",
+              `Hubo un problema en la solicitud al servidor: ${error}`,
+              "error"
+            );
+          });
+      }
+    });
+  };
+
   const redirectPayments = () => {
     navigate(`/orden/${ordenId}/pagos`);
-  }
+  };
   const redirectAddPerson = () => {
     navigate(`/orden/${ordenId}/registrar/persona`);
-  }
+  };
 
   const permissions = validateRole(role);
   const collaboratorPermissions = validatePermissions();
@@ -361,7 +438,7 @@ const OrderDetail = () => {
           </Link>
         )}
 
-        {collaboratorPermissions && order.estado !== "Entregado" && (
+        {collaboratorPermissions && order.estado !== "Entregada al cliente" && (
           <button className="btn" onClick={() => changeStateOrder()}>
             Modificar estado
           </button>
@@ -386,6 +463,12 @@ const OrderDetail = () => {
         {collaboratorPermissions && (
           <button className="btn" onClick={() => redirectAddPerson()}>
             Agregar persona
+          </button>
+        )}
+
+        {collaboratorPermissions && (
+          <button className="btn" onClick={() => addFile()}>
+            Añadir archivo
           </button>
         )}
       </div>
