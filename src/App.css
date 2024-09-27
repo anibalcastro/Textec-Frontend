@@ -110,6 +110,10 @@ main {
   width: 100px;
 }
 
+.dOrdenPedido{
+  white-space: pre-wrap;
+}
+
 /***************************************************/
 
 .chart-container {

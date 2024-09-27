@@ -648,7 +648,7 @@ const CreateOrder = () => {
               <tr key={item.id_producto}>
                 <td>{item.nombre_producto}</td>
                 <td>{item.cantidad}</td>
-                <td>{item.descripcion}</td>
+                <td className="dOrdenPedido">{item.descripcion}</td>
                 <td>{formatCurrencyCRC.format(item.subtotal)}</td>
                 <td>
                   <button

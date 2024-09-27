@@ -644,7 +644,7 @@ const Detail = ({
             detail.map((item) => (
               <tr key={item.id_producto}>
                 <td>{nameProduct(item.id_producto)}</td>
-                <td>{item.descripcion}</td>
+                <td className="dOrdenPedido">{item.descripcion}</td>
                 <td>{item.cantidad}</td>
                 {showAmount ? (
                   <>
