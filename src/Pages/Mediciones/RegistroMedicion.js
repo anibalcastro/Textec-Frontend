@@ -19,7 +19,7 @@ const RegistroMedicion = ({ clientes }) => {
   const role = Cookies.get("role");
 
   /**Lista de mediciones inferiores */
-  const medicionesInferior = ["Short", "Pantalon", "Enagua"];
+  const medicionesInferior = ["Short", "Pantalon"];
   const medicionesSuperior = [
     "Camisa",
     "Gabacha",
@@ -27,8 +27,7 @@ const RegistroMedicion = ({ clientes }) => {
     "Jacket",
     "Chaleco",
     "Gabacha medica",
-    "Vestido",
-    "Filipinas"
+    "Filipinas",
   ];
 
   const prendaSuperior = medicionesSuperior.includes(prenda);
@@ -287,6 +286,8 @@ const RegistroMedicion = ({ clientes }) => {
     let registrosFallidos = [];
 
     const enviarMedicion = (nuevoRegistro) => {
+      
+
       let fecha = obtenerFecha();
       let formdata = new FormData();
       formdata.append("id_cliente", nuevoRegistro.idCliente);
@@ -299,60 +300,45 @@ const RegistroMedicion = ({ clientes }) => {
       formdata.append("talla", nuevoRegistro.mediciones.talla);
       formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
 
-      if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
-        formdata.append(
-          "espalda_superior",
-          nuevoRegistro.mediciones.espalda || 0
-        );
-        formdata.append(
-          "talle_espalda_superior",
-          nuevoRegistro.mediciones.talle_espalda || 0
-        );
-        formdata.append(
-          "talle_frente_superior",
-          nuevoRegistro.mediciones.talle_frente || 0
-        );
+      if (medicionesSuperior.includes(nuevoRegistro.prenda) || nuevoRegistro.prenda === "Vestido") {
+        formdata.append("espalda_superior",nuevoRegistro.mediciones.espalda || 0);
+        formdata.append("talle_espalda_superior", nuevoRegistro.mediciones.talle_espalda || 0);
+        formdata.append("talle_frente_superior", nuevoRegistro.mediciones.talle_frente || 0);
         formdata.append("busto_superior", nuevoRegistro.mediciones.busto || 0);
-        formdata.append(
-          "cintura_superior",
-          nuevoRegistro.mediciones.cintura || 0
-        );
-        formdata.append(
-          "cadera_superior",
-          nuevoRegistro.mediciones.cadera || 0
-        );
-        formdata.append(
-          "ancho_manga_corta_superior",
-          nuevoRegistro.mediciones.ancho_manga_corta || 0
-        );
-        formdata.append(
-          "ancho_manga_larga_superior",
-          nuevoRegistro.mediciones.ancho_manga_larga || 0
-        );
-        formdata.append(
-          "largo_manga_corta_superior",
-          nuevoRegistro.mediciones.largo_manga_corta || 0
-        );
-        formdata.append(
-          "largo_manga_larga_superior",
-          nuevoRegistro.mediciones.largo_manga_larga || 0
-        );
-        formdata.append(
-          "largo_total_superior",
-          nuevoRegistro.mediciones.largo_total || 0
-        );
-        formdata.append(
-          "alto_pinza_superior",
-          nuevoRegistro.mediciones.alto_pinza || 0
-        );
-      } else {
+        formdata.append("cintura_superior",nuevoRegistro.mediciones.cintura || 0);
+        formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera || 0);
+        formdata.append("ancho_manga_corta_superior", nuevoRegistro.mediciones.ancho_manga_corta || 0);
+        formdata.append("ancho_manga_larga_superior", nuevoRegistro.mediciones.ancho_manga_larga || 0);
+        formdata.append("largo_manga_corta_superior", nuevoRegistro.mediciones.largo_manga_corta || 0);
+        formdata.append("largo_manga_larga_superior", nuevoRegistro.mediciones.largo_manga_larga || 0);
+        formdata.append("largo_total_espalda_superior",nuevoRegistro.mediciones.largo_total_espalda || 0);
+        formdata.append("largo_total_superior",nuevoRegistro.mediciones.largo_total_frente || 0);
+        formdata.append("ancho_espalda_superior",nuevoRegistro.mediciones.ancho_espalda || 0);
+        formdata.append("separacion_busto_superior",nuevoRegistro.mediciones.separacion_busto || 0);
+        formdata.append("hombros_superior",nuevoRegistro.mediciones.hombros || 0);
+        formdata.append("puno_superior", nuevoRegistro.mediciones.puno || 0);
+        formdata.append("alto_pinza_superior",nuevoRegistro.mediciones.alto_pinza || 0);
+        formdata.append("altura_cadera_inferior", nuevoRegistro.mediciones.altura_cadera || 0);
+
+      } else if (medicionesInferior.includes(nuevoRegistro.prenda)){
         formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
-        formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("pierna_inferior", nuevoRegistro.mediciones.pierna || 0);
-        formdata.append("rodilla_inferior", nuevoRegistro.mediciones.rodilla || 0);
+        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
+        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
+        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
+        formdata.append("pierna_inferior",nuevoRegistro.mediciones.pierna || 0);
+        formdata.append("rodilla_inferior",nuevoRegistro.mediciones.rodilla || 0);
+        formdata.append("altura_rodilla_inferior",nuevoRegistro.mediciones.altura_rodilla || 0);
         formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo || 0);
         formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro || 0);
+        formdata.append("contorno_tiro_inferior",nuevoRegistro.mediciones.contorno_tiro || 0);
+        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
+      }
+      else if(nuevoRegistro.prenda === "Enagua"){
+        formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
+        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
+        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
+        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
+        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
       }
 
       const requestOptions = {
@@ -437,38 +423,34 @@ const RegistroMedicion = ({ clientes }) => {
    * Funcion para agregar una medida
    */
   const agregarOtraMedida = () => {
-      const datosCliente = cliente.find(
-        (cliente) => parseInt(cliente.id) === parseInt(idCliente)
-      );
-      const nombreCliente = `${datosCliente.nombre} ${datosCliente.apellido1} ${datosCliente.apellido2}`;
-      let nuevoRegistro = {
-        idCliente: idCliente,
-        nombre: nombreCliente,
-        prenda: prenda,
-        mediciones: mediciones,
-      };
+    const datosCliente = cliente.find(
+      (cliente) => parseInt(cliente.id) === parseInt(idCliente)
+    );
+    const nombreCliente = `${datosCliente.nombre} ${datosCliente.apellido1} ${datosCliente.apellido2}`;
+    let nuevoRegistro = {
+      idCliente: idCliente,
+      nombre: nombreCliente,
+      prenda: prenda,
+      mediciones: mediciones,
+    };
 
-      let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
+    let datos = JSON.parse(localStorage.getItem("nuevosRegistros"));
 
-      if (!datos) {
-        localStorage.setItem(
-          "nuevosRegistros",
-          JSON.stringify([nuevoRegistro])
-        );
-        setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
-        setPrenda("");
-      } else {
-        datos.push(nuevoRegistro);
-        //console.log(arrayMediciones);
-        setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
-        //console.log(arrayMediciones);
-        setPrenda("");
+    if (!datos) {
+      localStorage.setItem("nuevosRegistros", JSON.stringify([nuevoRegistro]));
+      setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
+      setPrenda("");
+    } else {
+      datos.push(nuevoRegistro);
+      //console.log(arrayMediciones);
+      setArrayMediciones(arrayMediciones.concat(nuevoRegistro));
+      //console.log(arrayMediciones);
+      setPrenda("");
 
-        localStorage.setItem("nuevosRegistros", JSON.stringify(datos));
-      }
+      localStorage.setItem("nuevosRegistros", JSON.stringify(datos));
+    }
 
-      limpiarCampos();
-    
+    limpiarCampos();
   };
 
   const eliminarMedicion = (idCliente, prenda) => {
@@ -601,6 +583,285 @@ const RegistroMedicion = ({ clientes }) => {
           </div>
 
           <hr className="division"></hr>
+
+          {prenda === "Vestido" && (
+            <>
+              <div className="div-inp">
+                <label htmlFor="espalda">Espalda:</label>
+                <input
+                  type="number"
+                  id="espalda"
+                  name="espalda"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="talle_espalda">Talle de espalda:</label>
+                <input
+                  type="number"
+                  id="talle_espalda"
+                  name="talle_espalda"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="ancho_espalda">Ancho de espalda:</label>
+                <input
+                  type="number"
+                  id="ancho_espalda"
+                  name="ancho_espalda"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="largo_total_espalda">
+                  Largo total espalda:
+                </label>
+                <input
+                  type="number"
+                  id="largo_total_espalda"
+                  name="largo_total_espalda"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="talle_frente">Talle de frente:</label>
+                <input
+                  type="number"
+                  id="talle_frente"
+                  name="talle_frente"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="alto_pinza">Alto de pinza:</label>
+                <input
+                  type="number"
+                  id="alto_pinza"
+                  name="alto_pinza"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="busto">Busto:</label>
+                <input
+                  type="number"
+                  id="busto"
+                  name="busto"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="separacion_busto">Separación busto:</label>
+                <input
+                  type="number"
+                  id="separacion_busto"
+                  name="separacion_busto"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="cintura">Cintura:</label>
+                <input
+                  type="number"
+                  id="cintura"
+                  name="cintura"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="largo_total_frente">Largo total frente:</label>
+                <input
+                  type="number"
+                  id="largo_total_frente"
+                  name="largo_total_frente"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="cadera">Cadera:</label>
+                <input
+                  type="number"
+                  id="cadera"
+                  name="cadera"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="hombros">Hombros:</label>
+                <input
+                  type="number"
+                  id="hombros"
+                  name="hombros"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="largo_manga_corta">Largo Manga Corta:</label>
+                <input
+                  type="number"
+                  id="largo_manga_corta"
+                  name="largo_manga_corta"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="ancho_manga_corta">Ancho Manga Corta:</label>
+                <input
+                  type="number"
+                  id="ancho_manga_corta"
+                  name="ancho_manga_corta"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="largo_manga_larga">Largo Manga Larga:</label>
+                <input
+                  type="number"
+                  id="largo_manga_larga"
+                  name="largo_manga_larga"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="ancho_manga_larga">Ancho Manga Larga:</label>
+                <input
+                  type="number"
+                  id="ancho_manga_larga"
+                  name="ancho_manga_larga"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="puno">Puño:</label>
+                <input
+                  type="number"
+                  id="puno"
+                  name="puno"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="talla">Talla:</label>
+                <input
+                  type="text"
+                  id="talla"
+                  name="talla"
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="altura_cadera">Altura Cadera:</label>
+                <input
+                  type="number"
+                  id="altura_cadera"
+                  name="altura_cadera"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="observaciones">Observaciones:</label>
+                <textarea
+                  id="txtArea"
+                  name="observaciones"
+                  rows="5"
+                  cols="60"
+                  onChange={handleInputChange}
+                ></textarea>
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="colaborador">Sastre:</label>
+                <input
+                  type="text"
+                  id="colaborador"
+                  name="colaborador"
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+            </>
+          )}
+
+          {prenda === "Enagua" && (
+            <>
+              <div className="div-inp">
+                <label htmlFor="text">Largo:</label>
+                <input
+                  type="number"
+                  id="largo"
+                  name="largo"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Cintura:</label>
+                <input
+                  type="number"
+                  id="cintura"
+                  name="cintura"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Cadera:</label>
+                <input
+                  type="number"
+                  id="cadera"
+                  name="cadera"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Altura cadera:</label>
+                <input
+                  type="number"
+                  id="altura_cadera"
+                  name="altura_cadera"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Largo total:</label>
+                <input
+                  type="number"
+                  id="largo_total"
+                  name="largo_total"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+            </>
+          )}
+
 
           {prendaSuperior && (
             <FormMedicionesSuperior handleInputChange={handleInputChange} />

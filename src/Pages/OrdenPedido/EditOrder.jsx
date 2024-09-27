@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../../components/Header/Header";
 import Cookies from "js-cookie";
-import Logo from "../../Images/Logos/Icono (1).webp";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -27,7 +26,17 @@ const EditOrder = () => {
   });
 
   const [invoice, setInvoice] = useState([]);
-
+  const [customer, setCustomer] = useState({
+    prenda: "",
+    nombre_cliente: "",
+    cantidad: "",
+  });
+  const [newCustomer, setNewCustomer] = useState({
+    prenda: "",
+    nombre_cliente: "",
+    cantidad: "",
+  })
+  const [arrayCustomer, setArrayCustomer] = useState([]);
   const [company, setCompany] = useState([]);
   const [detail, setDetail] = useState([]);
   const [subtotal, setSubtotal] = useState(0);
@@ -45,6 +54,7 @@ const EditOrder = () => {
     fetchOrder();
     fetchProducts();
     getCompany();
+    getCustomersOrder()
     loadingData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,7 +100,7 @@ const EditOrder = () => {
     )
       .then((response) => response.json())
       .then((result) => {
-        const { orden, detalles, facturas, status } = result;
+        const { orden, detalles, facturas, status,  } = result;
         if (status === 200) {
           setOrder(orden);
           setDetail(detalles);
@@ -103,6 +113,46 @@ const EditOrder = () => {
         }
       })
       .catch((error) => console.log("error", error));
+  };
+
+  const getCustomersOrder = () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    let idOrden = 0;
+
+    if (ordenId === undefined) {
+      const currentURL = window.location.href;
+      //console.log(currentURL);
+
+      const regex = /\/orden\/(\d+)\/pagos/;
+      const match = currentURL.match(regex);
+      if (match) {
+        const numero = match[1];
+        //console.log(numero); // Esto imprimirá "30" en la consola
+        idOrden = numero;
+      }
+    } else {
+      idOrden = ordenId;
+    }
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/personas/orden/${idOrden}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { data } = result;
+        setCustomer(data);
+        setArrayCustomer(data);
+      })
+      .catch((error) => console.error(error));
   };
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
@@ -238,14 +288,16 @@ const EditOrder = () => {
       showConfirmButton: false,
       timer: 5000, // Duración en milisegundos (5 segundos)
     });
-
+  
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Authorization", `Bearer ${token}`);
-
+  
     const orden = {
       titulo: order.titulo,
       proforma: order.proforma,
+      proforma2: order.proforma2,
+      proforma3: order.proforma3,
       id_empresa: order.id_empresa,
       fecha_orden: order.fecha_orden,
       precio_total: total,
@@ -271,17 +323,27 @@ const EditOrder = () => {
           cajero: invoice[0].cajero,
         },
       ],
+      personas: Array.isArray(newCustomer) ? newCustomer.map((item) => ({
+        nombre: item.nombre_cliente,
+        prenda: item.prenda,
+        cantidad: item.cantidad,
+      })) : [{
+        nombre: newCustomer.nombre_cliente,
+        prenda: newCustomer.prenda,
+        cantidad: newCustomer.cantidad,
+      }],
     };
-
+  
     const raw = JSON.stringify({ orden });
-
+    //console.log(raw);
+  
     var requestOptions = {
       method: "POST",
       headers: myHeaders,
       body: raw,
       redirect: "follow",
     };
-
+  
     fetch(
       `https://api.textechsolutionscr.com/api/v1/ordenes/editar/${ordenId}`,
       requestOptions
@@ -289,7 +351,7 @@ const EditOrder = () => {
       .then((response) => response.json())
       .then((result) => {
         const { status, error } = result;
-
+  
         if (parseInt(status) === 200) {
           Swal.fire(
             "Orden modificada con éxito",
@@ -304,16 +366,22 @@ const EditOrder = () => {
           });
         } else {
           let errorMessage = "";
-
-          for (const message of error) {
-            errorMessage += message + "\n";
+          //console.log(error);
+  
+          if (Array.isArray(error)) {
+            for (const message of error) {
+              errorMessage += message + "\n";
+            }
+          } else {
+            errorMessage = "Ha ocurrido un error inesperado.";
           }
-
+  
           Swal.fire("Error al modificar la orden!", `${errorMessage}`, "error");
         }
       })
       .catch((error) => console.log("error", error));
   };
+  
 
   /**
    * Fetches a list of all companies from the database and updates the 'company' state with the retrieved data.
@@ -425,6 +493,87 @@ const EditOrder = () => {
     });
   };
 
+  const deleteCustomers = (id, nombre_cliente) => {
+    // Filtrar el array de clientes para excluir el objeto con los valores dados
+    const nuevoArray = arrayCustomer.filter((cliente, index) => index !== id);
+    setArrayCustomer(nuevoArray);
+
+    // Actualizar la descripción del pedido eliminando el nombre del cliente
+    let nuevaDescripcion = orderDetail.descripcion;
+
+    // Buscar y reemplazar el nombre del cliente en la descripción
+   // Reemplazar el nombre del cliente en la descripción con una cadena vacía
+    nuevaDescripcion = nuevaDescripcion.replace(new RegExp(`${nombre_cliente},?\\s*`, 'g'), '');
+
+
+    // Actualizar el estado 'orderDetail' con la nueva descripción
+    setOrderDetail((prevState) => ({
+      ...prevState,
+      descripcion: nuevaDescripcion,
+    }));
+  };
+
+  const handleSubmitCustomer = (event) => {
+    event.preventDefault();
+
+    // Acceder al valor del campo 'nombre_cliente' del formulario
+    const nombre_cliente = event.target.elements.nombre_cliente.value;
+
+    // Obtener la descripción actual
+    let descripcionActual = orderDetail.descripcion;
+
+    // Agregar el nombre del cliente a la descripción actual, separado por comas
+    descripcionActual = descripcionActual
+      ? `${descripcionActual}, ${nombre_cliente}`
+      : `Para: ${nombre_cliente}`;
+
+    // Actualizar el estado 'orderDetail' con la nueva descripción
+    setOrderDetail((prevState) => ({
+      ...prevState,
+      descripcion: descripcionActual,
+    }));
+
+    let array = [];
+    array.push(arrayCustomer);
+    array.push(customer);
+
+    let flattenedArray = array
+      .flat(Infinity)
+      .filter(
+        (item) => typeof item === "object" && Object.keys(item).length > 0
+      );
+
+    setArrayCustomer(flattenedArray);
+
+    //console.log(flattenedArray);
+
+    // Restablece el estado 'customer' para limpiar los campos del formulario
+    setCustomer({
+      prenda: orderDetail.nombre_producto,
+      nombre_cliente: "",
+      cantidad: 0,
+    });
+  };
+
+  const handleInputChangeCustomers = (event) => {
+    const { name, value } = event.target;
+    let updatedCustomer = { ...customer }; // Copiar el estado actual de customer
+
+    if (name === "nombre_cliente") {
+      updatedCustomer.nombre_cliente = value;
+    } else if (name === "cantidad") {
+      updatedCustomer.cantidad = value;
+    }
+
+    // Agregar orderDetail.nombre_producto al estado si está presente
+    if (orderDetail.nombre_producto) {
+      updatedCustomer.prenda = orderDetail.nombre_producto;
+    }
+
+    setCustomer(updatedCustomer); // Asignar el próximo ID al nuevo cliente
+    setNewCustomer(updatedCustomer);
+  };
+
   return (
     <React.Fragment>
       <Header title="Editar orden" />
@@ -439,7 +588,7 @@ const EditOrder = () => {
               id="titulo"
               autoComplete="current-password"
               value={order.titulo}
-              disabled
+              onChange={handleInputChange}
             />
           </div>
 
@@ -452,6 +601,30 @@ const EditOrder = () => {
               id="proforma"
               autoComplete="current-password"
               value={order.proforma}
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma2:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma2"
+              id="proforma2"
+              autoComplete="current-password"
+              value={order.proforma2}
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma3:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma3"
+              id="proforma3"
+              autoComplete="current-password"
+              value={order.proforma3}
             />
           </div>
 
@@ -501,7 +674,7 @@ const EditOrder = () => {
                 name="cajero"
                 id="titulo"
                 autoComplete="current-password"
-                disabled
+                disabled={role !== 'Admin'}
                 value={invoice[0].cajero}
                 required
               />
@@ -577,9 +750,39 @@ const EditOrder = () => {
           </div>
           <button className="btn-agregar-detalle">Agregar</button>
         </form>
-        <div className="container img-contenedor">
-          <img className="isologo" src={Logo} alt="imagen" />
-        </div>
+      </div>
+
+      <hr className="division"></hr>
+
+      <div className="form-contenedor">
+        <form
+          className="form-registro-clientes"
+          onSubmit={handleSubmitCustomer}
+        >
+          <div className="div-inp">
+            <label htmlFor="name">Nombre</label>
+            <input
+              onChange={handleInputChangeCustomers}
+              type="text"
+              name="nombre_cliente"
+              id="nombre_cliente"
+              value={customer.nombre_cliente}
+            ></input>
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="count">Cantidad</label>
+            <input
+              onChange={handleInputChangeCustomers}
+              type="number"
+              name="cantidad"
+              id="cantidad"
+              min={1}
+              value={customer.cantidad}
+            ></input>
+          </div>
+          <button className="btn-agregar-detalle">Agregar persona</button>
+        </form>
       </div>
 
       <hr className="division"></hr>
@@ -628,6 +831,42 @@ const EditOrder = () => {
       </table>
 
       <hr className="division"></hr>
+      <Header title="Clientes" />
+
+      <table className="tabla-medidas">
+        <thead>
+          <tr>
+            <th>Prenda</th>
+            <th>Nombre</th>
+            <th>Cantidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {Array.isArray(arrayCustomer) &&
+            arrayCustomer.map((item, index) => (
+              <tr key={index}>
+                <td>{item.prenda}</td>
+                <td>{item.nombre_cliente || item.nombre}</td>
+                <td>{item.cantidad}</td>
+                <td>
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => deleteCustomers(index, item.nombre_cliente)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
+      
+      
+      <hr className="division"></hr>
+
+
 
       <Header title="Facturación" />
       <table className="tabla-medidas">

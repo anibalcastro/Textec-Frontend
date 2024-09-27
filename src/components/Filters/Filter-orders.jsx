@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 
 const FilterOrders = ({ datos, showMonto }) => {
   const [filter, setFilter] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 80; // Número de ordenes por página
   const [company, setCompany] = useState([]);
@@ -52,43 +51,29 @@ const FilterOrders = ({ datos, showMonto }) => {
   };
 
   const filterData = () => {
-    // Comprobar si datos está definido antes de filtrar
-    if (!datos) {
-      return [];
-    }
+    if (!datos) return [];
 
     if (typeFilter === "Titulo") {
-      const datosFiltrados = datos.filter((dato) => {
-        const nombreOrden = `${dato.titulo}`;
-        return nombreOrden.toLowerCase().includes(filter.toLowerCase());
-      });
-      return datosFiltrados;
+      return datos.filter((dato) =>
+        dato.titulo.toLowerCase().includes(filter.toLowerCase())
+      );
     } else if (typeFilter === "Estado") {
-      const datosFiltrados = datos.filter((dato) => {
-        const estado = `${dato.estado}`;
-        return estado.toLowerCase().includes(filter.toLowerCase());
-      });
-      return datosFiltrados;
+      return datos.filter((dato) =>
+        dato.estado.toLowerCase().includes(filter.toLowerCase())
+      );
     } else if (typeFilter === "Empresa") {
       const datosConNombreEmpresa = datos.map((dato) => {
-        // Obten el nombre de la empresa basado en id_empresa (asumiendo que tienes una función para esto)
         const nombreEmpresa = nameCompany(dato.id_empresa);
-
-        // Retorna un nuevo objeto con el nombre de la empresa agregado
         return { ...dato, nombre_empresa: nombreEmpresa };
       });
 
-      const datosFiltrados = datosConNombreEmpresa.filter((dato) => {
-        const nombreEmpresa = `${dato.nombre_empresa}`;
-        return nombreEmpresa.toLowerCase().includes(filter.toLowerCase());
-      });
-      return datosFiltrados;
+      return datosConNombreEmpresa.filter((dato) =>
+        dato.nombre_empresa.toLowerCase().includes(filter.toLowerCase())
+      );
     } else {
-      const datosFiltrados = datos.filter((dato) => {
-        const nombreOrden = `${dato.titulo}`;
-        return nombreOrden.toLowerCase().includes(filter.toLowerCase());
-      });
-      return datosFiltrados;
+      return datos.filter((dato) =>
+        dato.titulo.toLowerCase().includes(filter.toLowerCase())
+      );
     }
   };
 
@@ -97,37 +82,33 @@ const FilterOrders = ({ datos, showMonto }) => {
     Swal.fire({
       title: "Cargando datos!",
       html: "Se va a cerrar en <b></b> segundo",
-      timer: 3000, // Cambiar a la duración en segundos (por ejemplo, 2 segundos)
+      timer: 3000,
       timerProgressBar: true,
       didOpen: () => {
         Swal.showLoading();
         const b = Swal.getHtmlContainer().querySelector("b");
         timerInterval = setInterval(() => {
-          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
+          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000);
           b.textContent = timerLeftInSeconds;
-        }, 1000); // Actualizar cada segundo
+        }, 1000);
       },
       willClose: () => {
         clearInterval(timerInterval);
       },
     }).then((result) => {
-      /* Read more about handling dismissals below */
       if (result.dismiss === Swal.DismissReason.timer) {
-        // El temporizador ha expirado
       }
     });
   };
 
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
-      (item) => parseInt(item.id) == parseInt(companyId)
+      (item) => parseInt(item.id) === parseInt(companyId)
     );
 
-    if (empresaEncontrada) {
-      return empresaEncontrada.nombre_empresa;
-    } else {
-      return "Empresa no encontrada";
-    }
+    return empresaEncontrada
+      ? empresaEncontrada.nombre_empresa
+      : "Empresa no encontrada";
   };
 
   const handleInputFilterSelect = (event) => {
@@ -136,7 +117,6 @@ const FilterOrders = ({ datos, showMonto }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-
   const totalPages = Math.ceil(filterData().length / itemsPerPage);
 
   const handleClick = (page) => {
@@ -148,7 +128,6 @@ const FilterOrders = ({ datos, showMonto }) => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-
     return `${day}/${month}/${year}`;
   };
 
@@ -166,8 +145,6 @@ const FilterOrders = ({ datos, showMonto }) => {
         />
 
         <div className="d-flex align-items-center">
-          {" "}
-          {/* Añade la clase 'align-items-center' para centrar verticalmente */}
           <label>Buscar por: </label>
           <select className="sc-filter" onChange={handleInputFilterSelect}>
             <option value={"Titulo"}>Titulo</option>
@@ -191,43 +168,24 @@ const FilterOrders = ({ datos, showMonto }) => {
           </thead>
           <tbody>
             {filterData()
-              .slice() // Crear una copia para no modificar el array original
-              .sort((a, b) => {
-                const order = {
-                  Taller: 1,
-                  "Entrega tienda": 2,
-                  "Entregada al cliente": 3,
-                  "Anulada":4
-                };
-
-                // Ordenar por estado
-                const estadoOrderA = order[a.estado] || 0;
-                const estadoOrderB = order[b.estado] || 0;
-                if (estadoOrderA !== estadoOrderB) {
-                  return estadoOrderA - estadoOrderB;
-                }
-
-                // Si el estado es "Taller" o "Entrega tienda", ordenar por fecha en orden descendente
-                if (a.estado === "Taller" || a.estado === "Entrega tienda") {
-                  return new Date(b.fecha_orden) - new Date(a.fecha_orden);
-                }
-
-                return 0; // Si el estado es "Entregada al cliente" o no está definido en el orden, mantener el orden original
-              })
+              .filter((dato) => dato.estado !== "Anulada") // Filtra las órdenes que no están anuladas
+              .slice(indexOfFirstItem, indexOfLastItem)
+              .sort((a, b) => b.id - a.id) // Ordena las órdenes por id
               .map((dato, index) => (
                 <tr key={index}>
-                  <td>{iterador + index + 1}</td>
+                  <td>{dato.id}</td>
                   <td>
                     {showMonto ? (
                       <Link
                         className="link-nombre"
                         to={`/orden/${dato.id}/pagos`}
-                      >{`${dato.titulo}`}</Link>
+                      >
+                        {dato.titulo}
+                      </Link>
                     ) : (
-                      <Link
-                        className="link-nombre"
-                        to={`/orden/${dato.id}`}
-                      >{`${dato.titulo}`}</Link>
+                      <Link className="link-nombre" to={`/orden/${dato.id}`}>
+                        {dato.titulo}
+                      </Link>
                     )}
                   </td>
                   <td>{nameCompany(dato.id_empresa)}</td>

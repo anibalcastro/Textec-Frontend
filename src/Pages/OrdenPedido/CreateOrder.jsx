@@ -352,6 +352,8 @@ const CreateOrder = () => {
       orden: {
         titulo: orderCompany.titulo,
         proforma: orderCompany.proforma || 0,
+        proforma2: orderCompany.proforma2 || 0,
+        proforma3: orderCompany.proforma3 || 0,
         id_empresa: orderCompany.id_empresa,
         fecha_orden: today,
         precio_total: total || 0,
@@ -456,6 +458,30 @@ const CreateOrder = () => {
               type="text"
               name="proforma"
               id="proforma"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma2:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma2"
+              id="proforma2"
+              autoComplete="current-password"
+              required
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma3:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="proforma3"
+              id="proforma3"
               autoComplete="current-password"
               required
             />

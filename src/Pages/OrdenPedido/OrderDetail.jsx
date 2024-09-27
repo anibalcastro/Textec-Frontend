@@ -444,7 +444,7 @@ const OrderDetail = () => {
           </button>
         )}
 
-        {permissions && order.estado !== "Anulada" && (
+        {collaboratorPermissions && order.estado !== "Anulada" && (
           <button className="btn" onClick={() => requestCancelOrder()}>
             Anular
           </button>

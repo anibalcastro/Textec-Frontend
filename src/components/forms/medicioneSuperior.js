@@ -14,6 +14,8 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
+
+
                 <div className="div-inp">
                   <label htmlFor="text">Talle de espalda:</label>
                   <input
@@ -24,6 +26,18 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Ancho de espalda:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="ancho_espalda"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
                 <div className="div-inp">
                   <label htmlFor="text">Talle de frente:</label>
                   <input
@@ -34,6 +48,18 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Separación busto:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="separacion_busto"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
                 <div className="div-inp">
                   <label htmlFor="text">Busto:</label>
                   <input
@@ -44,6 +70,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
+
                 <div className="div-inp">
                   <label htmlFor="text">Cintura:</label>
                   <input
@@ -54,6 +81,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
+
                 <div className="div-inp">
                   <label htmlFor="text">Cadera:</label>
                   <input
@@ -64,56 +92,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo Manga Corta:</label>
-                  <input
-                    type="number"
-                    id="largo_manga_corta"
-                    name="largo_manga_corta"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo Manga Larga:</label>
-                  <input
-                    type="number"
-                    id="largo_manga_larga"
-                    name="largo_manga_larga"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Ancho Manga Corta:</label>
-                  <input
-                    type="number"
-                    id="ancho_manga_corta"
-                    name="ancho_manga_corta"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Ancho Manga Larga:</label>
-                  <input
-                    type="number"
-                    id="ancho_manga_larga"
-                    name="ancho_manga_larga"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="div-inp">
-                  <label htmlFor="text">Largo total:</label>
-                  <input
-                    type="number"
-                    id="largo_total"
-                    name="largo_total"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
+
                 <div className="div-inp">
                   <label htmlFor="text">Alto de pinza:</label>
                   <input
@@ -125,6 +104,96 @@ const MedicionesSuperior = ({handleInputChange}) => {
                   />
                 </div>
 
+                <div className="div-inp">
+                  <label htmlFor="text">Hombros:</label>
+                  <input
+                    type="number"
+                    id="hombros"
+                    name="hombros"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Largo total espalda:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="largo_total_espalda"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+              
+                <div className="div-inp">
+                  <label htmlFor="text">Largo total frente:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="largo_total_frente"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Largo Manga Corta:</label>
+                  <input
+                    type="number"
+                    id="largo_manga_corta"
+                    name="largo_manga_corta"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Ancho Manga Corta:</label>
+                  <input
+                    type="number"
+                    id="ancho_manga_corta"
+                    name="ancho_manga_corta"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Largo Manga Larga:</label>
+                  <input
+                    type="number"
+                    id="largo_manga_larga"
+                    name="largo_manga_larga"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+              
+                <div className="div-inp">
+                  <label htmlFor="text">Ancho Manga Larga:</label>
+                  <input
+                    type="number"
+                    id="ancho_manga_larga"
+                    name="ancho_manga_larga"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+
+
+                <div className="div-inp">
+                  <label htmlFor="text">Puño:</label>
+                  <input
+                    type="number"
+                    id="puno"
+                    name="puno"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                  />
+                </div>
+                
                 <div className="div-inp">
                   <label htmlFor="text">Talla:</label>
                   <input

@@ -207,31 +207,21 @@ const FilterRepair = ({ datos }) => {
         </thead>
         <tbody>
           {currentFilteredItems
-            .slice() // Crear una copia para no modificar el array original
+            .filter((item) => item.estado !== "Anulada") // Filtrar los elementos que no están anulados
             .sort((a, b) => {
-              // Si ambos tienen estado "Taller", ordenar por fecha de manera descendente
+              // Ordenar por estado y fecha
               if (a.estado === "Taller" && b.estado === "Taller") {
-                return new Date(b.fecha) - new Date(a.fecha);
+                return new Date(b.fecha) - new Date(a.fecha); // Ordenar Taller por fecha descendente
               }
 
-              // Si uno de los estados es "Taller", ese debe ir antes
-              if (a.estado === "Taller") return -1;
+              if (a.estado === "Taller") return -1; // "Taller" debe ir antes que "Entregado"
               if (b.estado === "Taller") return 1;
 
-              // Si ambos tienen estado "Entregado" o "Anulada", mantener el orden original
-              if (
-                (a.estado === "Entregado" && b.estado === "Entregado") ||
-                (a.estado === "Anulada" && b.estado === "Anulada")
-              ) {
-                return 0;
+              if (a.estado === "Entregado" && b.estado === "Entregado") {
+                return new Date(b.fecha) - new Date(a.fecha); // Ordenar Entregado por fecha descendente
               }
 
-              // Si uno de los estados es "Entregado" o "Anulada", ese debe ir al final
-              if (a.estado === "Entregado" || a.estado === "Anulada") return 1;
-              if (b.estado === "Entregado" || b.estado === "Anulada") return -1;
-
-              // En cualquier otro caso, no cambia el orden
-              return 0;
+              return 0; // Mantener el orden para otros casos (aunque no debería haber otros)
             })
             .map((dato, index) => (
               <tr key={index}>

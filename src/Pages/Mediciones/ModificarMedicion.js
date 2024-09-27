@@ -63,7 +63,8 @@ const ModificarMedicion = () => {
         "Jacket",
         "Chaleco",
         "Gabacha medica",
-        "Vestido"
+        "Vestido",
+        "Filipinas"
     ];
 
     /**Lista de mediciones inferiores */
@@ -230,6 +231,7 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.espalda_superior}
                                     />
                                 </div>
+
                                 <div className="div-inp">
                                     <label htmlFor="text">Talle de espalda:</label>
                                     <input
@@ -241,6 +243,19 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.talle_espalda_superior}
                                     />
                                 </div>
+
+                                <div className="div-inp">
+                                    <label htmlFor="text">Ancho de espalda:</label>
+                                    <input
+                                        type="number"
+                                        id="ancho_espalda_superior"
+                                        name="ancho_espalda_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.ancho_espalda_superior}
+                                    />
+                                </div>
+
                                 <div className="div-inp">
                                     <label htmlFor="text">Talle de frente:</label>
                                     <input
@@ -252,6 +267,19 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.talle_frente_superior}
                                     />
                                 </div>
+                
+                                <div className="div-inp">
+                                    <label htmlFor="text">Separación de busto:</label>
+                                    <input
+                                        type="number"
+                                        id="separacion_busto_superior"
+                                        name="separacion_busto_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.separacion_busto_superior}
+                                    />
+                                </div>
+
                                 <div className="div-inp">
                                     <label htmlFor="text">Busto:</label>
                                     <input
@@ -274,6 +302,7 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.cintura_superior}
                                     />
                                 </div>
+
                                 <div className="div-inp">
                                     <label htmlFor="text">Cadera:</label>
                                     <input
@@ -285,6 +314,55 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.cadera_superior}
                                     />
                                 </div>
+
+                                <div className="div-inp">
+                                    <label htmlFor="text">Alto pinza:</label>
+                                    <input
+                                        type="number"
+                                        id="alto_pinza_superior"
+                                        name="alto_pinza_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.alto_pinza_superior}
+                                    />
+                                </div>
+                                
+                                <div className="div-inp">
+                                    <label htmlFor="text">Hombros:</label>
+                                    <input
+                                        type="number"
+                                        id="hombros_superior"
+                                        name="hombros_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.hombros_superior}
+                                    />
+                                </div>
+                                
+                                <div className="div-inp">
+                                    <label htmlFor="text">Largo total espalda:</label>
+                                    <input
+                                        type="number"
+                                        id="largo_total_espalda_superior"
+                                        name="largo_total_espalda_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.largo_total_espalda_superior}
+                                    />
+                                </div>
+
+                                <div className="div-inp">
+                                    <label htmlFor="text">Largo total frente:</label>
+                                    <input
+                                        type="number"
+                                        id="largo_total_frente_superior"
+                                        name="largo_total_frente_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.largo_total_frente_superior}
+                                    />
+                                </div>
+
                                 <div className="div-inp">
                                     <label htmlFor="text">Largo Manga Corta:</label>
                                     <input
@@ -296,17 +374,7 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.largo_manga_corta_superior}
                                     />
                                 </div>
-                                <div className="div-inp">
-                                    <label htmlFor="text">Largo Manga Larga:</label>
-                                    <input
-                                        type="number"
-                                        id="largo_manga_larga"
-                                        name="largo_manga_larga_superior"
-                                        autoComplete="current-text"
-                                        onChange={handleInputChange}
-                                        defaultValue={mediciones.largo_manga_larga_superior}
-                                    />
-                                </div>
+                                
                                 <div className="div-inp">
                                     <label htmlFor="text">Ancho Manga Corta:</label>
                                     <input
@@ -318,6 +386,19 @@ const ModificarMedicion = () => {
                                         defaultValue={mediciones.ancho_manga_corta_superior}
                                     />
                                 </div>
+
+                                <div className="div-inp">
+                                    <label htmlFor="text">Largo Manga Larga:</label>
+                                    <input
+                                        type="number"
+                                        id="largo_manga_larga"
+                                        name="largo_manga_larga_superior"
+                                        autoComplete="current-text"
+                                        onChange={handleInputChange}
+                                        defaultValue={mediciones.largo_manga_larga_superior}
+                                    />
+                                </div>
+            
                                 <div className="div-inp">
                                     <label htmlFor="text">Ancho Manga Larga:</label>
                                     <input
@@ -330,27 +411,18 @@ const ModificarMedicion = () => {
                                     />
                                 </div>
                                 <div className="div-inp">
-                                    <label htmlFor="text">Largo total:</label>
+                                    <label htmlFor="text">Puño:</label>
                                     <input
                                         type="number"
-                                        id="largo_total"
-                                        name="largo_total_superior"
+                                        id="puno_superior"
+                                        name="puno_superior"
                                         autoComplete="current-text"
                                         onChange={handleInputChange}
-                                        defaultValue={mediciones.largo_total_superior}
+                                        defaultValue={mediciones.puno_superior}
                                     />
                                 </div>
-                                <div className="div-inp">
-                                    <label htmlFor="text">Alto de pinza:</label>
-                                    <input
-                                        type="number"
-                                        id="alto_pinza"
-                                        name="alto_pinza_superior"
-                                        autoComplete="current-text"
-                                        onChange={handleInputChange}
-                                        defaultValue={mediciones.alto_pinza_superior}
-                                    />
-                                </div>
+
+                                
 
                                 <div className="div-inp">
                                     <label htmlFor="text">Talla:</label>

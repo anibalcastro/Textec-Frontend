@@ -25,6 +25,8 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
+
         <div className="div-inp">
           <label htmlFor="text">Cadera:</label>
           <input
@@ -35,6 +37,20 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
+
+        <div className="div-inp">
+          <label htmlFor="text">Altura cadera:</label>
+          <input
+            type="number"
+            id="altura_cadera"
+            name="altura_cadera"
+            autoComplete="current-text"
+            onChange={handleInputChange}
+          />
+        </div>
+
+
         <div className="div-inp">
           <label htmlFor="text">Pierna:</label>
           <input
@@ -45,6 +61,7 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
         <div className="div-inp">
           <label htmlFor="text">Rodilla:</label>
           <input
@@ -55,6 +72,18 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
+        <div className="div-inp">
+          <label htmlFor="text">Altura rodilla:</label>
+          <input
+            type="number"
+            id="altura_rodilla"
+            name="altura_rodilla"
+            autoComplete="current-text"
+            onChange={handleInputChange}
+          />
+        </div>
+
         <div className="div-inp">
           <label htmlFor="text">Ruedo:</label>
           <input
@@ -65,6 +94,7 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
         <div className="div-inp">
           <label htmlFor="text">Tiro:</label>
           <input
@@ -75,6 +105,18 @@ const MedicionesInferior = ({handleInputChange}) => {
             onChange={handleInputChange}
           />
         </div>
+
+        <div className="div-inp">
+          <label htmlFor="text">Contorno tiro:</label>
+          <input
+            type="number"
+            id="contorno_tiro"
+            name="contorno_tiro"
+            autoComplete="current-text"
+            onChange={handleInputChange}
+          />
+        </div>
+
         <div className="div-inp">
           <label htmlFor="text">Talla:</label>
           <input

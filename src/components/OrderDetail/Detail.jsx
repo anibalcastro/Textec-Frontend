@@ -30,6 +30,7 @@ const Detail = ({
   }, []);
 
   useEffect(() => {
+    //console.log(detail)
     const statePizarra = updateStateInputPizarra(order);
     const stateTela = updateStateInputTela(order);
 
@@ -356,43 +357,87 @@ const Detail = ({
 
   const deleteFile = (file_path) => {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Quieres borrar este archivo?',
-      icon: 'warning',
+      title: "¿Estás seguro?",
+      text: "¿Quieres borrar este archivo?",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Sí, borrar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonText: "Sí, borrar",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
         const requestOptions = {
-          method: 'DELETE',
-          redirect: 'follow'
+          method: "DELETE",
+          redirect: "follow",
         };
-  
-        fetch(`https://api.textechsolutionscr.com/api/v1/files/delete/${file_path}`, requestOptions)
-          .then(response => response.json())
-          .then(result => {
+
+        fetch(
+          `https://api.textechsolutionscr.com/api/v1/files/delete/${file_path}`,
+          requestOptions
+        )
+          .then((response) => response.json())
+          .then((result) => {
             const { status } = result;
-  
+
             if (parseInt(status) === 200) {
               // Muestra una alerta SweetAlert indicando que el archivo fue borrado exitosamente
-              Swal.fire('¡Borrado!', 'El archivo fue borrado exitosamente.', 'success').then((confirm) => {
-                if (confirm.isConfirmed){
+              Swal.fire(
+                "¡Borrado!",
+                "El archivo fue borrado exitosamente.",
+                "success"
+              ).then((confirm) => {
+                if (confirm.isConfirmed) {
                   window.location.reload();
                 }
               });
-
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
             // Muestra una alerta SweetAlert indicando que ocurrió un error
-            Swal.fire('Error', 'Ocurrió un error al borrar el archivo.', 'error');
+            Swal.fire(
+              "Error",
+              "Ocurrió un error al borrar el archivo.",
+              "error"
+            );
           });
       }
     });
+  };
 
-  }
+  const changeStateDetailOrder = (detailId) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/entregado/orden/modificar/estado/${detailId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { status } = result;
+
+        if (status === 200) {
+          Swal.fire(
+            "Notificación",
+            "Se ha almacenado correctamente en nuestra base de datos, la entrega del producto.",
+            "success"
+          ).then(result => {
+            if(result.isConfirmed){
+              window.location.reload(); 
+            }
+          })
+        }
+
+        
+      })
+      .catch((error) => console.error(error));
+  };
 
   //Const showAmount
   const showAmount = validateRole();
@@ -414,6 +459,7 @@ const Detail = ({
               disabled
             />
           </div>
+
           <div className="div-inp">
             <label htmlFor="password">Proforma:</label>
             <input
@@ -422,6 +468,30 @@ const Detail = ({
               id="titulo"
               autoComplete="current-password"
               value={order.proforma}
+              disabled
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma2:</label>
+            <input
+              type="text"
+              name="proforma2"
+              id="proforma2"
+              autoComplete="current-password"
+              value={order.proforma2}
+              disabled
+            />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Proforma3:</label>
+            <input
+              type="text"
+              name="proforma3"
+              id="proforma3"
+              autoComplete="current-password"
+              value={order.proforma3}
               disabled
             />
           </div>
@@ -535,7 +605,8 @@ const Detail = ({
                   type="checkbox"
                   checked={inputTelasDisabled || order.tela === 1}
                   disabled={
-                    inputTelasDisabled || order.tela === 1 || role === "Visor"
+                    inputTelasDisabled || order.tela === 1 || role === "Visor" ||
+                    role === "Colaborador"
                   }
                   onChange={handleCheckboxTelasChange}
                 />
@@ -561,7 +632,8 @@ const Detail = ({
             <th>Cantidad</th>
             {showAmount ? (
               <>
-                <th>Precio unitario</th> <th>Precio total</th>
+                <th>Precio unitario</th> <th>Precio total</th>{" "}
+                <th>Entregado</th>
               </>
             ) : null}
           </tr>
@@ -581,6 +653,16 @@ const Detail = ({
                       {formatCurrencyCRC.format(item.subtotal / item.cantidad)}
                     </td>
                     <td>{formatCurrencyCRC.format(item.subtotal)}</td>
+                    <td>
+                      <input
+                        type="checkbox"
+                        id="cbTela"
+                        onClick={() => changeStateDetailOrder(item.id)}
+                        defaultChecked={item.entregado === 1}
+                        disabled={item.entregado === 1}
+                      />
+                       <span>{item.entregado === 1 ? "Entregado" : "No entregado"}</span>
+                    </td>
                   </>
                 ) : null}
               </tr>
@@ -605,62 +687,63 @@ const Detail = ({
             </thead>
 
             <tbody>
-            {Array.isArray(customerOrder) && customerOrder.map((item) => {
-  // Imprime el objeto 'item' en la consola
+              {Array.isArray(customerOrder) &&
+                customerOrder.map((item) => {
+                  // Imprime el objeto 'item' en la consola
 
+                  // Retorna los elementos JSX
+                  return (
+                    <tr key={item.id}>
+                      {/* Muestra la información de 'prenda', 'nombre' y 'cantidad' */}
+                      <td>{item.prenda}</td>
+                      <td>{item.nombre}</td>
+                      <td>{item.cantidad}</td>
 
-  // Retorna los elementos JSX
-  return (
-    <tr key={item.id}>
-      {/* Muestra la información de 'prenda', 'nombre' y 'cantidad' */}
-      <td>{item.prenda}</td>
-      <td>{item.nombre}</td>
-      <td>{item.cantidad}</td>
+                      {/* Manejo de la casilla de verificación para 'taller' */}
+                      {role !== "Visor" && (
+                        <td>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="taller"
+                              value="1"
+                              checked={item.taller === 1}
+                              disabled={item.taller === 1}
+                              onChange={() => handleDeliveryShop(item.id)}
+                            />
+                            {item.taller === 1 ? "Entregado" : "No entregado"}
+                          </label>
+                        </td>
+                      )}
 
-      {/* Manejo de la casilla de verificación para 'taller' */}
-      {role !== "Visor" && (
-        <td>
-          <label>
-            <input
-              type="checkbox"
-              name="taller"
-              value="1"
-              checked={item.taller === 1}
-              disabled={item.taller === 1}
-              onChange={() => handleDeliveryShop( item.id)}
-            />
-            {item.taller === 1 ? "Entregado" : "No entregado"}
-          </label>
-        </td>
-      )}
-
-      {/* Manejo de la casilla de verificación para 'entregado' */}
-      {role !== "Visor" && (
-        <td>
-          <label>
-            <input
-              type="checkbox"
-              name="cantidad"
-              value="1"
-              checked={item.entregado === 1}
-              disabled={item.entregado === 1}
-              onChange={() => handleDeliveryChange(item.id)}
-            />
-            {item.entregado === 1 ? "Entregado" : "No entregado"}
-          </label>
-        </td>
-      )}
-    </tr>
-  );
-})}
-
+                      {/* Manejo de la casilla de verificación para 'entregado' */}
+                      {role !== "Visor" && (
+                        <td>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="cantidad"
+                              value="1"
+                              checked={item.entregado === 1}
+                              disabled={item.entregado === 1}
+                              onChange={() => handleDeliveryChange(item.id)}
+                            />
+                            {item.entregado === 1
+                              ? "Entregado"
+                              : "No entregado"}
+                          </label>
+                        </td>
+                      )}
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         </>
       ) : null}
 
       <hr></hr>
-      {showAmount && Array.isArray(files) && files.length > 0 ? (
+      {Array.isArray(files) && files.length > 0 ? (
         <>
           <Header title="Archivos" />
           <table className="tabla-medidas">
@@ -679,7 +762,12 @@ const Detail = ({
                     </Link>
                   </td>
                   <td>
-                    <button className="btn-eliminar" onClick={()=> deleteFile(item.file_path)}>Eliminar</button>
+                    <button
+                      className="btn-eliminar"
+                      onClick={() => deleteFile(item.file_path)}
+                    >
+                      Eliminar
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -700,7 +788,6 @@ const Detail = ({
                 <th>Total</th>
                 <th>Abono</th>
                 <th>Monto pendiente</th>
-                
               </tr>
             </thead>
 
@@ -711,7 +798,11 @@ const Detail = ({
                     <td>{formatCurrencyCRC.format(item.subtotal)}</td>
                     <td>{formatCurrencyCRC.format(item.iva)}</td>
                     <td>{formatCurrencyCRC.format(item.monto)}</td>
-                    <td>{formatCurrencyCRC.format(item.monto - item.saldo_restante)}</td>
+                    <td>
+                      {formatCurrencyCRC.format(
+                        item.monto - item.saldo_restante
+                      )}
+                    </td>
                     <td>{formatCurrencyCRC.format(item.saldo_restante)}</td>
                   </tr>
                 ))}
