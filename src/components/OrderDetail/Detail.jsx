@@ -427,14 +427,12 @@ const Detail = ({
             "Notificación",
             "Se ha almacenado correctamente en nuestra base de datos, la entrega del producto.",
             "success"
-          ).then(result => {
-            if(result.isConfirmed){
-              window.location.reload(); 
+          ).then((result) => {
+            if (result.isConfirmed) {
+              window.location.reload();
             }
-          })
+          });
         }
-
-        
       })
       .catch((error) => console.error(error));
   };
@@ -546,20 +544,22 @@ const Detail = ({
             />
           </div>
 
-          {!urlReparacion ? null : (
-            <div className="div-inp">
-              <label htmlFor="password">Telefono:</label>
+          <div className="div-inp">
+            <label htmlFor="telefono">Teléfono:</label>
+            {order.telefono ? (
               <input
                 type="text"
-                name="cajero"
-                id="titulo"
+                name="telefono"
+                id="telefono"
                 autoComplete="current-password"
                 disabled
                 value={order.telefono}
                 required
               />
-            </div>
-          )}
+            ) : (
+              <span>No hay teléfonos registrados.</span>
+            )}
+          </div>
 
           <div className="div-inp">
             <label htmlFor="password">Vendedor:</label>
@@ -605,7 +605,9 @@ const Detail = ({
                   type="checkbox"
                   checked={inputTelasDisabled || order.tela === 1}
                   disabled={
-                    inputTelasDisabled || order.tela === 1 || role === "Visor" ||
+                    inputTelasDisabled ||
+                    order.tela === 1 ||
+                    role === "Visor" ||
                     role === "Colaborador"
                   }
                   onChange={handleCheckboxTelasChange}
@@ -661,7 +663,9 @@ const Detail = ({
                         defaultChecked={item.entregado === 1}
                         disabled={item.entregado === 1}
                       />
-                       <span>{item.entregado === 1 ? "Entregado" : "No entregado"}</span>
+                      <span>
+                        {item.entregado === 1 ? "Entregado" : "No entregado"}
+                      </span>
                     </td>
                   </>
                 ) : null}

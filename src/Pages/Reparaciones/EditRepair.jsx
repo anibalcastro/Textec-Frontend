@@ -178,6 +178,15 @@ const EditRepair = () => {
     });
   };
 
+  const handleInputChangeHeader = (event) => {
+    const {name, value} = event.target;
+    
+    setOrder({
+      ...order,
+      [name]: value,
+    });
+  }
+
   const handleInputChangeProduct = (event) => {
     const selectedProductId = event.target.value;
 
@@ -249,7 +258,7 @@ const EditRepair = () => {
       id_empresa: order.id_empresa,
       fecha: order.fecha,
       precio: total,
-      estado: "Pendiente",
+      estado: order.estado || 'Pendiente',
       comentario: order.comentario,
       telefono: order.telefono || "NA",
       detalles: detail.map((detalle) => ({
@@ -273,6 +282,8 @@ const EditRepair = () => {
     };
 
     const raw = JSON.stringify({ reparacion });
+
+    console.log(raw);
 
     var requestOptions = {
       method: "POST",
@@ -429,8 +440,8 @@ const EditRepair = () => {
               name="titulo"
               id="titulo"
               autoComplete="current-password"
-              value={order.titulo}
-              disabled
+              defaultValue={order.titulo}
+              onChange={handleInputChangeHeader}
             />
           </div>
 
@@ -447,15 +458,15 @@ const EditRepair = () => {
           </div>
 
           <div className="div-inp">
-            <label htmlFor="password">Comentario:</label>
-            <textarea
-              id="txtArea"
-              name="descripcion"
-              rows="5"
-              cols="60"
-              value={order.descripcion}
-              disabled
-            ></textarea>
+            <label htmlFor="password">Teléfono:</label>
+            <input 
+              type="text"
+              name="telefono"
+              id="telefono"
+              autoComplete="current-password"
+              defaultValue={order.telefono}
+              onChange={handleInputChangeHeader}
+            />
           </div>
 
           <div className="div-inp">

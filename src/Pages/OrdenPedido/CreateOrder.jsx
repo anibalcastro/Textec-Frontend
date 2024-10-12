@@ -8,6 +8,7 @@ const CreateOrder = () => {
   const [orderCompany, setOrderCompany] = useState({
     titulo: "",
     id_empresa: 0,
+    telefono: "",
     fecha_orden: "",
     precio_total: 0,
     estado: "",
@@ -355,6 +356,7 @@ const CreateOrder = () => {
         proforma2: orderCompany.proforma2 || 0,
         proforma3: orderCompany.proforma3 || 0,
         id_empresa: orderCompany.id_empresa,
+        telefono: orderCompany.telefono,
         fecha_orden: today,
         precio_total: total || 0,
         estado: "Taller",
@@ -513,6 +515,19 @@ const CreateOrder = () => {
                 </option>
               ))}
             </select>
+          </div>
+
+        
+          <div className="div-inp">
+            <label htmlFor="password">Teléfono:</label>
+            <input
+              onChange={handleInputChange}
+              type="text"
+              name="telefono"
+              id="telefono"
+              autoComplete="current-password"
+              required
+            />
           </div>
 
           <div className="div-inp">

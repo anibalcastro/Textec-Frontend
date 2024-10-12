@@ -86,7 +86,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
   ];
 
   /**Lista de mediciones inferiores */
-  const medicionesInferior = ["Short", "Pantalon",];
+  const medicionesInferior = ["Short", "Pantalon"];
 
   /**Validaciones si el estado prenda existe en alguna de las listas */
   const prendaSuperior = medicionesSuperior.includes(prenda);
@@ -204,6 +204,9 @@ const RegistroMedicionCliente = ({ clientes }) => {
 
   //Registrar nuevas mediciones
   const registrarMedicion = () => {
+
+    console.log(mediciones);
+
     Swal.fire({
       title: "Las mediciones se están guardando...",
       icon: "info",
@@ -228,47 +231,156 @@ const RegistroMedicionCliente = ({ clientes }) => {
       formdata.append("talla", nuevoRegistro.mediciones.talla);
       formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
 
-      if (medicionesSuperior.includes(nuevoRegistro.prenda) || nuevoRegistro.prenda === "Vestido") {
-        formdata.append("espalda_superior",nuevoRegistro.mediciones.espalda || 0);
-        formdata.append("talle_espalda_superior", nuevoRegistro.mediciones.talle_espalda || 0);
-        formdata.append("talle_frente_superior", nuevoRegistro.mediciones.talle_frente || 0);
+      if (
+        medicionesSuperior.includes(nuevoRegistro.prenda) ||
+        nuevoRegistro.prenda === "Vestido"
+      ) {
+        formdata.append(
+          "espalda_superior",
+          nuevoRegistro.mediciones.espalda || 0
+        );
+        formdata.append(
+          "talle_espalda_superior",
+          nuevoRegistro.mediciones.talle_espalda || 0
+        );
+        formdata.append(
+          "talle_frente_superior",
+          nuevoRegistro.mediciones.talle_frente || 0
+        );
         formdata.append("busto_superior", nuevoRegistro.mediciones.busto || 0);
-        formdata.append("cintura_superior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("ancho_manga_corta_superior", nuevoRegistro.mediciones.ancho_manga_corta || 0);
-        formdata.append("ancho_manga_larga_superior", nuevoRegistro.mediciones.ancho_manga_larga || 0);
-        formdata.append("largo_manga_corta_superior", nuevoRegistro.mediciones.largo_manga_corta || 0);
-        formdata.append("largo_manga_larga_superior", nuevoRegistro.mediciones.largo_manga_larga || 0);
-        formdata.append("largo_total_espalda_superior",nuevoRegistro.mediciones.largo_total_espalda || 0);
-        formdata.append("largo_total_superior",nuevoRegistro.mediciones.largo_total_frente || 0);
-        formdata.append("ancho_espalda_superior",nuevoRegistro.mediciones.ancho_espalda || 0);
-        formdata.append("separacion_busto_superior",nuevoRegistro.mediciones.separacion_busto || 0);
-        formdata.append("hombros_superior",nuevoRegistro.mediciones.hombros || 0);
+        formdata.append(
+          "cintura_superior",
+          nuevoRegistro.mediciones.cintura || 0
+        );
+        formdata.append(
+          "cadera_superior",
+          nuevoRegistro.mediciones.cadera || 0
+        );
+        formdata.append(
+          "ancho_manga_corta_superior",
+          nuevoRegistro.mediciones.ancho_manga_corta || 0
+        );
+        formdata.append(
+          "ancho_manga_larga_superior",
+          nuevoRegistro.mediciones.ancho_manga_larga || 0
+        );
+        formdata.append(
+          "largo_manga_corta_superior",
+          nuevoRegistro.mediciones.largo_manga_corta || 0
+        );
+        formdata.append(
+          "largo_manga_larga_superior",
+          nuevoRegistro.mediciones.largo_manga_larga || 0
+        );
+        formdata.append(
+          "largo_total_espalda_superior",
+          nuevoRegistro.mediciones.largo_total_espalda || 0
+        );
+        formdata.append(
+          "largo_total_superior",
+          nuevoRegistro.mediciones.largo_total_frente || 0
+        );
+        formdata.append(
+          "ancho_espalda_superior",
+          nuevoRegistro.mediciones.ancho_espalda || 0
+        );
+        formdata.append(
+          "separacion_busto_superior",
+          nuevoRegistro.mediciones.separacion_busto || 0
+        );
+        formdata.append(
+          "hombros_superior",
+          nuevoRegistro.mediciones.hombros || 0
+        );
         formdata.append("puno_superior", nuevoRegistro.mediciones.puno || 0);
-        formdata.append("alto_pinza_superior",nuevoRegistro.mediciones.alto_pinza || 0);
-        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
-
-      } else if (medicionesInferior.includes(nuevoRegistro.prenda)){
+        formdata.append(
+          "alto_pinza_superior",
+          nuevoRegistro.mediciones.alto_pinza || 0
+        );
+        formdata.append(
+          "altura_cadera_inferior",
+          nuevoRegistro.mediciones.altura_cadera || 0
+        );
+      } else if (medicionesInferior.includes(nuevoRegistro.prenda)) {
         formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
-        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
-        formdata.append("pierna_inferior",nuevoRegistro.mediciones.pierna || 0);
-        formdata.append("rodilla_inferior",nuevoRegistro.mediciones.rodilla || 0);
-        formdata.append("altura_rodilla_inferior",nuevoRegistro.mediciones.altura_rodilla || 0);
+        formdata.append(
+          "cintura_inferior",
+          nuevoRegistro.mediciones.cintura || 0
+        );
+        formdata.append(
+          "cadera_inferior",
+          nuevoRegistro.mediciones.cadera || 0
+        );
+        formdata.append(
+          "altura_cadera_inferior",
+          nuevoRegistro.mediciones.altura_cadera || 0
+        );
+        formdata.append(
+          "pierna_inferior",
+          nuevoRegistro.mediciones.pierna || 0
+        );
+        formdata.append(
+          "rodilla_inferior",
+          nuevoRegistro.mediciones.rodilla || 0
+        );
+        formdata.append(
+          "altura_rodilla_inferior",
+          nuevoRegistro.mediciones.altura_rodilla || 0
+        );
         formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo || 0);
         formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro || 0);
-        formdata.append("contorno_tiro_inferior",nuevoRegistro.mediciones.contorno_tiro || 0);
-        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
-      }
-      else if(nuevoRegistro.prenda === "Enagua"){
+
+        if (nuevoRegistro.mediciones.tiroLargo === "ON" || nuevoRegistro.mediciones.tiroLargo === "on"){
+          formdata.append("tiro_largo_ya_inferior", 0);
+          console.log('pasa')
+        }
+        else{
+          console.log('pasa')
+          formdata.append("tiro_largo_ya_inferior", 1);
+        }
+
+        formdata.append(
+          "contorno_tiro_inferior",
+          nuevoRegistro.mediciones.contorno_tiro || 0
+        );
+        formdata.append(
+          "largo_total_superior",
+          nuevoRegistro.mediciones.largo_total || 0
+        );
+      } else if (nuevoRegistro.prenda === "Enagua") {
         formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
-        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
-        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
+        formdata.append(
+          "cintura_inferior",
+          nuevoRegistro.mediciones.cintura || 0
+        );
+        formdata.append(
+          "cadera_inferior",
+          nuevoRegistro.mediciones.cadera || 0
+        );
+        formdata.append(
+          "altura_cadera_inferior",
+          nuevoRegistro.mediciones.altura_cadera || 0
+        );
+        formdata.append(
+          "largo_total_superior",
+          nuevoRegistro.mediciones.largo_total || 0
+        );
       }
 
+      const formdataToJson = (formdata) => {
+        let jsonObject = {};
+      
+        for (let pair of formdata.entries()) {
+          jsonObject[pair[0]] = pair[1];
+        }
+      
+        return JSON.stringify(jsonObject, null, 2); // Formato JSON legible con espacios
+      };
+      
+      // Ejemplo de uso:
+      console.log(formdataToJson(formdata));
+
+      
       const requestOptions = {
         method: "POST",
         headers: {
@@ -342,6 +454,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
           }
         });
       });
+      
     } catch (error) {
       console.log("error", error);
     }
@@ -791,7 +904,10 @@ const RegistroMedicionCliente = ({ clientes }) => {
           )}
 
           {prendaInferior && (
-            <FormMedicionesInferior handleInputChange={handleInputChange} />
+            <FormMedicionesInferior
+              seleccionPrenda={prenda}
+              handleInputChange={handleInputChange}
+            />
           )}
 
           <div className="container botones-contenedor">

@@ -95,9 +95,11 @@ const DetalleClienteMediciones = () => {
 return (
     <React.Fragment>
         <div className="container detalle-cliente-contenedor">
-            <h2 className="titulo-encabezado">{`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2} - Mediciones`}</h2>
-            <hr className="division"></hr>
+            <h2 className="titulo-encabezado">{`${cliente.nombre} ${cliente.apellido1} ${cliente.apellido2}`}</h2>
+            <h3 className="titulo-encabezado">{`${cliente.empresa} - ${cliente.departamento} `}</h3>
         </div>
+
+        <hr className="division"></hr>
 
         <div className="container mediciones-cliente-contenedor">
             <div className="container mediciones-card">

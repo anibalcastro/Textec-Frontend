@@ -10,6 +10,7 @@ const EditOrder = () => {
     titulo: "",
     proforma : 0,
     id_empresa: 0,
+    telefono: "",
     estado: "Taller",
     fecha_orden: "",
     cajero: "",
@@ -299,6 +300,7 @@ const EditOrder = () => {
       proforma2: order.proforma2,
       proforma3: order.proforma3,
       id_empresa: order.id_empresa,
+      telefono: order.telefono,
       fecha_orden: order.fecha_orden,
       precio_total: total,
       estado: order.estado,
@@ -664,6 +666,23 @@ const EditOrder = () => {
               value={order.fecha_orden}
               required
             />
+          </div>
+
+          <div className="div-inp">
+            <label htmlFor="password">Teléfono:</label>
+            {invoice && invoice.length > 0 ? (
+              <input
+                type="text"
+                name="telefono"
+                id="telefono"
+                autoComplete="current-password"
+                disabled={role !== 'Admin'}
+                value={order.telefono}
+                required
+              />
+            ) : (
+              <span>No hay datos teléfono registrado.</span>
+            )}
           </div>
 
           <div className="div-inp">

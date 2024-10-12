@@ -114,6 +114,13 @@ main {
   white-space: pre-wrap;
 }
 
+.detalle-cliente-contenedor{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
 /***************************************************/
 
 .chart-container {
@@ -488,6 +495,19 @@ main {
   margin-left: 5px;
 }
 
+.custom-check {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    margin-left: 38px;
+    padding-top: 0.5px;
+}
+
 /* Estilo del marcador dentro del checkbox personalizado */
 .custom-checkbox::after {
   content: "\2714"; /* Código Unicode de una flecha (✔) */
@@ -817,6 +837,10 @@ input[type="checkbox"]:checked + label {
   cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
 }
 
+.cbTiroLargoYa{
+  margin-left: 42px;
+}
+
 /* Mostrar iconos y ocultar texto en Navbar colapsado */
 @media (max-width: 992px) {
   .navbar-nav .nav-link .text {
@@ -830,9 +854,18 @@ input[type="checkbox"]:checked + label {
   .container-Weeks {
     justify-content: center;
   }
+
+  textarea {
+    width: 254px;
+  }
 }
 
 @media (max-width: 760px) {
+
+  .cbTiroLargoYa{
+    margin-left: 5px;
+  }
+
   .form-check {
     display: flex;
     align-items: center;
@@ -842,6 +875,11 @@ input[type="checkbox"]:checked + label {
   main {
     margin-left: 25px;
   }
+
+  .detalle-cliente-contenedor{
+    text-align: center;
+  }
+
 
   .botones-contenedor {
     flex-direction: column;
@@ -937,5 +975,9 @@ input[type="checkbox"]:checked + label {
   }
   .container-Weeks {
     justify-content: center;
+  }
+
+  #prenda{
+    width: 256px;
   }
 }

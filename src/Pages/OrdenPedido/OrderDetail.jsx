@@ -412,7 +412,6 @@ const OrderDetail = () => {
     navigate(`/orden/${ordenId}/registrar/persona`);
   };
 
-  const permissions = validateRole(role);
   const collaboratorPermissions = validatePermissions();
 
   return (

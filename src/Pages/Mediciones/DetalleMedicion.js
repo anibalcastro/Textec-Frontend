@@ -24,7 +24,7 @@ const DetalleMedicion = () => {
   ];
 
   /**Lista de mediciones inferiores */
-  const medicionesInferior = ["Short", "Pantalon"];
+  const medicionesInferior = ["Short"];
 
   useEffect(() => {
     obtenetInformacionMedidas(idDetalle);
@@ -146,7 +146,6 @@ const DetalleMedicion = () => {
       <hr className="division"></hr>
       <div className="container form-contenedor">
         <form className="form-registro-clientes" id="form-registro-medicion">
-
           {prenda === "Vestido" && (
             <>
               <div className="container opciones-medidas">
@@ -405,7 +404,96 @@ const DetalleMedicion = () => {
             </>
           )}
 
-          {prenda === "Enagua" && <>
+          {prenda === "Enagua" && (
+            <>
+              <div className="container opciones-medidas">
+                <div className="div-inp">
+                  <label htmlFor="text">Largo:</label>
+                  <input
+                    type="text"
+                    id="largo"
+                    name="largo"
+                    autoComplete="current-text"
+                    value={`${medicion.largo_inferior} cm`}
+                    disabled
+                  />
+                </div>
+                <div className="div-inp">
+                  <label htmlFor="text">Cintura:</label>
+                  <input
+                    type="text"
+                    id="cintura"
+                    name="cintura"
+                    autoComplete="current-text"
+                    value={`${medicion.cintura_inferior} cm`}
+                    disabled
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Cadera:</label>
+                  <input
+                    type="text"
+                    id="cadera"
+                    name="cadera"
+                    autoComplete="current-text"
+                    value={`${medicion.cadera_inferior} cm`}
+                    disabled
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Altura cadera:</label>
+                  <input
+                    type="text"
+                    id="cadera"
+                    name="cadera"
+                    autoComplete="current-text"
+                    value={`${medicion.altura_cadera_inferior} cm`}
+                    disabled
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Talla:</label>
+                  <input
+                    type="text"
+                    id="talla"
+                    name="talla"
+                    autoComplete="current-text"
+                    value={`${medicion.talla}`}
+                    disabled
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Observaciones:</label>
+                  <textarea
+                    name="observaciones"
+                    id="txtArea"
+                    rows="5"
+                    cols="60"
+                    value={medicion.observaciones}
+                    disabled
+                  ></textarea>
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Sastre:</label>
+                  <input
+                    type="text"
+                    id="sastre"
+                    name="sastre"
+                    autoComplete="current-text"
+                    value={medicion.sastre}
+                    disabled
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {prenda === "Pantalon" && (
             <div className="container opciones-medidas">
               <div className="div-inp">
                 <label htmlFor="text">Largo:</label>
@@ -453,7 +541,79 @@ const DetalleMedicion = () => {
                   disabled
                 />
               </div>
-              
+
+              <div className="div-inp">
+                <label htmlFor="text">Pierna:</label>
+                <input
+                  type="text"
+                  id="pierna"
+                  name="pierna"
+                  autoComplete="current-text"
+                  value={`${medicion.pierna_inferior} cm`}
+                  disabled
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Rodilla:</label>
+                <input
+                  type="text"
+                  id="rodilla"
+                  name="rodilla_inferior"
+                  autoComplete="current-text"
+                  value={`${medicion.rodilla_inferior} cm`}
+                  disabled
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Altura rodilla:</label>
+                <input
+                  type="text"
+                  id="rodilla"
+                  name="altura_rodilla_inferior"
+                  autoComplete="current-text"
+                  value={`${medicion.altura_rodilla_inferior} cm`}
+                  disabled
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Ruedo:</label>
+                <input
+                  type="text"
+                  id="ruedo"
+                  name="ruedo"
+                  autoComplete="current-text"
+                  value={`${medicion.ruedo_inferior} cm`}
+                  disabled
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Tiro:</label>
+                <input
+                  type="text"
+                  id="tiro"
+                  name="tiro"
+                  autoComplete="current-text"
+                  value={`${medicion.tiro_inferior} cm`}
+                  disabled
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Contorno tiro:</label>
+                <input
+                  type="text"
+                  id="tiro"
+                  name="contorno_tiro_inferior"
+                  autoComplete="current-text"
+                  value={`${medicion.contorno_tiro_inferior} cm`}
+                  disabled
+                />
+              </div>
+
               <div className="div-inp">
                 <label htmlFor="text">Talla:</label>
                 <input
@@ -464,6 +624,21 @@ const DetalleMedicion = () => {
                   value={`${medicion.talla}`}
                   disabled
                 />
+              </div>
+
+              <div className="form-check">
+                <input
+                  id="cbTela"
+                  className="form-check-input"
+                  name="tiroLargo"
+                  type="checkbox"
+                  checked={medicion.tiro_largo_ya_inferior === 0}
+                  disabled
+                />
+                <label className="form-check-label" htmlFor="cbTela">
+                  <strong>Tiro largo ya:</strong>
+                  <span className="custom-checkbox cbTiroLargoYa"></span>
+                </label>
               </div>
 
               <div className="div-inp">
@@ -490,9 +665,7 @@ const DetalleMedicion = () => {
                 />
               </div>
             </div>
-          
-          
-          </>}
+          )}
 
           {prendaSuperior && (
             <div className="container opciones-medidas">
