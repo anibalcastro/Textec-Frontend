@@ -12,6 +12,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
   const [mediciones, setMediciones] = useState({}); //Almacena las mediciones
   const [cliente, setCliente] = useState([]);
   const [arrayMediciones, setArrayMediciones] = useState([]); //Almacena las mediciones que se encuentran en cola.
+  const [medicionesDB, setMedicionesDB] = useState([]); //Almacena las mediciones del usuario registradas en la base de datos.
 
   const navigate = useNavigate();
   const token = Cookies.get("jwtToken");
@@ -21,34 +22,15 @@ const RegistroMedicionCliente = ({ clientes }) => {
   useEffect(() => {
     alertInvalidatePermission();
     obtenerInformacionCliente(userId);
-    let data = obtenerMediciones();
-    validarExistenciaProducto(idCliente, prenda, data);
+    obtenerMedicionesCliente(userId);
+    // Solo validamos existencia después de haber obtenido el cliente y la prenda.
+    if (idCliente && prenda) {
+      validarExistenciaProducto(prenda);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [idCliente, prenda]);
 
-  useEffect(() => {
-    const guardarEnLocalStorage = () => {
-      setArrayMediciones((prevArray) => [...prevArray, mediciones]);
-
-      guardarMedicionesEnLocalStorage(arrayMediciones);
-    };
-
-    // Agregar el listener para el evento beforeunload
-    window.addEventListener("beforeunload", guardarEnLocalStorage);
-
-    return () => {
-      window.removeEventListener("beforeunload", guardarEnLocalStorage);
-    };
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mediciones]);
-
-  const guardarMedicionesEnLocalStorage = (nuevasMediciones) => {
-    localStorage.setItem(
-      "medicionesNoGuardadas",
-      JSON.stringify(nuevasMediciones)
-    );
-  };
+  /*******************************VALIDACIONES DE ACCESO A LA PAGINA*/
 
   const validateUserPermission = () => {
     if (role !== "Visor") {
@@ -74,6 +56,8 @@ const RegistroMedicionCliente = ({ clientes }) => {
     }
   };
 
+  /******************* LISTA DE MEDICIONES TREN SUPERIOR E INFERIOR*/
+
   /**Lista de mediciones superiores */
   const medicionesSuperior = [
     "Camisa",
@@ -88,29 +72,92 @@ const RegistroMedicionCliente = ({ clientes }) => {
   /**Lista de mediciones inferiores */
   const medicionesInferior = ["Short", "Pantalon"];
 
-  /**Validaciones si el estado prenda existe en alguna de las listas */
-  const prendaSuperior = medicionesSuperior.includes(prenda);
-  const prendaInferior = medicionesInferior.includes(prenda);
+  /*****************OBTENER INFORMACION DEL CLIENTE */
 
   const obtenerInformacionCliente = (parametro) => {
-    let datos = localStorage.getItem("data");
-    datos = JSON.parse(datos);
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-    //console.log(parametro.userId);
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
 
-    let encontrado = false;
+    fetch(`https://api.textechsolutionscr.com/api/v1/cliente/${parametro.userId}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result && result.hasOwnProperty("data") && result.data) {
+          const { data } = result;
+          setIdCliente(parametro.userId)
+          setCliente(data)
+        } else {
+          const mensajeError = result?.mensaje || "No se encontró el cliente";
+          Swal.fire("Info", mensajeError, "info");
+        }
+      })
+      .catch((error) => console.error(error));
+  };
 
-    datos.forEach((item, i) => {
-      //console.log(parseInt(item.id));
-      if (parseInt(item.id) === parseInt(parametro.userId)) {
-        setIdCliente(parseInt(item.id));
-        setCliente(item);
-        encontrado = true;
-      }
+  const obtenerMedicionesCliente = (identificador) => {
+    const myHeaders = new Headers({
+      Authorization: `Bearer ${token}`,
     });
 
-    if (!encontrado) {
-      //console.log('No se ha encontrado');
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/medicion/${identificador.userId}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result && result.hasOwnProperty("data")) {
+          const { data } = result;
+          //console.log(data);
+          
+          // Actualizamos el estado con las mediciones del cliente
+          setMedicionesDB(data);
+        } else {
+          // Muestra un mensaje de información con un valor por defecto si `mensaje` no está definido
+          //const mensajeError = result?.mensaje || "No se encontró información";
+          //Swal.fire("Info", mensajeError, "info");
+        }
+      })
+  }
+
+  /************************LIMPIAR ESTADOS E INPUTS */
+
+  /**
+   * Limpia todos los campos de los input
+   */
+  const limpiarCampos = () => {
+    const inputs = document.getElementsByTagName("input");
+    const textareas = document.getElementsByTagName("textarea");
+    const selects = document.getElementsByTagName("select");
+
+    // Limpiar inputs tipo 'text', 'number' y 'textarea'
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
+      if (input.type === "text" || input.type === "number") {
+        input.value = "";
+      }
+    }
+
+    // Limpiar textareas
+    for (let i = 0; i < textareas.length; i++) {
+      const textarea = textareas[i];
+      textarea.value = "";
+    }
+
+    // Limpiar selects
+    for (let i = 0; i < selects.length; i++) {
+      const select = selects[i];
+      select.selectedIndex = 0;
     }
   };
 
@@ -122,6 +169,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
     setArrayMediciones([]);
   };
 
+  /************************** ACCIONES CON LOS INPUTS */
   /**
    * Captura y almacena en el estado mediciones, el nombre del input y su valor respectivo.
    * @param {*} event
@@ -137,10 +185,8 @@ const RegistroMedicionCliente = ({ clientes }) => {
    */
   const handleOptionChange = (event) => {
     let prendaSeleccionada = event.target.value;
-
-    let dataMediciones = obtenerMediciones();
     if (
-      !validarExistenciaProducto(idCliente, prendaSeleccionada, dataMediciones)
+      !validarExistenciaProducto(prendaSeleccionada)
     ) {
       setPrenda(prendaSeleccionada);
     } else {
@@ -148,16 +194,25 @@ const RegistroMedicionCliente = ({ clientes }) => {
     }
   };
 
-  const validarExistenciaProducto = (
-    idCliente,
-    seleccionPrenda,
-    dataMediciones
-  ) => {
-    const medicionesExisten = dataMediciones.find(
-      (item) =>
-        parseInt(item.id_cliente) == idCliente &&
-        item.articulo == seleccionPrenda
-    );
+  /**
+   * Funcion para enviar las peticiones al API
+   */
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    agregarOtraMedida();
+  };
+
+  /**************************** VALIDACIONES */
+  
+  const validarExistenciaProducto = (seleccionPrenda) => {
+    // Verifica que dataMediciones sea un array
+    if (!Array.isArray(medicionesDB)) {
+      console.error("medicionesDB debe ser un array válido.");
+      return false; // O manejarlo como consideres
+    }
+
+    const medicionesExisten = medicionesDB.find(
+      (item) => item.articulo === seleccionPrenda);
 
     if (medicionesExisten) {
       Swal.fire({
@@ -172,24 +227,15 @@ const RegistroMedicionCliente = ({ clientes }) => {
     }
   };
 
-  /**
-   * Obtiene mediciones almacenadas en el LS
-   */
-  const obtenerMediciones = () => {
-    let mediciones = localStorage.getItem("medidas");
-    return JSON.parse(mediciones);
-  };
+  /**Validaciones si el estado prenda existe en alguna de las listas */
+  const prendaSuperior = medicionesSuperior.includes(prenda);
+  const prendaInferior = medicionesInferior.includes(prenda);
 
-  /**
-   * Funcion para enviar las peticiones al API
-   */
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    agregarOtraMedida();
-  };
 
+  /*****************************OBTENER FECHA */
+ 
   /**
-   * Obtiene fecha actusal
+   * Obtiene fecha actual
    */
   const obtenerFecha = () => {
     const date = new Date();
@@ -202,10 +248,13 @@ const RegistroMedicionCliente = ({ clientes }) => {
     return fecha;
   };
 
+
+  /********************************REGISTROY ELIMINAR MEDICIONES */
+
   //Registrar nuevas mediciones
   const registrarMedicion = () => {
 
-    console.log(mediciones);
+    //console.log(mediciones);
 
     Swal.fire({
       title: "Las mediciones se están guardando...",
@@ -330,12 +379,12 @@ const RegistroMedicionCliente = ({ clientes }) => {
         formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo || 0);
         formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro || 0);
 
-        if (nuevoRegistro.mediciones.tiroLargo === "ON" || nuevoRegistro.mediciones.tiroLargo === "on"){
+        if (nuevoRegistro.mediciones.tiroLargo === "ON" || nuevoRegistro.mediciones.tiroLargo === "on") {
           formdata.append("tiro_largo_ya_inferior", 0);
-          console.log('pasa')
+          //console.log('pasa')
         }
-        else{
-          console.log('pasa')
+        else {
+          //console.log('pasa')
           formdata.append("tiro_largo_ya_inferior", 1);
         }
 
@@ -367,20 +416,21 @@ const RegistroMedicionCliente = ({ clientes }) => {
         );
       }
 
+      /*
       const formdataToJson = (formdata) => {
         let jsonObject = {};
-      
+
         for (let pair of formdata.entries()) {
           jsonObject[pair[0]] = pair[1];
         }
-      
+
         return JSON.stringify(jsonObject, null, 2); // Formato JSON legible con espacios
       };
-      
+
       // Ejemplo de uso:
       console.log(formdataToJson(formdata));
+*/
 
-      
       const requestOptions = {
         method: "POST",
         headers: {
@@ -454,7 +504,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
           }
         });
       });
-      
+
     } catch (error) {
       console.log("error", error);
     }
@@ -508,7 +558,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
         medicion.prenda !== prenda
     );
 
-    console.log(nuevasMediciones);
+    //console.log(nuevasMediciones);
 
     // Actualizar el array de mediciones en localStorage
     localStorage.setItem("nuevosRegistros", JSON.stringify(nuevasMediciones));
@@ -517,34 +567,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
     setArrayMediciones(nuevasMediciones);
   };
 
-  /**
-   * Limpia todos los campos de los input
-   */
-  const limpiarCampos = () => {
-    const inputs = document.getElementsByTagName("input");
-    const textareas = document.getElementsByTagName("textarea");
-    const selects = document.getElementsByTagName("select");
 
-    // Limpiar inputs tipo 'text', 'number' y 'textarea'
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i];
-      if (input.type === "text" || input.type === "number") {
-        input.value = "";
-      }
-    }
-
-    // Limpiar textareas
-    for (let i = 0; i < textareas.length; i++) {
-      const textarea = textareas[i];
-      textarea.value = "";
-    }
-
-    // Limpiar selects
-    for (let i = 0; i < selects.length; i++) {
-      const select = selects[i];
-      select.selectedIndex = 0;
-    }
-  };
 
   return (
     <React.Fragment>

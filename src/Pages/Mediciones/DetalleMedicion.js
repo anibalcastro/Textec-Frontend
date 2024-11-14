@@ -5,13 +5,17 @@ import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 
 const DetalleMedicion = () => {
+  const [nombre, setNombre] = useState("");
+  const [apellido1, setApellido1] = useState("");
+  const [apellido2, setApellido2] = useState("");
+
   const [prenda, setPrenda] = useState("");
   const [medicion, setMedicion] = useState([]);
   const role = Cookies.get("role");
   const token = Cookies.get("jwtToken");
 
-  let idDetalle = useParams();
-  let navigate = useNavigate();
+  const { idDetalle } = useParams(); // Extrae idDetalle directamente
+  const navigate = useNavigate();
 
   const medicionesSuperior = [
     "Camisa",
@@ -23,89 +27,132 @@ const DetalleMedicion = () => {
     "Filipinas",
   ];
 
-  /**Lista de mediciones inferiores */
   const medicionesInferior = ["Short"];
 
   useEffect(() => {
-    obtenetInformacionMedidas(idDetalle);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (token) {
+      obtenerInformacionMedidas(idDetalle);
+    } else {
+      Swal.fire(
+        "Error",
+        "Token no encontrado. Por favor, inicia sesión.",
+        "error"
+      );
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idDetalle]);
 
-  /**Validaciones si el estado prenda existe en alguna de las listas */
   const prendaSuperior = medicionesSuperior.includes(prenda);
   const prendaInferior = medicionesInferior.includes(prenda);
 
-  const obtenetInformacionMedidas = (parametro) => {
-    let mediciones = localStorage.getItem("medidas");
-    mediciones = JSON.parse(mediciones);
-
-    mediciones.forEach((item, i) => {
-      if (parseInt(item.id) === parseInt(parametro.idDetalle)) {
-        //console.log(item);
-        setPrenda(item.articulo);
-        setMedicion(item);
-      }
+  const obtenerInformacionMedidas = (idDetalle) => {
+    const myHeaders = new Headers({
+      Authorization: `Bearer ${token}`,
     });
+
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/cliente/medicion/${idDetalle}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result && result.hasOwnProperty("data") && result.data) {
+          const { data } = result;
+
+          //console.log(data);
+          setPrenda(data[0].articulo);
+          setMedicion(data[0]);
+          obtenerNombreCliente(data[0].id_cliente);
+        } else {
+          const mensajeError = result?.mensaje || "No se encontró información";
+          Swal.fire("Info", mensajeError, "info");
+        }
+      })
+      .catch((error) => {
+        //console.error("Error al obtener la información:", error);
+        Swal.fire(
+          "Error",
+          "Hubo un problema al obtener la información",
+          "error"
+        );
+      });
   };
 
-  const validarRol = (role) => {
-    if (role === "Admin") {
-      return true;
-    }
-
-    return false;
-  };
-
-  const peticionEliminar = (idMedidas) => {
-    var myHeaders = new Headers();
+  const obtenerNombreCliente = (idCliente) => {
+    //console.log(idCliente);
+    const myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    var requestOptions = {
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+
+    fetch(`https://api.textechsolutionscr.com/api/v1/cliente/${idCliente}`, requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result && result.hasOwnProperty("data") && result.data) {
+          const { data } = result;
+          setNombre(data.nombre);
+          setApellido1(data.apellido1);
+          setApellido2(data.apellido2);
+        } else {
+          const mensajeError = result?.mensaje || "No se encontró el cliente";
+          Swal.fire("Info", mensajeError, "info");
+        }
+      })
+      .catch((error) => console.error(error));
+};
+
+
+  const validarRol = () => role === "Admin";
+
+  const peticionEliminar = (idDetalle) => {
+    const myHeaders = new Headers({
+      Authorization: `Bearer ${token}`,
+    });
+
+    const requestOptions = {
       method: "POST",
       headers: myHeaders,
       redirect: "follow",
     };
 
-    //console.log(`https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`);
-
     fetch(
-      `https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idMedidas.idDetalle}`,
+      `https://api.textechsolutionscr.com/api/v1/mediciones/eliminar/${idDetalle}`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        let status = result.status;
-        console.log(status);
-
-        if (status == 200) {
+        if (result.status === 200) {
           Swal.fire(
-            "Medicion eliminada!",
-            `Se ha eliminado permanentemente`,
+            "Medición eliminada!",
+            "Se ha eliminado permanentemente",
             "success"
           ).then((result) => {
-            if (result.isConfirmed) {
-              // El usuario hizo clic en el botón "OK"
-              navigate("/mediciones");
-            } else {
-              navigate("/mediciones");
-            }
+            navigate("/mediciones");
           });
         } else {
           Swal.fire(
-            "Ha ocurrido un error!",
-            `Por favor intentarlo luego`,
+            "Error!",
+            "No se pudo eliminar. Inténtalo luego.",
             "error"
-          ).then((result) => {
-            if (result.isConfirmed) {
-              // El usuario hizo clic en el botón "OK"
-              navigate("/mediciones");
-            } else {
-              navigate("/mediciones");
-            }
+          ).then(() => {
+            navigate("/mediciones");
           });
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        console.error("Error al eliminar la medición:", error);
+        Swal.fire("Error", "Hubo un problema al eliminar la medición", "error");
+      });
   };
 
   const eliminarMedicion = () => {
@@ -120,21 +167,15 @@ const DetalleMedicion = () => {
       if (result.isConfirmed) {
         peticionEliminar(idDetalle);
       } else {
-        Swal.fire("Se ha cancelado!", `No se eliminará la medición`, "info");
+        Swal.fire("Cancelado", "No se eliminó la medición", "info");
       }
     });
   };
 
-  const validarPermisos = () => {
-    if (role === "Admin" || role === "Colaborador") {
-      return true;
-    }
-    return false;
-  };
+  const validarPermisos = () => role === "Admin" || role === "Colaborador";
 
   const permisosColaborador = validarPermisos();
-
-  const permisos = validarRol(role);
+  const permisos = validarRol();
 
   const goBack = () => {
     navigate(-1);
@@ -142,7 +183,7 @@ const DetalleMedicion = () => {
 
   return (
     <React.Fragment>
-      <h2 className="titulo-encabezado">{`${medicion.nombre} ${medicion.apellido1} ${medicion.apellido2} - ${medicion.articulo}`}</h2>
+      <h2 className="titulo-encabezado">{`${nombre} ${apellido1} ${apellido2} - ${prenda}`}</h2>
       <hr className="division"></hr>
       <div className="container form-contenedor">
         <form className="form-registro-clientes" id="form-registro-medicion">

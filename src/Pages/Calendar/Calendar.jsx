@@ -155,11 +155,12 @@ const App = () => {
       setWeeklyActivities(updatedWeekly);
     }
   };
-
+  
   useEffect(() => {
-    // Una vez que las actividades y las semanas estén disponibles, agregar actividades a las semanas
     updateWeeklyActivities(weekly, activities);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weekly, activities]);
+  
 
   const fetchActivities = () => {
     const myHeaders = new Headers();

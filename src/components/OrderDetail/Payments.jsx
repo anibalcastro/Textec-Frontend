@@ -55,6 +55,7 @@ const PaymentsTable = ({ payments, orderId }) => {
       .then((result) => {
         const { status } = result;
 
+        // eslint-disable-next-line eqeqeq
         if (status == 200) {
           Swal.fire(
             `Info`,

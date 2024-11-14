@@ -44,6 +44,7 @@ const Payments = () => {
 
     fetchInvoices();
     
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   

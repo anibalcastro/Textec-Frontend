@@ -131,7 +131,6 @@ const FilterOrders = ({ datos, showMonto }) => {
     return `${day}/${month}/${year}`;
   };
 
-  let iterador = indexOfFirstItem;
 
   return (
     <React.Fragment>

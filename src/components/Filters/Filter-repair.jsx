@@ -150,6 +150,7 @@ const FilterRepair = ({ datos }) => {
 
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
+      // eslint-disable-next-line eqeqeq
       (item) => parseInt(item.id) == parseInt(companyId)
     );
 

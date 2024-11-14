@@ -323,6 +323,7 @@ const Detail = ({
    */
   const nameCompany = (companyId) => {
     const empresaEncontrada = company.find(
+      // eslint-disable-next-line eqeqeq
       (item) => parseInt(item.id) == parseInt(companyId)
     );
 
@@ -336,6 +337,7 @@ const Detail = ({
   /**Return name of product */
   const nameProduct = (productId) => {
     const productFind = product.find(
+      // eslint-disable-next-line eqeqeq
       (item) => parseInt(item.id) == parseInt(productId)
     );
 

@@ -8,6 +8,7 @@ const FilterOrders = ({ datos, showMonto }) => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 60; // Número de ordenes por página
+  // eslint-disable-next-line no-unused-vars
   const [company, setCompany] = useState([]);
   const [typeFilter, setTypeFilter] = useState("Titulo");
 
@@ -43,6 +44,7 @@ const FilterOrders = ({ datos, showMonto }) => {
 
     fetchCompany();
     loadingData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {

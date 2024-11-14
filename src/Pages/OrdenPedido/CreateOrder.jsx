@@ -226,6 +226,7 @@ const CreateOrder = () => {
     const selectedProductId = event.target.value;
     // eslint-disable-next-line eqeqeq
     const selectedProduct = products.find(
+      // eslint-disable-next-line eqeqeq
       (product) => product.id == selectedProductId
     );
 
@@ -562,6 +563,7 @@ const CreateOrder = () => {
                 <option
                   key={product.id}
                   value={product.id}
+                  // eslint-disable-next-line eqeqeq
                   selected={orderDetail.id_producto == product.id}
                 >
                   {product.nombre_producto}

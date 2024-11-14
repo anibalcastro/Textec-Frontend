@@ -141,6 +141,7 @@ const CreateRepair = () => {
       const selectedProductId = event.target.value;
       // eslint-disable-next-line eqeqeq
       const selectedProduct = products.find(
+        // eslint-disable-next-line eqeqeq
         (product) => product.id == selectedProductId
       );
   

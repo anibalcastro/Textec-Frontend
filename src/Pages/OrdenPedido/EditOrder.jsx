@@ -727,6 +727,7 @@ const EditOrder = () => {
             >
               <option value="">Selecciona un producto</option>
               {products.map((product) => (
+                // eslint-disable-next-line eqeqeq
                 <option key={product.id} value={product.id} selected={orderDetail.id_producto == product.id}>
                   {product.nombre_producto}
                 </option>

@@ -16,6 +16,7 @@ const EditSupplier = () => {
 
   useEffect(() => {
     setEditSupplier(supplier);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = (event) => {

@@ -287,17 +287,7 @@ const OrderDetail = () => {
     return false;
   };
 
-  /**
-   * Validates the user's role to determine if they have administrator privileges
-   * in order to activate the cancel order function.
-   */
-  const validateRole = (role) => {
-    if (role === "Admin" && order.estado !== "Anulada") {
-      return true;
-    }
-
-    return false;
-  };
+ 
 
   const loadingData = () => {
     let timerInterval;
