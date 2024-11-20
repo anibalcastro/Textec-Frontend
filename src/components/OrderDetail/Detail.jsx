@@ -609,8 +609,7 @@ const Detail = ({
                   disabled={
                     inputTelasDisabled ||
                     order.tela === 1 ||
-                    role === "Visor" ||
-                    role === "Colaborador"
+                    role === "Visor"
                   }
                   onChange={handleCheckboxTelasChange}
                 />
