@@ -1,109 +1,96 @@
-
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-const FiltroMediciones = ({ datos, filter, type }) => {
+const FiltroMediciones = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 80; // Número de mediciones por página
-  const [typeFilter, setTypeFilter] = useState("Nombre");
+  const [typeFilter, setTypeFilter] = useState("nombre");
+  const [name, setName] = useState("");
 
   useEffect(() => {
+    console.log("Datos recibidos:", datos); // Verifica que lleguen correctamente
     setCurrentPage(1); // Resetear la página cuando los datos cambian
     getDataFilter();
     loadingData();
-  }, []);
+  }, [datos]);
 
   const getDataFilter = () => {
-    let storedFiltro = localStorage.getItem("filtro");
-    let storedTipoFiltro = localStorage.getItem("tipoFiltro");
+    const storedFiltro = localStorage.getItem("filtro");
+    const storedTipoFiltro = localStorage.getItem("tipoFiltro");
 
     if (storedFiltro !== null && storedTipoFiltro !== null) {
-      // Ambos valores existen en el localStorage
       setFiltro(storedFiltro || "");
-      setTypeFilter(storedTipoFiltro || "Nombre");
+      setTypeFilter(storedTipoFiltro || "nombre");
     } else {
-      // Uno o ambos valores no existen en el localStorage
-      // Puedes manejar esto de acuerdo a tus necesidades, por ejemplo, establecer valores predeterminados.
       setFiltro("");
-      setTypeFilter("Nombre");
+      setTypeFilter("nombre");
     }
   };
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
     localStorage.setItem("filtro", event.target.value);
+    setCurrentPage(1);
+  };
 
-    setCurrentPage(1); // Resetear la página cuando se aplica un filtro
+  const handleFiltroNombreChange = (event) => {
+    setName(event.target.value);
   };
 
   const filtrarDatos = () => {
-    if (!datos) {
+    if (!Array.isArray(datos) || datos.length === 0) {
       return [];
     }
 
-    if (typeFilter === "Nombre") {
-      const datosFiltrados = datos.filter((dato) => {
+    if (typeFilter === "nombre") {
+      return datos.filter((dato) => {
         const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`;
         return nombreCompleto.toLowerCase().includes(filtro.toLowerCase());
       });
-      return datosFiltrados;
-    } else if (typeFilter === "Empresa") {
-      const datosFiltrados = datos.filter((dato) => {
-        const nombreEmpresa = `${dato.empresa}`;
-        return nombreEmpresa.toLowerCase().includes(filtro.toLowerCase());
+    }
+
+    if (typeFilter === "empresa") {
+      return datos.filter((dato) => {
+        const nombreEmpresa = dato.empresa?.toLowerCase() || "";
+        const nombreCompleto = `${dato.nombre} ${dato.apellido1} ${dato.apellido2}`.toLowerCase();
+
+        return (
+          nombreEmpresa.includes(filtro.toLowerCase()) &&
+          nombreCompleto.includes(name.toLowerCase())
+        );
       });
-      return datosFiltrados;
-    } else if (typeFilter === "Cedula") {
-      const datosFiltrados = datos.filter((dato) => {
+    }
+
+    if (typeFilter === "cedula") {
+      return datos.filter((dato) => {
         const numeroCedula = `${dato.cedula}`;
         return numeroCedula.toLowerCase().includes(filtro.toLowerCase());
       });
-      return datosFiltrados;
     }
-  };
 
-  const handleInputFilterSelect = (event) => {
-    setTypeFilter(event.target.value);
-    localStorage.setItem("tipoFiltro", event.target.value);
+    return [];
   };
 
   const loadingData = () => {
-    let timerInterval;
     Swal.fire({
       title: "Cargando datos!",
-      html: "Se va a cerrar en <b></b> segundo",
-      timer: 3000, // Cambiar a la duración en segundos (por ejemplo, 2 segundos)
+      html: "Se va a cerrar en <b></b> segundos",
+      timer: 3000,
       timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-        const b = Swal.getHtmlContainer().querySelector("b");
-        timerInterval = setInterval(() => {
-          const timerLeftInSeconds = Math.ceil(Swal.getTimerLeft() / 1000); // Convertir milisegundos a segundos y redondear hacia arriba
-          b.textContent = timerLeftInSeconds;
-        }, 1000); // Actualizar cada segundo
-      },
-      willClose: () => {
-        clearInterval(timerInterval);
-      },
-    }).then((result) => {
-      /* Read more about handling dismissals below */
-      if (result.dismiss === Swal.DismissReason.timer) {
-        // El temporizador ha expirado
-      }
+      didOpen: () => Swal.showLoading(),
     });
   };
 
-
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
   const currentFilteredItems = filtrarDatos()
-    .reverse()
+    .sort((a, b) => b.id - a.id) // Cambia `id` por el campo que quieras usar para el orden descendente
     .slice(indexOfFirstItem, indexOfLastItem);
 
   const totalPages = Math.ceil(filtrarDatos().length / itemsPerPage);
-
 
   const handleClick = (page) => {
     setCurrentPage(page);
@@ -119,17 +106,29 @@ const FiltroMediciones = ({ datos, filter, type }) => {
           type="text"
           value={filtro}
           onChange={handleFiltroChange}
-          placeholder="Buscar"
+          placeholder={`Buscar por ${typeFilter}`}
         />
 
+        {typeFilter === "empresa" && (
+          <input
+            className="filtro-pedidos"
+            type="text"
+            value={name}
+            onChange={handleFiltroNombreChange}
+            placeholder="Buscar el nombre de la persona"
+          />
+        )}
+
         <div className="d-flex align-items-center">
-          {" "}
-          {/* Añade la clase 'align-items-center' para centrar verticalmente */}
-          <label>Buscar por: </label>
-          <select className="sc-filter" onChange={handleInputFilterSelect} value={typeFilter}>
-            <option value={"Nombre"}>Nombre</option>
-            <option value={"Empresa"}>Empresa</option>
-            <option value={"Cedula"}>Cédula</option>
+          <label>Buscar por:</label>
+          <select
+            className="sc-filter"
+            onChange={(e) => setTypeFilter(e.target.value)}
+            value={typeFilter}
+          >
+            <option value="nombre">Nombre</option>
+            <option value="empresa">Empresa</option>
+            <option value="cedula">Cédula</option>
           </select>
         </div>
       </div>
@@ -151,9 +150,10 @@ const FiltroMediciones = ({ datos, filter, type }) => {
                 <Link
                   className="link-nombre"
                   to={`/mediciones/cliente/${dato.id}`}
-                >{`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}</Link>
+                >
+                  {`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}
+                </Link>
               </td>
-
               <td>{dato.cedula}</td>
               <td>{dato.empresa}</td>
             </tr>

@@ -1,81 +1,79 @@
 import React, { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 import Filtro from "../../components/Filters/Filtro-clientes";
 
 const Clientes = () => {
   const [listaClientes, setListaClientes] = useState([]);
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
-  
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-  
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     const solicitudClientesApi = async () => {
       try {
         var myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${token}`);
-  
+
         var requestOptions = {
-          method: 'GET',
+          method: "GET",
           headers: myHeaders,
-          redirect: 'follow'
+          redirect: "follow",
         };
-  
-        const response = await fetch("https://api.textechsolutionscr.com/api/v1/clientes", requestOptions);
+
+        const response = await fetch(
+          "https://api.textechsolutionscr.com/api/v1/clientes",
+          requestOptions
+        );
         const result = await response.json();
-  
+
         if (result.hasOwnProperty("data")) {
-          const { data } = result;
-          setListaClientes(data);
-          localStorage.setItem('data', JSON.stringify(data));
-        } else {
-          //console.log("La respuesta de la API no contiene la propiedad 'data'");
-          // Mostrar mensaje de error o realizar otra acción
+          const formattedData = result.data.map((cliente) => ({
+            id: cliente.id,
+            nombre: cliente.nombre,
+            apellido1: cliente.apellido1,
+            apellido2: cliente.apellido2,
+            cedula: cliente.cedula,
+            empresa: cliente.empresa || "Sin empresa",
+          }));
+
+          setListaClientes(formattedData);
         }
       } catch (error) {
-        console.log('error', error);
+        console.error("Error al obtener clientes:", error);
       }
     };
-  
-    const fetchData = async () => {
-      await delay(1000);
-      await solicitudClientesApi();
-    };
-  
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
-  
-  const validarPermisos = () => {
-    if (role === 'Admin' || role === 'Colaborador'){
-      return true;
-    }
-  
-    return false
-  }
+    solicitudClientesApi();
+  }, [token, navigate]);
 
-  const permisos = validarPermisos();
+  const validarPermisos = () => role === "Admin" || role === "Colaborador";
 
   return (
     <React.Fragment>
- 
-        <h2 className="titulo-encabezado">Clientes</h2>
-        <hr className="division"></hr>
+      <h2 className="titulo-encabezado">Clientes</h2>
+      <hr className="division"></hr>
 
-        <div className="container mediciones-filtro">
-          {permisos && (<Link to='/clientes/registro'>
+      <div className="container mediciones-filtro">
+        {validarPermisos() && (
+          <Link to="/clientes/registro">
             <button className="btn-registrar">Registrar</button>
-          </Link> )}
-        </div>
+          </Link>
+        )}
+      </div>
 
-        <Filtro datos={listaClientes} /> {/* Utilizando el nombre actualizado del estado */}
-
-
+      {listaClientes.length > 0 ? (
+        <Filtro datos={listaClientes} />
+      ) : (
+        <p>Cargando datos o no se encontraron clientes.</p>
+      )}
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Clientes; 
+export default Clientes;

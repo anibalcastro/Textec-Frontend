@@ -11,14 +11,12 @@ const Mediciones = () => {
   const role = Cookies.get("role");
 
   useEffect(() => {
-    const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
     const solicitudClientesApi = async () => {
       try {
-        var myHeaders = new Headers();
+        const myHeaders = new Headers();
         myHeaders.append("Authorization", `Bearer ${token}`);
 
-        var requestOptions = {
+        const requestOptions = {
           method: "GET",
           headers: myHeaders,
           redirect: "follow",
@@ -30,30 +28,25 @@ const Mediciones = () => {
         );
         const result = await response.json();
 
+        console.log(result); // Depuración: Verifica la respuesta de la API
+
         if (result.hasOwnProperty("data")) {
           const { data } = result;
           setListaClientes(data);
           localStorage.setItem("data", JSON.stringify(data));
+        } else {
+          console.warn("No se encontró la propiedad 'data' en la respuesta.");
         }
       } catch (error) {
-        console.log("error", error);
+        console.error("Error al obtener los clientes:", error);
       }
     };
 
-    const fetchData = async () => {
-      await delay(1000);
-      await solicitudClientesApi();
-    };
-
-    fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    solicitudClientesApi();
+  }, [token]); // Escucha cambios en el token
 
   const validarPermisos = () => {
-    if (role === "Admin" || role === "Colaborador") {
-      return true;
-    }
-    return false;
+    return role === "Admin" || role === "Colaborador";
   };
 
   const permisosColaborador = validarPermisos();
@@ -69,8 +62,7 @@ const Mediciones = () => {
           </Link>
         )}
       </div>
-      <Filtro datos={listaClientes} />{" "}
-      {/* Utilizando el nombre actualizado del estado */}
+      <Filtro datos={listaClientes} />
     </React.Fragment>
   );
 };
