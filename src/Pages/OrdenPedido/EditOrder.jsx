@@ -230,7 +230,7 @@ const EditOrder = () => {
 
   const handleInputChangeProduct = (event) => {
     const selectedProductId = event.target.value;
-    console.log("Nuevo ID de producto seleccionado:", selectedProductId);
+    //console.log("Nuevo ID de producto seleccionado:", selectedProductId);
 
     // Actualiza el estado de orderDetail con el nuevo id_producto
     setOrderDetail((prevDetail) => ({

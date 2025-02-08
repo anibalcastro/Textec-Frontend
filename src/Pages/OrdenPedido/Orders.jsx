@@ -28,7 +28,7 @@ const Orders = () => {
           if (result.hasOwnProperty("ordenes")) {
             const { ordenes } = result;
             setOrders(ordenes);
-            localStorage.setItem("ordenes", JSON.stringify(ordenes));
+            //localStorage.setItem("ordenes", JSON.stringify(ordenes));
           }
         })
         .catch((error) => console.log("error", error));

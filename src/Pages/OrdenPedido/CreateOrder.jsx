@@ -409,9 +409,6 @@ const CreateOrder = () => {
       .then((response) => response.json())
       .then((result) => {
         const { status, error } = result;
-
-        //console.log(result);
-
         if (parseInt(status) === 200) {
           Swal.fire(
             "Orden creada con éxito",
@@ -434,7 +431,10 @@ const CreateOrder = () => {
           Swal.fire("Error al crear la orden!", `${errorMessage}`, "error");
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        Swal.fire(`Error`, `${error}`, "error");
+        //console.log("error", error)
+      });
   };
 
   return (

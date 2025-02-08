@@ -9,7 +9,7 @@ const OrderDetail = () => {
     id: 0,
     titulo: "",
     id_empresa: 0,
-    estado: "Taller",
+    estado: "Taller", //Estado por defecto
     fecha_orden: "",
     cajero: "",
   });
