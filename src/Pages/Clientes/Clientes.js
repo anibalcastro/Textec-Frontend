@@ -40,6 +40,7 @@ const Clientes = () => {
             apellido2: cliente.apellido2,
             cedula: cliente.cedula,
             empresa: cliente.empresa || "Sin empresa",
+            departamento: cliente.departamento || "Sin departamento"
           }));
 
           setListaClientes(formattedData);

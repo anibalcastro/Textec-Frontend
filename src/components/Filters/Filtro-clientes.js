@@ -6,18 +6,46 @@ import "sweetalert2/dist/sweetalert2.css";
 const FiltroClientes = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 80;
+  const itemsPerPage = 100;
   const [typeFilter, setTypeFilter] = useState("nombre");
   const [name, setName] = useState("");
+
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   useEffect(() => {
+    cargarFiltros();
     loadingData();
-  }, []);
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [datos]);
+
+  const cargarFiltros = () => {
+    const storedFiltro = localStorage.getItem("filtroClientes");
+    const storedTypeFilter = localStorage.getItem("tipoFiltroClientes");
+
+    if (storedFiltro !== null) {
+      setFiltro(storedFiltro);
+    }
+
+    if (storedTypeFilter !== null) {
+      setTypeFilter(storedTypeFilter);
+    }
+  };
+
+  const guardarFiltros = (campo, valor) => {
+    localStorage.setItem(campo, valor);
+  };
 
   const handleFiltroChange = (event) => {
     setFiltro(event.target.value);
+    guardarFiltros("filtroClientes", event.target.value);
     setCurrentPage(1);
+  };
+
+  const handleTypeFilterChange = (event) => {
+    const value = event.target.value;
+    setTypeFilter(value);
+    guardarFiltros("tipoFiltroClientes", value);
   };
 
   const handleFiltroNombreChange = (event) => {
@@ -87,7 +115,8 @@ const FiltroClientes = ({ datos }) => {
         )}
         <select
           className="sc-filter"
-          onChange={(e) => setTypeFilter(e.target.value)}
+          value={typeFilter}
+          onChange={handleTypeFilterChange}
         >
           <option value="nombre">Nombre</option>
           <option value="empresa">Empresa</option>
@@ -106,26 +135,26 @@ const FiltroClientes = ({ datos }) => {
           </tr>
         </thead>
         <tbody>
-          {currentFilteredItems.length > 0 ? (
-            currentFilteredItems.map((dato, index) => (
-              <tr key={index}>
-                <td>{indexOfFirstItem + index + 1}</td>
-                <td>
-                  <Link className="link-nombre" to={`/clientes/${dato.id}`}>
-                    {`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}
-                  </Link>
-                </td>
-                <td>{dato.cedula}</td>
-                <td>{dato.empresa || "Sin empresa"}</td>
-                <td>{dato.departamento || "Sin departamento"}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="5">No se encontraron resultados</td>
-            </tr>
-          )}
-        </tbody>
+  {Array.isArray(currentFilteredItems) && currentFilteredItems.length > 0 ? (
+    currentFilteredItems.map((dato, index) => (
+      <tr key={index}>
+        <td>{indexOfFirstItem + index + 1}</td>
+        <td>
+          <Link className="link-nombre" to={`/clientes/${dato.id}`}>
+            {`${dato.nombre} ${dato.apellido1} ${dato.apellido2}`}
+          </Link>
+        </td>
+        <td>{dato.cedula}</td>
+        <td>{dato.empresa || "Sin empresa"}</td>
+        <td>{dato.departamento || "Sin departamento"}</td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="5">No se encontraron resultados o datos no disponibles.</td>
+    </tr>
+  )}
+</tbody>
       </table>
 
       <div className="pagination">

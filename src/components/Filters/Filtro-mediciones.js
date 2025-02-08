@@ -1,42 +1,56 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
+import { Link, useLocation } from "react-router-dom";
 
 const FiltroMediciones = ({ datos }) => {
   const [filtro, setFiltro] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 80; // Número de mediciones por página
+  const itemsPerPage = 100; // Número de mediciones por página
   const [typeFilter, setTypeFilter] = useState("nombre");
   const [name, setName] = useState("");
+  const location = useLocation(); // Hook para obtener la ruta actual
 
   useEffect(() => {
-    console.log("Datos recibidos:", datos); // Verifica que lleguen correctamente
-    setCurrentPage(1); // Resetear la página cuando los datos cambian
-    getDataFilter();
-    loadingData();
-  }, [datos]);
-
-  const getDataFilter = () => {
-    const storedFiltro = localStorage.getItem("filtro");
-    const storedTipoFiltro = localStorage.getItem("tipoFiltro");
-
-    if (storedFiltro !== null && storedTipoFiltro !== null) {
-      setFiltro(storedFiltro || "");
-      setTypeFilter(storedTipoFiltro || "nombre");
-    } else {
+    if (location.pathname === "/") {
+      // Borra los datos del filtro cuando estés en la página de inicio
+      localStorage.removeItem("filtro");
+      localStorage.removeItem("tipoFiltro");
+      localStorage.removeItem("currentPage");
       setFiltro("");
       setTypeFilter("nombre");
+      setCurrentPage(1);
+    } else {
+      restoreFilterState();
     }
+  }, [location.pathname, datos]);
+
+  const restoreFilterState = () => {
+    const storedFiltro = localStorage.getItem("filtro");
+    const storedTipoFiltro = localStorage.getItem("tipoFiltro");
+    const storedCurrentPage = localStorage.getItem("currentPage");
+
+    setFiltro(storedFiltro || "");
+    setTypeFilter(storedTipoFiltro || "nombre"); // Restaurar tipoFiltro desde localStorage
+    setCurrentPage(storedCurrentPage ? parseInt(storedCurrentPage, 10) : 1);
   };
 
   const handleFiltroChange = (event) => {
-    setFiltro(event.target.value);
-    localStorage.setItem("filtro", event.target.value);
+    const value = event.target.value;
+    setFiltro(value);
+    localStorage.setItem("filtro", value);
     setCurrentPage(1);
+    localStorage.setItem("currentPage", 1);
   };
 
   const handleFiltroNombreChange = (event) => {
     setName(event.target.value);
+  };
+
+  const handleFilterTypeChange = (event) => {
+    const value = event.target.value;
+    setTypeFilter(value);
+    localStorage.setItem("tipoFiltro", value); // Almacenar el tipo de filtro seleccionado
+    setCurrentPage(1);
+    localStorage.setItem("currentPage", 1);
   };
 
   const filtrarDatos = () => {
@@ -73,15 +87,6 @@ const FiltroMediciones = ({ datos }) => {
     return [];
   };
 
-  const loadingData = () => {
-    Swal.fire({
-      title: "Cargando datos!",
-      html: "Se va a cerrar en <b></b> segundos",
-      timer: 3000,
-      timerProgressBar: true,
-      didOpen: () => Swal.showLoading(),
-    });
-  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -94,6 +99,7 @@ const FiltroMediciones = ({ datos }) => {
 
   const handleClick = (page) => {
     setCurrentPage(page);
+    localStorage.setItem("currentPage", page);
   };
 
   let iterador = indexOfFirstItem;
@@ -123,8 +129,8 @@ const FiltroMediciones = ({ datos }) => {
           <label>Buscar por:</label>
           <select
             className="sc-filter"
-            onChange={(e) => setTypeFilter(e.target.value)}
-            value={typeFilter}
+            onChange={handleFilterTypeChange}
+            value={typeFilter} // Asegurarse de usar el estado actualizado
           >
             <option value="nombre">Nombre</option>
             <option value="empresa">Empresa</option>

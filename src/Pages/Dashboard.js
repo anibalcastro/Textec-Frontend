@@ -14,6 +14,13 @@ export default function Dashboard() {
   const [ordenesEntregadaCliente, setOrdenesEntregadaCliente] = useState(0);
 
   useEffect(() => {
+
+    validarYEliminarLocalStorage("filtro");
+    validarYEliminarLocalStorage("tipoFiltro");
+    validarYEliminarLocalStorage("currentPage");
+    validarYEliminarLocalStorage("filtroClientes");
+    validarYEliminarLocalStorage("tipoFiltroClientes");
+
     const consultaCantidadClientes = async () => {
       var myHeaders = new Headers();
       myHeaders.append("Authorization", `Bearer ${token}`);
@@ -114,6 +121,14 @@ export default function Dashboard() {
     consultaCantidadPedidos();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /** Funcion para eliminar el localstorage las opciones de filtro */
+  const validarYEliminarLocalStorage = (campo) => {
+    if (localStorage.getItem(campo) !== null) {
+      localStorage.removeItem(campo);
+    }
+  };
+  
 
   return (
     <React.Fragment>

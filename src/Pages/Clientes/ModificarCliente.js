@@ -18,9 +18,8 @@ const ModificarCliente = () => {
 
   useEffect(() => {
     alertInvalidatePermission();
-    //Llenar la infrmacion del cliente por mediio de identificador
-    informacionCliente(userId)
-    obtenerEmpresas();
+    informacionCliente(userId)  //Llenar la infrmacion del cliente por mediio de identificador
+    obtenerEmpresas(); //Obtiene la informacion de las empresas
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -53,25 +52,45 @@ const ModificarCliente = () => {
 
   }
 
-  const informacionCliente = (identificador) => {
-    let datos = localStorage.getItem('data');
-    datos = JSON.parse(datos);
-
-    //console.log(identificador);
-
-    let encontrado = false;
-
-    datos.forEach((item, i) => {
-      //console.log(parseInt(item.id));
-      if (parseInt(item.id) === parseInt(identificador)) {
-        setCliente(item);
-        encontrado = true;
-      }
-    });
-
-    if (!encontrado) {
-      console.log('No se ha encontrado');
-    }
+  const informacionCliente = (clienteId) => {
+     const myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+      
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
+          redirect: "follow",
+        };
+      
+        fetch(`https://api.textechsolutionscr.com/api/v1/info/cliente/${clienteId}`, requestOptions)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`Error en la respuesta: ${response.statusText}`);
+            }
+            return response.json();
+          })
+          .then((result) => {
+            const { data } = result;
+            console.log(data);
+      
+            setCliente(data);
+      
+            if (!data) {
+              Swal.fire({
+                title: "Cliente no encontrado",
+                text: "Hay un problema en la red, por favor inténtelo más tarde",
+                icon: "error",
+              });
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener la información del cliente:", error);
+            Swal.fire({
+              title: "Error",
+              text: "No se pudo conectar con el servidor. Por favor, inténtelo más tarde.",
+              icon: "error",
+            });
+          });
   }
 
   /**

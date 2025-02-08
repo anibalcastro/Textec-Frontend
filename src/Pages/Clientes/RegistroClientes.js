@@ -10,18 +10,18 @@ const RegistroCliente = () => {
   const [empresas, setEmpresas] = useState([]);
   const [filtroEmpresa, setFiltroEmpresa] = useState("");
 
+  const navigate = useNavigate();
+  const token = Cookies.get("jwtToken");
+  const role = Cookies.get("role");
+
+
   useEffect(() => {
     alertInvalidatePermission();
     obtenerEmpresas();
-    setUsuarios(obtenerUsuarios());
+    obtenerUsuarios();
+    
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const navigate = useNavigate();
-
-  const token = Cookies.get("jwtToken");
-  
-  const role = Cookies.get("role");
 
   const validateUserPermission = () => {
     if (role !== "Visor"){
@@ -56,35 +56,72 @@ const RegistroCliente = () => {
   };
 
   const obtenerUsuarios = () => {
-    let datosUsuarios = localStorage.getItem("data");
-    return JSON.parse(datosUsuarios);
+    try {
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+    
+      var requestOptions = {
+        method: "GET",
+        headers: myHeaders,
+        redirect: "follow",
+      };
+    
+      fetch("https://api.textechsolutionscr.com/api/v1/clientes", requestOptions)
+        .then((response) => response.json())
+        .then((result) => {
+          if (result.hasOwnProperty("data")) {
+            const formattedData = result.data.map((cliente) => ({
+              id: cliente.id,
+              nombre: cliente.nombre,
+              apellido1: cliente.apellido1,
+              apellido2: cliente.apellido2,
+              cedula: cliente.cedula,
+              empresa: cliente.empresa || "Sin empresa",
+              departamento: cliente.departamento || "Sin departamento",
+            }));
+    
+            setUsuarios(formattedData);
+          }
+        })
+        .catch((error) => {
+          console.error("Error al obtener clientes:", error);
+        });
+    } catch (error) {
+      console.error("Error inesperado:", error);
+    }
+    
   };
 
   const handleInputChangeCedula = (event) => {
-    const valorCedula = event.target.value;
+    const valorCedula = event.target.value.trim().toLowerCase(); // Normaliza el valor
+    const esNA = valorCedula === "na"; // Verifica si es "NA" en cualquier combinación de mayúsculas/minúsculas
   
-    if (valorCedula === "NA" || valorCedula === "na" || valorCedula === "Na" || valorCedula === "nA") {
-      // El usuario ingresó "NA", actualiza el estado con ese valor
-      setCliente({ ...cliente, cedula: valorCedula });
-    } else {
-      const usuarioExistente = usuarios.find(
-        (usuario) => usuario.cedula === valorCedula
-      );
-  
-      if (usuarioExistente) {
-        // Usuario con la misma cédula ya existe
-        Swal.fire(
-          "Error!",
-          "La cédula que ingresaste ya existe en la base de datos",
-          "error"
-        );
-      } else {
-        // Usuario no existe, actualiza el estado
-        const { name, value } = event.target;
-        setCliente({ ...cliente, [name]: value });
-      }
+    if (esNA) {
+      // Si es "NA", actualiza el estado directamente
+      setCliente({ ...cliente, cedula: valorCedula.toUpperCase() }); // Guarda "NA" en mayúsculas
+      return;
     }
+  
+    // Busca si la cédula ya existe en los usuarios
+    const usuarioExistente = usuarios.find(
+      (usuario) => usuario.cedula === valorCedula
+    );
+  
+    if (usuarioExistente) {
+      // Si la cédula ya existe, muestra un error
+      Swal.fire(
+        "Error!",
+        "La cédula que ingresaste ya existe en la base de datos",
+        "error"
+      );
+      return;
+    }
+  
+    // Si no es "NA" y no existe en la base de datos, actualiza el estado
+    const { name, value } = event.target;
+    setCliente({ ...cliente, [name]: value });
   };
+  
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -108,6 +145,7 @@ const RegistroCliente = () => {
       formdata.append("apellido1", cliente.apellido1);
       formdata.append("apellido2", cliente.apellido2);
       formdata.append("cedula", cliente.cedula || "NA");
+      //console.log(`Cédula a agregrar ${cliente.cedula}`);
       formdata.append("email", cliente.correo || "NA");
       formdata.append("telefono", cliente.telefono || "NA");
       formdata.append("empresa", cliente.empresa || "NA");

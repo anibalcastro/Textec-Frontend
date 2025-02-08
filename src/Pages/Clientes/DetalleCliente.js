@@ -6,76 +6,57 @@ import Swal from "sweetalert2";
 
 const DetalleCliente = () => {
   const [cliente, setCliente] = useState({});
-  const [mediciones, setMediciones] = useState([]);
   const token = Cookies.get("jwtToken");
   const role = Cookies.get("role");
   const { userId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    obtenerInformacionCliente(userId);
-    obtenerMediciones(userId);
+    obtenerInfoCliente(userId)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const obtenerInformacionCliente = (parametro) => {
-    let datos = localStorage.getItem("data");
-    datos = JSON.parse(datos);
-
-    let encontrado = false;
-
-    datos.forEach((item) => {
-      if (parseInt(item.id) === parseInt(parametro)) {
-        setCliente(item);
-        encontrado = true;
-      }
-    });
-
-    if (!encontrado) {
-      console.log("No se ha encontrado");
-    }
-  };
-
-  const obtenerMediciones = (parametro) => {
-    let medidas = JSON.parse(localStorage.getItem("medidas")) || [];
-
-    if (medidas.length > 0) {
-      const arrayMedicionesUsuario = medidas.filter(
-        (item) => item.id_cliente === parametro
-      );
-      setMediciones(arrayMedicionesUsuario);
-    } else {
-      const myHeaders = new Headers({
-        Authorization: `Bearer ${token}`,
+  const obtenerInfoCliente = (clienteId) => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+  
+    const requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
+  
+    fetch(`https://api.textechsolutionscr.com/api/v1/info/cliente/${clienteId}`, requestOptions)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Error en la respuesta: ${response.statusText}`);
+        }
+        return response.json();
+      })
+      .then((result) => {
+        const { data } = result;
+        //console.log(data);
+  
+        setCliente(data);
+  
+        if (!data) {
+          Swal.fire({
+            title: "Cliente no encontrado",
+            text: "Hay un problema en la red, por favor inténtelo más tarde",
+            icon: "error",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error al obtener la información del cliente:", error);
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo conectar con el servidor. Por favor, inténtelo más tarde.",
+          icon: "error",
+        });
       });
-
-      const requestOptions = {
-        method: "GET",
-        headers: myHeaders,
-        redirect: "follow",
-      };
-
-      fetch(
-        "https://api.textechsolutionscr.com/api/v1/mediciones/clientes",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          if (result.hasOwnProperty("data")) {
-            const { data } = result;
-            localStorage.setItem("medidas", JSON.stringify(data));
-            const arrayMedicionesUsuario = data.filter(
-              (item) => item.id_cliente === parametro
-            );
-            setMediciones(arrayMedicionesUsuario);
-            console.log(mediciones);
-          } else {
-            // Mostrar mensaje de error o realizar otra acción
-          }
-        })
-        .catch((error) => console.log("error", error));
-    }
   };
+
 
   const peticionEliminar = (idCliente) => {
     const myHeaders = new Headers();
@@ -236,7 +217,7 @@ const DetalleCliente = () => {
             <button className="btn-registrar">Regresar</button>
           </Link>
           
-          {permisosColaborador && (<Link to={`/clientes/editar/${cliente.id}`}>
+          {permisosColaborador && (<Link to={`/clientes/editar/${userId}`}>
               <button className="btn-registrar">Editar</button>
             </Link>)}
 
