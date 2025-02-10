@@ -54,7 +54,9 @@ const EditarEmpresa = () => {
   };
 
   const obtenerEmpresas = (parametro) => {
-    let empresaId = parseInt(parametro)
+    let empresaId = parseInt(parametro);
+
+    
     let datosEmpresas = JSON.parse(localStorage.getItem("empresas"));
     setTodasEmpresas(datosEmpresas);
 

@@ -54,7 +54,7 @@ const Login = () => {
 
           Swal.fire(
             'Bienvenido!',
-            'Nuevo inicio de sesión.',
+            'Nos alegra tenerte aquí. Con nuestra plataforma, puedes gestionar todas las operaciones de la empresa textil de manera rápida y eficiente.',
             'success'
           ).then(result => {
             if (result.isConfirmed) {

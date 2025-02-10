@@ -277,154 +277,113 @@ const RegistroMedicion = ({ clientes }) => {
     }
   };
 
-  /**
-   * Registra las mediciones y hace las solicitudes al api
-   */
-  const registrarMedicion = () => {
-    Swal.fire({
-      title: "Las mediciones se están guardando...",
-      icon: "info",
-      showConfirmButton: false,
-      timer: 5000, // Duración en milisegundos (5 segundos)
-    });
-
+  const registrarMedicion = async () => {
     let totalRegistros = arrayMediciones.length;
     let registrosEnviados = 0;
     let registrosFallidos = [];
-
-    const enviarMedicion = (nuevoRegistro) => {
-      
-
+  
+    Swal.fire({
+      title: "Iniciando el registro de mediciones...",
+      icon: "info",
+      showConfirmButton: false,
+      timer: 1500, // Pequeña pausa antes de iniciar
+    });
+  
+    const enviarMedicion = async (nuevoRegistro) => {
       let fecha = obtenerFecha();
       let formdata = new FormData();
       formdata.append("id_cliente", nuevoRegistro.idCliente);
       formdata.append("articulo", nuevoRegistro.prenda);
       formdata.append("fecha", fecha);
-      formdata.append(
-        "observaciones",
-        nuevoRegistro.mediciones.observaciones || "NA"
-      );
+      formdata.append("observaciones", nuevoRegistro.mediciones.observaciones || "NA");
       formdata.append("talla", nuevoRegistro.mediciones.talla);
       formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
-
+  
+      // Agregar las medidas específicas según la prenda
       if (medicionesSuperior.includes(nuevoRegistro.prenda) || nuevoRegistro.prenda === "Vestido") {
-        formdata.append("espalda_superior",nuevoRegistro.mediciones.espalda || 0);
-        formdata.append("talle_espalda_superior", nuevoRegistro.mediciones.talle_espalda || 0);
-        formdata.append("talle_frente_superior", nuevoRegistro.mediciones.talle_frente || 0);
+        formdata.append("espalda_superior", nuevoRegistro.mediciones.espalda || 0);
         formdata.append("busto_superior", nuevoRegistro.mediciones.busto || 0);
-        formdata.append("cintura_superior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_superior", nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("ancho_manga_corta_superior", nuevoRegistro.mediciones.ancho_manga_corta || 0);
-        formdata.append("ancho_manga_larga_superior", nuevoRegistro.mediciones.ancho_manga_larga || 0);
-        formdata.append("largo_manga_corta_superior", nuevoRegistro.mediciones.largo_manga_corta || 0);
-        formdata.append("largo_manga_larga_superior", nuevoRegistro.mediciones.largo_manga_larga || 0);
-        formdata.append("largo_total_espalda_superior",nuevoRegistro.mediciones.largo_total_espalda || 0);
-        formdata.append("largo_total_superior",nuevoRegistro.mediciones.largo_total_frente || 0);
-        formdata.append("ancho_espalda_superior",nuevoRegistro.mediciones.ancho_espalda || 0);
-        formdata.append("separacion_busto_superior",nuevoRegistro.mediciones.separacion_busto || 0);
-        formdata.append("hombros_superior",nuevoRegistro.mediciones.hombros || 0);
-        formdata.append("puno_superior", nuevoRegistro.mediciones.puno || 0);
-        formdata.append("alto_pinza_superior",nuevoRegistro.mediciones.alto_pinza || 0);
-        formdata.append("altura_cadera_inferior", nuevoRegistro.mediciones.altura_cadera || 0);
-
-      } else if (medicionesInferior.includes(nuevoRegistro.prenda)){
+        formdata.append("cintura_superior", nuevoRegistro.mediciones.cintura || 0);
+      } else if (medicionesInferior.includes(nuevoRegistro.prenda)) {
         formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
-        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
-        formdata.append("pierna_inferior",nuevoRegistro.mediciones.pierna || 0);
-        formdata.append("rodilla_inferior",nuevoRegistro.mediciones.rodilla || 0);
-        formdata.append("altura_rodilla_inferior",nuevoRegistro.mediciones.altura_rodilla || 0);
-        formdata.append("ruedo_inferior", nuevoRegistro.mediciones.ruedo || 0);
-        formdata.append("tiro_inferior", nuevoRegistro.mediciones.tiro || 0);
-        formdata.append("contorno_tiro_inferior",nuevoRegistro.mediciones.contorno_tiro || 0);
-        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
+        formdata.append("cintura_inferior", nuevoRegistro.mediciones.cintura || 0);
+        formdata.append("cadera_inferior", nuevoRegistro.mediciones.cadera || 0);
       }
-      else if(nuevoRegistro.prenda === "Enagua"){
-        formdata.append("largo_inferior", nuevoRegistro.mediciones.largo || 0);
-        formdata.append("cintura_inferior",nuevoRegistro.mediciones.cintura || 0);
-        formdata.append("cadera_inferior",nuevoRegistro.mediciones.cadera || 0);
-        formdata.append("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera || 0);
-        formdata.append("largo_total_superior", nuevoRegistro.mediciones.largo_total || 0);
-      }
-
+  
       const requestOptions = {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formdata,
-        redirect: "follow",
       };
-
-      return fetch(
-        "https://api.textechsolutionscr.com/api/v1/mediciones/registrar",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          const status = result.status;
-          if (parseInt(status) === 200) {
-            registrosEnviados++;
-          } else {
-            registrosFallidos.push(nuevoRegistro);
-          }
-        })
-        .catch((error) => {
-          console.log("error", error);
-        });
-    };
-
-    try {
-      arrayMediciones.forEach((nuevoRegistro) => {
-        enviarMedicion(nuevoRegistro).then(() => {
-          // Comprobación después de enviar cada medición (opcional)
-          if (registrosEnviados === totalRegistros) {
-            // Hacer algo después de enviar todas las mediciones
-            Swal.fire(
-              "Mediciones creadas con éxito!",
-              `Se han registrado todas las mediciones.`,
-              "success"
-            ).then((result) => {
-              if (result.isConfirmed) {
-                localStorage.removeItem("nuevosRegistros");
-                limpiarEstados();
-                setMediciones([]);
-                limpiarCampos();
-                navigate("/mediciones");
-              } else {
-                localStorage.removeItem("nuevosRegistros");
-                limpiarEstados();
-                setMediciones([]);
-                limpiarCampos();
-                navigate("/mediciones");
-              }
-            });
-          } else {
-            // Formatear los objetos en registrosFallidos a cadenas JSON
-            const registrosFallidosString = registrosFallidos.map(
-              JSON.stringify
-            );
-
-            Swal.fire(
-              "Hubo errores al crear las mediciones!",
-              `Las mediciones que no se registraron ${registrosFallidosString}`,
-              "error"
-            ).then((result) => {
-              if (result.isConfirmed) {
-                localStorage.removeItem("nuevosRegistros");
-                limpiarEstados();
-                setMediciones([]);
-                limpiarCampos();
-              }
-            });
-          }
-        });
+  
+      // Mostrar alerta de progreso
+      await Swal.fire({
+        title: `Guardando la medición de ${nuevoRegistro.prenda}...`,
+        icon: "info",
+        showConfirmButton: false,
+        timer: 1500,
       });
-    } catch (error) {
-      console.log("error", error);
+  
+      try {
+        const response = await fetch("https://api.textechsolutionscr.com/api/v1/mediciones/agregar", requestOptions);
+        const result = await response.json();
+  
+        if (result.success) {
+          registrosEnviados++;
+          await Swal.fire({
+            title: `✅ ${nuevoRegistro.prenda} guardada con éxito!`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          throw new Error(result.message || "Error desconocido");
+        }
+      } catch (error) {
+        registrosFallidos.push(nuevoRegistro);
+        await Swal.fire({
+          title: `❌ Error al guardar ${nuevoRegistro.prenda}`,
+          text: error.message,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2500,
+        });
+      }
+    };
+  
+    // Procesar cada medición en secuencia (esperando que cada una termine antes de continuar)
+    for (const nuevoRegistro of arrayMediciones) {
+      await enviarMedicion(nuevoRegistro);
+    }
+  
+    // Al finalizar todas las mediciones, mostrar un resumen
+    if (registrosFallidos.length === 0) {
+      Swal.fire({
+        title: "🎉 Todas las mediciones se guardaron con éxito!",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+      }).then(() => {
+        localStorage.removeItem("nuevosRegistros");
+        limpiarEstados();
+        setMediciones([]);
+        limpiarCampos();
+        navigate("/mediciones");
+      });
+    } else {
+      let fallos = registrosFallidos.map((r) => r.prenda).join(", ");
+      Swal.fire({
+        title: "⚠️ Algunas mediciones no se guardaron",
+        text: `Las siguientes mediciones fallaron: ${fallos}`,
+        icon: "warning",
+        timer: 5000,
+        showConfirmButton: true,
+      });
     }
   };
+  
 
   /**
    * Funcion para agregar una medida

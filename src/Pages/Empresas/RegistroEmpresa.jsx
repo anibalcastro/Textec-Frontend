@@ -147,7 +147,7 @@ const RegistroEmpresa = () => {
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);
 
-    console.log(input);
+    //console.log(input);
 
     var formdata = new FormData();
 
@@ -205,7 +205,9 @@ const RegistroEmpresa = () => {
           return false;
         }
       })
-      .catch((error) => console.log("error", error));
+      .catch((error) => {
+        Swal.fire("Error", `${error}`, "error")
+        console.log("error", error)});
 
   };
 

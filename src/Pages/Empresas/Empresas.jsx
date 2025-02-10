@@ -28,7 +28,7 @@ const Empresas = () => {
                     if (result.hasOwnProperty("data")) {
                         const { data } = result;
                         setEmpresas(data);
-                        localStorage.setItem('empresas', JSON.stringify(data));
+                        //localStorage.setItem('empresas', JSON.stringify(data));
                       } 
                 })
                 .catch(error => console.log('error', error));
