@@ -8,22 +8,20 @@ import { useNavigate } from "react-router-dom";
 
 const ModificarCliente = () => {
 
-  const [cliente, setCliente] = useState([]);
-  const [empresas, setEmpresas] = useState([]);
-
-  let { userId } = useParams(); //Capturar el identificador de la URL 
-  const token = Cookies.get("jwtToken"); //Obtener el token
-
+  const [cliente, setCliente] = useState([]); //Estado donde se almacena la informacion del cliente.
+  const [empresas, setEmpresas] = useState([]); //Estado donde se almacenan las empresas.
+  let { userId } = useParams(); //Capturar el identificador de la URL.
+  const token = Cookies.get("jwtToken"); //Obtiene el token del cliente.
   const navigate = useNavigate();
 
   useEffect(() => {
-    alertInvalidatePermission();
+    alertInvalidatePermission(); //Confirma si el usuario es permitido.
     informacionCliente(userId)  //Llenar la infrmacion del cliente por mediio de identificador
     obtenerEmpresas(); //Obtiene la informacion de las empresas
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const role = Cookies.get("role");
+  const role = Cookies.get("role"); //Obtiene las cookies, especificamente el role.
 
   const validateUserPermission = () => {
     if (role !== "Visor"){
@@ -71,10 +69,7 @@ const ModificarCliente = () => {
           })
           .then((result) => {
             const { data } = result;
-            console.log(data);
-      
             setCliente(data);
-      
             if (!data) {
               Swal.fire({
                 title: "Cliente no encontrado",
