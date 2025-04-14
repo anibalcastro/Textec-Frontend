@@ -12,7 +12,8 @@ const EditarEmpresa = () => {
   useEffect(() => {
     alertInvalidatePermission();
     limpiarEstado();
-    obtenerEmpresas(idEmpresa)
+    obtenerEmpresas();
+    detalleEmpresa(idEmpresa);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -53,7 +54,30 @@ const EditarEmpresa = () => {
     setEmpresa({ ...empresa, [name]: value });
   };
 
-  const obtenerEmpresas = (parametro) => {
+  const obtenerEmpresas = () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+    };
+
+    fetch("https://api.textechsolutionscr.com/api/v1/empresas", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            if (result.hasOwnProperty("data")) {
+                const { data } = result;
+                setTodasEmpresas(data);
+                //localStorage.setItem('empresas', JSON.stringify(data));
+              } 
+        })
+        .catch(error => console.log('error', error));
+
+  };
+
+  const detalleEmpresa = (parametro) => {
     let empresaId = parseInt(parametro); 
 
     var myHeaders = new Headers();
@@ -83,7 +107,8 @@ const EditarEmpresa = () => {
           console.error("La respuesta no es JSON válido:", e);
         }
       });
-  };
+    
+  }
 
 
   const handleInputChangeCedula = (event) => {
