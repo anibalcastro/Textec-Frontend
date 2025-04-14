@@ -1,9 +1,3 @@
-/**
- * TAREAS
- * 1- Hacer un end point para obtener la informacion de la empresa y no usar el localstorage
- * 2-
- * 
- */
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Logo from "../../Images/Logos/Icono (1).webp";
