@@ -54,19 +54,35 @@ const EditarEmpresa = () => {
   };
 
   const obtenerEmpresas = (parametro) => {
-    let empresaId = parseInt(parametro);
+    let empresaId = parseInt(parametro); 
 
-    
-    let datosEmpresas = JSON.parse(localStorage.getItem("empresas"));
-    setTodasEmpresas(datosEmpresas);
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
 
-    if (datosEmpresas.length > 0) {
-        datosEmpresas.forEach((item) => {
-          if (parseInt(item.id) === empresaId) {
-              setEmpresa(item);
-          }
-        });
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
     }
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/empresa/detalle/${empresaId}`,
+      requestOptions
+    )
+      .then((response) => {
+        return response.text(); // primero obtenemos el texto sin parsearlo como JSON
+      })
+      .then((text) => { // aquí podrías ver si es HTML
+        try {
+          const json = JSON.parse(text);
+          setEmpresa(json.data);
+        } catch (e) {
+          console.error("La respuesta no es JSON válido:", e);
+        }
+      });
   };
 
 
