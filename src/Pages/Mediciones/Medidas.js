@@ -55,13 +55,7 @@ const Mediciones = () => {
     <React.Fragment>
       <h2 className="titulo-encabezado">Mediciones</h2>
       <hr className="division"></hr>
-      <div className="container mediciones-filtro">
-        {permisosColaborador && (
-          <Link to="/mediciones/registro">
-            <button className="btn-registrar">Registrar</button>
-          </Link>
-        )}
-      </div>
+      
       <Filtro datos={listaClientes} />
     </React.Fragment>
   );

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Logo from "../../Images/Logos/Icono (1).webp";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 
@@ -17,12 +17,11 @@ const ModificarMedicion = () => {
   const role = Cookies.get("role");
 
   useEffect(() => {
-
     const pathParts = window.location.pathname.split("/");
     const idDetalle = pathParts[pathParts.length - 1]; // Último segmento de la URL
     //console.log("ID extraído manualmente:", idDetalle);
-    setIdMedicion(idDetalle)
-    
+    setIdMedicion(idDetalle);
+
     alertInvalidatePermission();
     obtenerInformacionMedidas(idDetalle);
 
@@ -107,6 +106,7 @@ const ModificarMedicion = () => {
     formdata.append("id_cliente", mediciones.id_cliente);
     formdata.append("articulo", mediciones.articulo);
     formdata.append("fecha", mediciones.fecha);
+    formdata.append("sastre", mediciones.sastre);
     formdata.append("observaciones", mediciones.observaciones || "NA");
     formdata.append("espalda_superior", mediciones.espalda_superior);
     formdata.append(
@@ -142,7 +142,16 @@ const ModificarMedicion = () => {
     formdata.append("pierna_inferior", mediciones.pierna_inferior);
     formdata.append("rodilla_inferior", mediciones.rodilla_inferior);
     formdata.append("ruedo_inferior", mediciones.ruedo_inferior);
-    formdata.append("tiro_inferior", mediciones.tiro_inferior);
+
+    formdata.append("altura_cadera_inferior", mediciones.altura_cadera_inferior);
+    formdata.append("altura_rodilla_inferior", mediciones.altura_rodilla_inferior);
+    formdata.append("contorno_tiro_inferior", mediciones.contorno_tiro_inferior);
+    formdata.append("largo_total_espalda_superior", mediciones.largo_total_espalda_superior);
+    formdata.append("ancho_espalda_superior", mediciones.largo_total_espalda_superior);
+    formdata.append("separacion_busto_superior", mediciones.separacion_busto_superior);
+
+
+
 
     var requestOptions = {
       method: "POST",
@@ -212,9 +221,9 @@ const ModificarMedicion = () => {
           const { data } = result;
           //console.log(data.nombre)
 
-          setNombre(data.nombre)
+          setNombre(data.nombre);
           setApellido1(data.apellido1);
-          setApellido2(data.apellido2)
+          setApellido2(data.apellido2);
         } else {
           const mensajeError = result?.mensaje || "No se encontró el cliente";
           Swal.fire("Info", mensajeError, "info");
@@ -249,8 +258,7 @@ const ModificarMedicion = () => {
 
           setPrenda(data[0].articulo);
           setMediciones(data[0]);
-          obtenerNombreCliente(data[0].id_cliente)
-          
+          obtenerNombreCliente(data[0].id_cliente);
         } else {
           const mensajeError = result?.mensaje || "No se encontró información";
           Swal.fire("Info", mensajeError, "info");
@@ -435,7 +443,7 @@ const ModificarMedicion = () => {
                   name="largo_total_frente_superior"
                   autoComplete="current-text"
                   onChange={handleInputChange}
-                  defaultValue={mediciones.largo_total_frente_superior}
+                  defaultValue={mediciones.largo_total_superior}
                 />
               </div>
 
@@ -522,6 +530,18 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.observaciones}
                 ></textarea>
               </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Sastre:</label>
+                <input
+                  type="text"
+                  id="sastre"
+                  name="sastre"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  defaultValue={mediciones.sastre}
+                />
+              </div>
             </div>
           )}
 
@@ -560,6 +580,19 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.cadera_inferior}
                 />
               </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Altura cadera:</label>
+                <input
+                  type="number"
+                  id="cadera"
+                  name="altura_cadera_inferior"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  defaultValue={mediciones.altura_cadera_inferior}
+                />
+              </div>
+
               <div className="div-inp">
                 <label htmlFor="text">Pierna:</label>
                 <input
@@ -571,6 +604,8 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.pierna_inferior}
                 />
               </div>
+
+
               <div className="div-inp">
                 <label htmlFor="text">Rodilla:</label>
                 <input
@@ -582,6 +617,19 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.rodilla_inferior}
                 />
               </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Altura Rodilla:</label>
+                <input
+                  type="number"
+                  id="rodilla"
+                  name="altura_rodilla_inferior"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  defaultValue={mediciones.altura_rodilla_inferior}
+                />
+              </div>
+
               <div className="div-inp">
                 <label htmlFor="text">Ruedo:</label>
                 <input
@@ -593,6 +641,7 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.ruedo_inferior}
                 />
               </div>
+
               <div className="div-inp">
                 <label htmlFor="text">Tiro:</label>
                 <input
@@ -604,6 +653,19 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.tiro_inferior}
                 />
               </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Contorno tiro:</label>
+                <input
+                  type="number"
+                  id="tiro"
+                  name="contorno_tiro_inferior"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  defaultValue={mediciones.contorno_tiro_inferior}
+                />
+              </div>
+
               <div className="div-inp">
                 <label htmlFor="text">Talla:</label>
                 <input
@@ -627,7 +689,23 @@ const ModificarMedicion = () => {
                   defaultValue={mediciones.observaciones}
                 ></textarea>
               </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Sastre:</label>
+                <input
+                  type="text"
+                  id="sastre"
+                  name="sastre"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  defaultValue={mediciones.sastre}
+                />
+              </div>
             </div>
+
+            
+
+            
           )}
 
           <button className="btn-registrar" type="submit">

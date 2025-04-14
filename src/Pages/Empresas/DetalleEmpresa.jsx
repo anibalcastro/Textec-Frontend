@@ -1,3 +1,9 @@
+/**
+ * TAREAS
+ * 1- Hacer un end point para obtener la informacion de la empresa y no usar el localstorage
+ * 2-
+ * 
+ */
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Logo from "../../Images/Logos/Icono (1).webp";
@@ -19,25 +25,57 @@ const DetalleEmpresa = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /**
+   * 
+   * @param {int} parametro es el id de la empresa
+   */
   const obtenerInformacionEmpresa = (parametro) => {
-    let empresaId = parseInt(parametro);
+    let empresaId = parseInt(parametro); 
 
-    let empresas = JSON.parse(localStorage.getItem("empresas"));
 
-    if (empresas.length > 0) {
-      empresas.forEach((item) => {
-        if (parseInt(item.id) === empresaId) {
-          setEmpresas(item);
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
+
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    }
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/empresa/detalle/${empresaId}`,
+      requestOptions
+    )
+      .then((response) => {
+        return response.text(); // primero obtenemos el texto sin parsearlo como JSON
+      })
+      .then((text) => { // aquí podrías ver si es HTML
+        try {
+          const json = JSON.parse(text);
+          setEmpresas(json.data);
+        } catch (e) {
+          console.error("La respuesta no es JSON válido:", e);
         }
       });
-    }
+    
   };
 
+
+  /**
+   * Limpia los estados.
+   */
   const limpiarEstado = () => {
     setEmpresas([]);
   };
 
 
+  /**
+   * Funcion para eliminar la empresa de la base de datos.
+   * @param {int} empresaId 
+   */
   const peticionEliminarEmpresa = (empresaId) => {
     var myHeaders = new Headers();
     myHeaders.append(
@@ -90,9 +128,7 @@ const DetalleEmpresa = () => {
   };
 
 
-
-
-
+  /**Funcion para eliminar la empresa del detalle */
   const eliminarEmpresa = () => {
     Swal.fire({
       title: "¿Desea eliminar la empresa?",
@@ -122,12 +158,13 @@ const DetalleEmpresa = () => {
     return false
   }
 
-  const permisosColaborador = validarPermisos();
-
   const validarRol = (role) => {
     return role === "Admin";
   };
 
+
+  //Validacion de permisos de usuario
+  const permisosColaborador = validarPermisos();
   const permisos = validarRol(role);
 
   return (
