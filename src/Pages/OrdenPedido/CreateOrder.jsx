@@ -389,7 +389,7 @@ const CreateOrder = () => {
       },
     };
 
-    //console.log(`Orden Json`, ordenJSON)
+    console.log(`Orden Json`, ordenJSON)
 
     const ordenJSONString = JSON.stringify(ordenJSON);
 

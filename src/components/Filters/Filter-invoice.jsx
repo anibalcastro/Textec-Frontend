@@ -190,47 +190,50 @@ const FilterOrders = ({ datos, showMonto }) => {
             </tr>
           </thead>
           <tbody>
-            {currentData.map((dato, index) => (
-              <tr key={index}>
-                <td>{iterador + index + 1}</td>
-                <td>
-                  {showMonto ? (
-                    dato.orden_id ? (
-                      <Link
-                        className="link-nombre"
-                        to={`/orden/${dato.orden_id}/pagos`}
-                      >
-                        {`${dato.titulo} - Orden`}
-                      </Link>
-                    ) : (
-                      <Link
-                        className="link-nombre"
-                        to={`/reparaciones/${dato.reparacion_id}/pagos`}
-                      >
-                        {`${dato.titulo} - Reparación`}
-                      </Link>
-                    )
-                  ) : dato.orden_id ? (
-                    <Link className="link-nombre" to={`/orden/${dato.id}`}>
-                      {`${dato.titulo}`}
-                    </Link>
-                  ) : (
-                    <Link className="link-nombre" to={`/reparacion/${dato.id}`}>
-                      {`${dato.titulo}`}
-                    </Link>
-                  )}
-                </td>
-                <td>{dato.nombre_empresa}</td>
-                <td>{dato.estado}</td>
-                {showMonto && <td>{formatCurrencyCRC.format(dato.monto)}</td>}
-                <td>
-                  {dato.fecha_orden
-                    ? formatDate(dato.fecha_orden)
-                    : formatDate(dato.fecha)}
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {currentData
+    .filter((dato) => dato.estado !== "Anulada") // Filtrar anuladas
+    .sort((a, b) => b.id - a.id) // Ordenar por ID descendente
+    .map((dato, index) => (
+      <tr key={index}>
+        <td>{iterador + index + 1}</td>
+        <td>
+          {showMonto ? (
+            dato.orden_id ? (
+              <Link
+                className="link-nombre"
+                to={`/orden/${dato.orden_id}/pagos`}
+              >
+                {`${dato.titulo} - Orden`}
+              </Link>
+            ) : (
+              <Link
+                className="link-nombre"
+                to={`/reparaciones/${dato.reparacion_id}/pagos`}
+              >
+                {`${dato.titulo} - Reparación`}
+              </Link>
+            )
+          ) : dato.orden_id ? (
+            <Link className="link-nombre" to={`/orden/${dato.id}`}>
+              {`${dato.titulo}`}
+            </Link>
+          ) : (
+            <Link className="link-nombre" to={`/reparacion/${dato.id}`}>
+              {`${dato.titulo}`}
+            </Link>
+          )}
+        </td>
+        <td>{dato.nombre_empresa}</td>
+        <td>{dato.estado}</td>
+        {showMonto && <td>{formatCurrencyCRC.format(dato.monto)}</td>}
+        <td>
+          {dato.fecha_orden
+            ? formatDate(dato.fecha_orden)
+            : formatDate(dato.fecha)}
+        </td>
+      </tr>
+    ))}
+</tbody>
         </table>
       </div>
 

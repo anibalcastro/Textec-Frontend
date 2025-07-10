@@ -31,6 +31,8 @@ const OrderDetail = () => {
     getCompany();
     getProducts();
     loadingData();
+    console.log(token);
+    console.log(invoice)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

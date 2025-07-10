@@ -31,7 +31,6 @@ const Productos = () => {
                     if (result.hasOwnProperty("data")) {
                         const { data } = result;
                         setProducts(data);
-                        localStorage.setItem('productos', JSON.stringify(data));
                       } 
                 })
                 .catch(error => console.log('error', error));

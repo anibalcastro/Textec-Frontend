@@ -2,16 +2,33 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
 
   return (
     <div className="container opciones-medidas">
+
       <div className="div-inp">
         <label htmlFor="text">Largo:</label>
         <input
           type="number"
           id="largo"
           name="largo"
+          min={0}
           autoComplete="current-text"
           onChange={handleInputChange}
         />
       </div>
+
+      <div className="div-inp">
+        <label htmlFor="text">Largo entrepierna:</label>
+        <input
+          type="number"
+          id="largo_entrepierna_inferior"
+          name="largo_entrepierna_inferior"
+          min={0}
+          autoComplete="current-text"
+          onChange={handleInputChange}
+        />
+      </div>
+
+
+
       <div className="div-inp">
         <label htmlFor="text">Cintura:</label>
         <input
@@ -19,6 +36,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           id="cintura"
           name="cintura"
           autoComplete="current-text"
+          min={0}
           onChange={handleInputChange}
         />
       </div>
@@ -29,6 +47,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           type="number"
           id="cadera"
           name="cadera"
+          min={0}
           autoComplete="current-text"
           onChange={handleInputChange}
         />
@@ -40,6 +59,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           type="number"
           id="altura_cadera"
           name="altura_cadera"
+          min={0}
           autoComplete="current-text"
           onChange={handleInputChange}
         />
@@ -51,28 +71,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           type="number"
           id="pierna"
           name="pierna"
-          autoComplete="current-text"
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="div-inp">
-        <label htmlFor="text">Rodilla:</label>
-        <input
-          type="number"
-          id="rodilla"
-          name="rodilla"
-          autoComplete="current-text"
-          onChange={handleInputChange}
-        />
-      </div>
-
-      <div className="div-inp">
-        <label htmlFor="text">Altura rodilla:</label>
-        <input
-          type="number"
-          id="altura_rodilla"
-          name="altura_rodilla"
+          min={0}
           autoComplete="current-text"
           onChange={handleInputChange}
         />
@@ -86,6 +85,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           name="ruedo"
           autoComplete="current-text"
           onChange={handleInputChange}
+          min={0}
         />
       </div>
 
@@ -97,6 +97,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           name="tiro"
           autoComplete="current-text"
           onChange={handleInputChange}
+          min={0}
         />
       </div>
 
@@ -106,6 +107,7 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           type="number"
           id="contorno_tiro"
           name="contorno_tiro"
+          min={0}
           autoComplete="current-text"
           onChange={handleInputChange}
         />
@@ -122,22 +124,6 @@ const MedicionesInferior = ({ seleccionPrenda = "", handleInputChange }) => {
           required
         />
       </div>
-
-      {seleccionPrenda === "Pantalon" && (
-        <div className="form-check">
-          <input
-            id="cbTela"
-            className="form-check-input"
-            name="tiroLargo"
-            type="checkbox"
-            onChange={handleInputChange}
-          />
-          <label className="form-check-label" htmlFor="cbTela">
-            <strong>Tiro largo ya:</strong>
-            <span className="custom-checkbox cbTiroLargoYa"></span>
-          </label>
-        </div>
-      )}
 
       <div className="div-inp">
         <label htmlFor="text">Observaciones:</label>

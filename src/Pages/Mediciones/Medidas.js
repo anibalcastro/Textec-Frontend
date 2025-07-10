@@ -11,6 +11,7 @@ const Mediciones = () => {
   const role = Cookies.get("role");
 
   useEffect(() => {
+    
     const solicitudClientesApi = async () => {
       try {
         const myHeaders = new Headers();

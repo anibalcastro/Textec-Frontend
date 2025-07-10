@@ -28,59 +28,57 @@ const DetailPayment = () => {
 
   useEffect(() => {
     alertInvalidatePermission();
-    
-    if (tipo === "orden"){
+
+    if (tipo === "orden") {
       fetchOrder();
-    }
-    else if (tipo === "reparaciones"){
+    } else if (tipo === "reparaciones") {
       fetchRepair();
-    }
-    else{
-      Swal.fire("Error", "La ruta que elegiste no es la correcta.", "error").then((result) => {
-        if (result.isConfirmed){
-          navigate('/pagos')
+    } else {
+      Swal.fire(
+        "Error",
+        "La ruta que elegiste no es la correcta.",
+        "error"
+      ).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/pagos");
+        } else {
+          navigate("/pagos");
         }
-        else{
-          navigate('/pagos')
-        }
-      }) ;
+      });
+
+     // console.log(invoice);
     }
 
     clearState();
     getCompany();
     getProducts();
     loadingData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  
-
   const validateUserPermission = () => {
-    if (role !== "Visor"){
-      return true
+    if (role !== "Visor") {
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   const alertInvalidatePermission = () => {
-    if (!validateUserPermission()){
+    if (!validateUserPermission()) {
       Swal.fire(
         "Acceso denegado",
         "No tienes los permisos necesarios para realizar esta acción.",
         "info"
       ).then((result) => {
-        if(result.isConfirmed){
-          navigate("/inicio")
+        if (result.isConfirmed) {
+          navigate("/inicio");
+        } else {
+          navigate("/inicio");
         }
-        else{
-          navigate("/inicio")
-        }
-      })
-
+      });
     }
-
-  }
+  };
 
   const formatCurrencyCRC = new Intl.NumberFormat("es-CR", {
     style: "currency",
@@ -108,7 +106,9 @@ const DetailPayment = () => {
           setOrder(orden);
           setDetail(detalles);
           setInvoice(facturas);
-          getPaymentsByOrder(facturas[0].id);
+          getPaymentsByOrder(facturas.id);
+          //console.log(facturas);
+          //console.log(facturas.id);
         } else {
           Swal.fire("Error, intentelo más tarde!", "error");
         }
@@ -132,7 +132,7 @@ const DetailPayment = () => {
     )
       .then((response) => response.json())
       .then((result) => {
-        const {reparacion,factura, status} = result;
+        const { reparacion, factura, status } = result;
         if (status === 200) {
           setOrder(reparacion);
           setDetail(reparacion.detalle_reparacion);
@@ -152,36 +152,39 @@ const DetailPayment = () => {
   const downloadOrder = () => {
     //Arreglar pagos...
     Swal.fire({
-      title: 'Generando el PDF',
-      text: 'Espere un momento...',
+      title: "Generando el PDF",
+      text: "Espere un momento...",
       allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer  ${token}`);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer  ${token}`);
 
-      var requestOptions = {
-        method: 'GET',
-        headers: myHeaders,
-        redirect: 'follow'
-      };
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    };
 
-      fetch(`https://api.textechsolutionscr.com/api/v1/pdf/pagos/${tipo}/${id}`, requestOptions)
-        .then(response => response.json())
-        .then(result => {
-          const download_url = decodeURIComponent(result.download_url);
-          const downloadLink = document.createElement("a");
-          downloadLink.href = download_url;
-          downloadLink.target = "_self"; // Abrir en una nueva pestaña
-          document.body.appendChild(downloadLink);
-          downloadLink.click();
-          document.body.removeChild(downloadLink);
-          Swal.close();
-        })
-        .catch(error => console.log('error', error));
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/pdf/pagos/${tipo}/${id}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const download_url = decodeURIComponent(result.download_url);
+        const downloadLink = document.createElement("a");
+        downloadLink.href = download_url;
+        downloadLink.target = "_self"; // Abrir en una nueva pestaña
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        Swal.close();
+      })
+      .catch((error) => console.log("error", error));
   };
 
   const getProducts = () => {
@@ -265,6 +268,9 @@ const DetailPayment = () => {
       return true;
     }
 
+    //console.log(order.estado);
+   // console.log(role);
+
     return false;
   };
 
@@ -295,181 +301,149 @@ const DetailPayment = () => {
   };
 
   const fetchAddPayment = (monto, metodo_pago, comentarios, cajero) => {
-    return new Promise((resolve, reject) => {
-      var myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer ${token}`);
+  return new Promise((resolve, reject) => {
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
 
-      var formdata = new FormData();
-      formdata.append("factura_id", invoice[0].id);
-      formdata.append("monto", monto);
-      formdata.append("metodo_pago", metodo_pago);
-      formdata.append(
-        "comentarios",
-        comentarios || "Muchas gracias por tu compra."
-      );
-      formdata.append("estado", "Aceptado");
-      formdata.append("cajero", cajero);
+    const factura = Array.isArray(invoice) ? invoice[0] : invoice;
 
-      var requestOptions = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow",
-      };
-
-      fetch(
-        "https://api.textechsolutionscr.com/api/v1/pagos/registrar",
-        requestOptions
-      )
-        .then((response) => response.json())
-        .then((result) => {
-          const { status } = result;
-          const bool = parseInt(status) === 200;
-          resolve(bool); // Resuelve la promesa con el valor bool
-        })
-        .catch((error) => {
-          console.log("error", error);
-          reject(error); // Rechaza la promesa en caso de error
-        });
-    });
-  };
-
-  const addPayment = async () => {
-    const { value: formValues, isConfirmed } = await Swal.fire({
-      title: "Ingrese los Datos",
-      html: `
-          <input id="monto" type="number" class="swal2-input-payment" placeholder="Monto" min="0">
-          <select id="metodo_pago" class="swal2-select-payment">
-            <option disabled selected>Seleccione un método de pago</option>
-            <option value="Efectivo">Efectivo</option>
-            <option value="Tarjeta">Tarjeta</option>
-            <option value="Transferencia">Transferencia</option>
-            <option value="Cheque">Cheque</option>
-          </select>
-          <textarea id="comentarios" class="swal2-textarea-payment" placeholder="Comentarios"></textarea>
-          <input id="cajero" class="swal2-input-payment" placeholder="Cajero">
-        `,
-      focusConfirm: false,
-      showCancelButton: true,
-      confirmButtonText: "Guardar",
-      cancelButtonText: "Cancelar",
-      preConfirm: () => {
-        const monto = parseFloat(document.getElementById("monto").value);
-        const metodo_pago = document.getElementById("metodo_pago").value;
-        const comentarios = document.getElementById("comentarios").value;
-        const cajero = document.getElementById("cajero").value;
-
-        if (monto <= 0) {
-          Swal.showValidationMessage("El monto ingresado debe ser mayor que 0");
-        }
-
-        return { monto, metodo_pago, comentarios, cajero };
-      },
-    });
-
-    if (isConfirmed) {
-      const { monto, metodo_pago, comentarios, cajero } = formValues;
-
-      if (Array.isArray(invoice)) {
-        // Calcula el saldo total
-        let saldo_restante;
-        invoice.forEach((item) => {
-          saldo_restante = item.saldo_restante;
-        });
-
-        if (metodo_pago === "Efectivo") {
-          if (parseFloat(monto) > saldo_restante) {
-            // Solicitud Api
-            fetchAddPayment(
-              saldo_restante,
-              metodo_pago,
-              comentarios,
-              cajero
-            ).then((resultado) => {
-              if (resultado) {
-                Swal.fire(
-                  `El cambio es de: ${formatCurrencyCRC.format(
-                    monto - saldo_restante
-                  )}`,
-                  "",
-                  "info"
-                ).then(() => {
-                  // Recargar la página después de que se cierre la alerta
-                  const saldo_restante = invoice.saldo_restante - monto;
-                  setInvoice({ ...invoice, saldo_restante });
-                  window.location.reload();
-                });
-              } else {
-                Swal.fire(
-                  `Error, no se pudo agregar el pago, intentelo de nuevo.`,
-                  "",
-                  "info"
-                );
-              }
-            });
-          } else {
-            fetchAddPayment(monto, metodo_pago, comentarios, cajero).then(
-              (resultado) => {
-                if (resultado) {
-                  Swal.fire(
-                    `El saldo pendiente es de: ${formatCurrencyCRC.format(
-                      saldo_restante - monto
-                    )}`,
-                    "",
-                    "info"
-                  ).then(() => {
-                    // Recargar la página después de que se cierre la alerta
-                    if (tipo === "orden"){
-                      fetchOrder();
-                    }
-                    else if (tipo === "reparaciones"){
-                      fetchRepair();
-                    }
-                    const saldo_restante = invoice.saldo_restante - monto;
-                    setInvoice({ ...invoice, saldo_restante });
-                    window.location.reload();
-                  });
-                } else {
-                  Swal.fire(
-                    `Error, no se pudo agregar el pago, intentelo de nuevo.`,
-                    "",
-                    "info"
-                  );
-                }
-              }
-            );
-          }
-        } else {
-          if (parseFloat(monto) <= saldo_restante) {
-            fetchAddPayment(monto, metodo_pago, comentarios, cajero).then(
-              (resultado) => {
-                if (resultado) {
-                  Swal.fire(
-                    `El pago de ${monto} se ha aplicado correctamente`,
-                    "",
-                    "info"
-                  ).then(() => {
-                    // Recargar la página después de que se cierre la alerta
-                    const saldo_restante = invoice.saldo_restante - monto;
-                    setInvoice({ ...invoice, saldo_restante });
-                    window.location.reload();
-                  });
-                } else {
-                  Swal.fire(
-                    `El monto no puede ser mayor al saldo pendiente ${formatCurrencyCRC.format(
-                      saldo_restante
-                    )}`,
-                    "",
-                    "info"
-                  );
-                }
-              }
-            );
-          }
-        }
-      }
+    if (!factura || !factura.id) {
+      console.error("Factura no válida:", factura);
+      Swal.fire("No se pudo encontrar la factura", "", "error");
+      reject("Factura inválida");
+      return;
     }
-  };
+
+    var formdata = new FormData();
+    formdata.append("factura_id", factura.id);
+    formdata.append("monto", monto);
+    formdata.append("metodo_pago", metodo_pago);
+    formdata.append(
+      "comentarios",
+      comentarios || "Muchas gracias por tu compra."
+    );
+    formdata.append("estado", "Aceptado");
+    formdata.append("cajero", cajero);
+
+    var requestOptions = {
+      method: "POST",
+      headers: myHeaders,
+      body: formdata,
+      redirect: "follow",
+    };
+
+    fetch(
+      "https://api.textechsolutionscr.com/api/v1/pagos/registrar",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        const { status } = result;
+        const bool = parseInt(status) === 200;
+        resolve(bool);
+      })
+      .catch((error) => {
+        console.log("error", error);
+        reject(error);
+      });
+  });
+};
+
+
+const addPayment = async () => {
+  const { value: formValues, isConfirmed } = await Swal.fire({
+    title: "Ingrese los Datos",
+    html: `
+      <input id="monto" type="number" class="swal2-input-payment" placeholder="Monto" min="0">
+      <select id="metodo_pago" class="swal2-select-payment">
+        <option disabled selected>Seleccione un método de pago</option>
+        <option value="Efectivo">Efectivo</option>
+        <option value="Tarjeta">Tarjeta</option>
+        <option value="Transferencia">Transferencia</option>
+        <option value="Cheque">Cheque</option>
+      </select>
+      <textarea id="comentarios" class="swal2-textarea-payment" placeholder="Comentarios"></textarea>
+      <input id="cajero" class="swal2-input-payment" placeholder="Cajero">
+    `,
+    focusConfirm: false,
+    showCancelButton: true,
+    confirmButtonText: "Guardar",
+    cancelButtonText: "Cancelar",
+    preConfirm: () => {
+      const monto = parseFloat(document.getElementById("monto").value);
+      const metodo_pago = document.getElementById("metodo_pago").value;
+      const comentarios = document.getElementById("comentarios").value;
+      const cajero = document.getElementById("cajero").value;
+
+      if (!monto || monto <= 0) {
+        Swal.showValidationMessage("El monto ingresado debe ser mayor que 0");
+        return false;
+      }
+
+      if (!metodo_pago) {
+        Swal.showValidationMessage("Debe seleccionar un método de pago");
+        return false;
+      }
+
+      return { monto, metodo_pago, comentarios, cajero };
+    },
+  });
+
+  if (!isConfirmed || !formValues) return;
+
+  const { monto, metodo_pago, comentarios, cajero } = formValues;
+  const factura = Array.isArray(invoice) ? invoice[0] : invoice;
+
+  if (!factura || !factura.saldo_restante) {
+    Swal.fire("No se pudo obtener la factura", "", "error");
+    return;
+  }
+
+  const saldo = parseFloat(factura.saldo_restante);
+
+  // Validación especial para efectivo
+  let pagoFinal = monto;
+  let mostrarCambio = false;
+  let cambio = 0;
+
+  if (metodo_pago === "Efectivo" && monto > saldo) {
+    pagoFinal = saldo;
+    cambio = monto - saldo;
+    mostrarCambio = true;
+  } else if (monto > saldo) {
+    Swal.fire(
+      `El monto no puede ser mayor al saldo pendiente (${formatCurrencyCRC.format(saldo)})`,
+      "",
+      "info"
+    );
+    return;
+  }
+
+  const resultado = await fetchAddPayment(pagoFinal, metodo_pago, comentarios, cajero);
+
+  if (resultado) {
+    if (mostrarCambio) {
+      await Swal.fire(`El cambio es de: ${formatCurrencyCRC.format(cambio)}`, "", "info");
+    } else {
+      await Swal.fire(`Pago registrado correctamente`, "", "success");
+    }
+
+    // Recargar data
+    if (tipo === "orden") {
+      fetchOrder();
+    } else if (tipo === "reparaciones") {
+      fetchRepair();
+    }
+
+    // Refrescar saldo
+    const nuevoSaldo = saldo - pagoFinal;
+    setInvoice([{ ...factura, saldo_restante: nuevoSaldo }]);
+    window.location.reload();
+  } else {
+    Swal.fire("Error al registrar el pago", "", "error");
+  }
+};
+
 
   const collaboratorPermissions = validatePermissions();
 
@@ -481,6 +455,7 @@ const DetailPayment = () => {
         invoice={invoice}
         company={company}
         product={product}
+        ordenIdentity={id}
       />
 
       <PaymentsTable payments={payment} orderId={id} />
@@ -490,12 +465,14 @@ const DetailPayment = () => {
           <button className="btn">Regresar</button>
         </Link>
 
-        {collaboratorPermissions && invoice && invoice[0] && parseInt(invoice[0].saldo_restante) !== 0 && (
-          <button className="btn" onClick={() => addPayment()}>
-            Agregar pago
-          </button>
-        )}
-
+        {collaboratorPermissions &&
+          invoice &&
+          typeof invoice === "object" &&
+          parseFloat(invoice.saldo_restante) !== 0 && (
+            <button className="btn" onClick={addPayment}>
+              Agregar pago
+            </button>
+          )}
 
         {collaboratorPermissions && (
           <button className="btn" onClick={() => downloadOrder()}>

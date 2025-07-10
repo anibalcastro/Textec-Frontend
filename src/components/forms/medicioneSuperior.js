@@ -12,6 +12,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -24,6 +25,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="talle_espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -35,6 +37,19 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="ancho_espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                  <div className="div-inp">
+                  <label htmlFor="text">Hombros:</label>
+                  <input
+                    type="number"
+                    id="hombros"
+                    name="hombros"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -46,50 +61,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="talle_frente"
                     autoComplete="current-text"
                     onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Separación busto:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="separacion_busto"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Busto:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="busto"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Cintura:</label>
-                  <input
-                    type="number"
-                    id="cedula"
-                    name="cintura"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
-                  />
-                </div>
-
-                <div className="div-inp">
-                  <label htmlFor="text">Cadera:</label>
-                  <input
-                    type="number"
-                    id="cadera"
-                    name="cadera"
-                    autoComplete="current-text"
-                    onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -101,17 +73,127 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="alto_pinza"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
                 <div className="div-inp">
-                  <label htmlFor="text">Hombros:</label>
+                  <label htmlFor="text">Alto de cadera:</label>
                   <input
                     type="number"
-                    id="hombros"
-                    name="hombros"
+                    id="alto_cadera_superior"
+                    name="alto_cadera_superior"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Separación busto:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="separacion_busto"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Ancho pecho:</label>
+                  <input
+                    type="number"
+                    id="ancho_pecho_superior"
+                    name="ancho_pecho_superior"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Boca manga:</label>
+                  <input
+                    type="number"
+                    id="boca_manga_superior"
+                    name="boca_manga_superior"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Largo costado:</label>
+                  <input
+                    type="number"
+                    id="largo_costado_superior"
+                    name="largo_costado_superior"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Busto:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="busto"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Cintura:</label>
+                  <input
+                    type="number"
+                    id="cedula"
+                    name="cintura"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Cadera:</label>
+                  <input
+                    type="number"
+                    id="cadera"
+                    name="cadera"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Contorno cuello:</label>
+                  <input
+                    type="number"
+                    id="contorno_cuello_superior"
+                    name="contorno_cuello_superior"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
+                  />
+                </div>
+
+                <div className="div-inp">
+                  <label htmlFor="text">Escote:</label>
+                  <input
+                    type="number"
+                    id="escote_superior"
+                    name="escote_superior"
+                    autoComplete="current-text"
+                    onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -123,10 +205,10 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_total_espalda"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
-              
                 <div className="div-inp">
                   <label htmlFor="text">Largo total frente:</label>
                   <input
@@ -135,6 +217,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_total_frente"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -146,6 +229,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_manga_corta"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -157,6 +241,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="ancho_manga_corta"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -168,6 +253,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="largo_manga_larga"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
               
@@ -179,6 +265,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="ancho_manga_larga"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
 
@@ -191,6 +278,7 @@ const MedicionesSuperior = ({handleInputChange}) => {
                     name="puno"
                     autoComplete="current-text"
                     onChange={handleInputChange}
+                    min={0}
                   />
                 </div>
                 

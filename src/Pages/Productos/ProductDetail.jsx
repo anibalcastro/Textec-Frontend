@@ -49,17 +49,35 @@ const ProductDetail = () => {
   }
 
   const getInformationProduct = (productId) => {
-    let IDProduct = parseInt(productId);
+    let id_producto = parseInt(productId);
 
-    let productos = JSON.parse(localStorage.getItem("productos"));
+    var myHeaders = new Headers();
+    myHeaders.append(
+      "Authorization",
+      `Bearer ${token}`
+    );
 
-    if (productos.length > 0) {
-        productos.forEach((item) => {
-        if (parseInt(item.id) === IDProduct) {
-            setProduct(item);
+    var requestOptions = {
+      method: "GET",
+      headers: myHeaders,
+      redirect: "follow",
+    }
+
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/producto/detalle/${id_producto}`,
+      requestOptions
+    )
+      .then((response) => {
+        return response.text(); // primero obtenemos el texto sin parsearlo como JSON
+      })
+      .then((text) => { // aquí podrías ver si es HTML
+        try {
+          const json = JSON.parse(text);
+          setProduct(json.data);
+        } catch (e) {
+          console.error("La respuesta no es JSON válido:", e);
         }
       });
-    }
   };
 
   const clearState = () => {

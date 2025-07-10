@@ -16,7 +16,7 @@ import DetalleCliente from "./Pages/Clientes/DetalleCliente";
 
 import Medidas from "./Pages/Mediciones/Medidas";
 import DetalleMedicion from "./Pages/Mediciones/DetalleMedicion";
-import RegistroMedicion from "./Pages/Mediciones/RegistroMedicion";
+//import RegistroMedicion from "./Pages/Mediciones/RegistroMedicion";
 import RegistroMedicionCliente from "./Pages/Mediciones/RegistroMedicionCliente";
 import ModificarMedicion from "./Pages/Mediciones/ModificarMedicion";
 import DetalleClienteMediciones from "./Pages/Mediciones/DetalleClienteMedicion";
@@ -183,7 +183,6 @@ function App() {
                   
                   <Route exact path="/mediciones" element={<Medidas />} />
                   <Route exact path="/mediciones/:idDetalle" element={<DetalleMedicion />}/>
-                  <Route exact path="/mediciones/registro" element={<RegistroMedicion clientes={listaClientes} />} />
                   <Route exact path="/mediciones/editar/:medicionId" element={<ModificarMedicion />} />
                   <Route exact path="/mediciones/cliente/:userId" element={<DetalleClienteMediciones />} />
                   <Route exact path="/mediciones/registro/cliente/:userId" element={<RegistroMedicionCliente />} />

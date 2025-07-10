@@ -67,10 +67,11 @@ const RegistroMedicionCliente = ({ clientes }) => {
     "Chaleco",
     "Gabacha medica",
     "Filipinas",
+    "Vestido",
   ];
 
   /**Lista de mediciones inferiores */
-  const medicionesInferior = ["Short", "Pantalon"];
+  const medicionesInferior = ["Short"];
 
   /*****************OBTENER INFORMACION DEL CLIENTE */
 
@@ -84,13 +85,16 @@ const RegistroMedicionCliente = ({ clientes }) => {
       redirect: "follow",
     };
 
-    fetch(`https://api.textechsolutionscr.com/api/v1/cliente/${parametro.userId}`, requestOptions)
+    fetch(
+      `https://api.textechsolutionscr.com/api/v1/cliente/${parametro.userId}`,
+      requestOptions
+    )
       .then((response) => response.json())
       .then((result) => {
         if (result && result.hasOwnProperty("data") && result.data) {
           const { data } = result;
-          setIdCliente(parametro.userId)
-          setCliente(data)
+          setIdCliente(parametro.userId);
+          setCliente(data);
         } else {
           const mensajeError = result?.mensaje || "No se encontró el cliente";
           Swal.fire("Info", mensajeError, "info");
@@ -119,7 +123,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
         if (result && result.hasOwnProperty("data")) {
           const { data } = result;
           //console.log(data);
-          
+
           // Actualizamos el estado con las mediciones del cliente
           setMedicionesDB(data);
         } else {
@@ -127,8 +131,8 @@ const RegistroMedicionCliente = ({ clientes }) => {
           //const mensajeError = result?.mensaje || "No se encontró información";
           //Swal.fire("Info", mensajeError, "info");
         }
-      })
-  }
+      });
+  };
 
   /************************LIMPIAR ESTADOS E INPUTS */
 
@@ -185,7 +189,7 @@ const RegistroMedicionCliente = ({ clientes }) => {
    */
   const handleOptionChange = (event) => {
     let prendaSeleccionada = event.target.value;
-  
+
     if (!validarExistenciaProducto(prendaSeleccionada)) {
       setPrenda(prendaSeleccionada);
     } else {
@@ -207,29 +211,33 @@ const RegistroMedicionCliente = ({ clientes }) => {
   };
 
   /**************************** VALIDACIONES */
-  
+
   const validarExistenciaProducto = (seleccionPrenda) => {
     // Asegurar que ambos arrays sean válidos
     const medicionesDBArray = Array.isArray(medicionesDB) ? medicionesDB : [];
-    const arrayMedicionesArray = Array.isArray(arrayMediciones) ? arrayMediciones : [];
+    const arrayMedicionesArray = Array.isArray(arrayMediciones)
+      ? arrayMediciones
+      : [];
 
     //console.log(arrayMediciones);
-  
+
     // Buscar si la prenda ya existe en alguno de los dos arrays
-    const existeEnDB = medicionesDBArray.some((medicion) => medicion.articulo === seleccionPrenda);
-    const existeEnArray = arrayMedicionesArray.some((medicion) => medicion.prenda === seleccionPrenda);
-  
+    const existeEnDB = medicionesDBArray.some(
+      (medicion) => medicion.articulo === seleccionPrenda
+    );
+    const existeEnArray = arrayMedicionesArray.some(
+      (medicion) => medicion.prenda === seleccionPrenda
+    );
+
     return existeEnDB || existeEnArray;
   };
-
 
   /**Validaciones si el estado prenda existe en alguna de las listas */
   const prendaSuperior = medicionesSuperior.includes(prenda);
   const prendaInferior = medicionesInferior.includes(prenda);
 
-
   /*****************************OBTENER FECHA */
- 
+
   /**
    * Obtiene fecha actual
    */
@@ -244,199 +252,281 @@ const RegistroMedicionCliente = ({ clientes }) => {
     return fecha;
   };
 
+  /********************************REGISTRO */
+  const registrarMedicion = async () => {
+    let totalRegistros = arrayMediciones.length;
+    let registrosEnviados = 0;
+    let registrosFallidos = [];
 
-/********************************REGISTRO */
-const registrarMedicion = async () => {
-  let totalRegistros = arrayMediciones.length;
-  let registrosEnviados = 0;
-  let registrosFallidos = [];
-
-  Swal.fire({
-    title: "Iniciando el registro de mediciones...",
-    icon: "info",
-    showConfirmButton: false,
-    timer: 1500,
-  });
-
-  const enviarMedicion = async (nuevoRegistro) => {
-    let valoresCero = [];
-
-    let fecha = obtenerFecha();
-    let formdata = new FormData();
-    formdata.append("id_cliente", nuevoRegistro.idCliente);
-    formdata.append("articulo", nuevoRegistro.prenda);
-    formdata.append("fecha", fecha);
-    formdata.append("observaciones", nuevoRegistro.mediciones.observaciones || "NA");
-    formdata.append("talla", nuevoRegistro.mediciones.talla);
-    formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
-
-    // Función auxiliar para agregar valores y detectar ceros
-    const agregarValor = (campo, valor) => {
-      let numero = parseFloat(valor) || 0;
-      if (numero === 0) valoresCero.push(campo);
-      formdata.append(campo, numero);
-    };
-
-    // Verifica si pertenece a mediciones inferiores
-    if (medicionesInferior.includes(nuevoRegistro.prenda)) {
-      agregarValor("largo_inferior", nuevoRegistro.mediciones.largo);
-      agregarValor("cintura_inferior", nuevoRegistro.mediciones.cintura);
-      agregarValor("cadera_inferior", nuevoRegistro.mediciones.cadera);
-      agregarValor("altura_cadera_inferior", nuevoRegistro.mediciones.altura_cadera);
-      agregarValor("pierna_inferior", nuevoRegistro.mediciones.pierna);
-      agregarValor("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
-      agregarValor("altura_rodilla_inferior", nuevoRegistro.mediciones.altura_rodilla);
-      agregarValor("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
-      agregarValor("tiro_inferior", nuevoRegistro.mediciones.tiro);
-      agregarValor("contorno_tiro_inferior", nuevoRegistro.mediciones.contorno_tiro);
-    }
-
-    // Verifica si pertenece es vestido
-    if (nuevoRegistro.prenda === "Vestido") {
-      agregarValor("espalda_superior", nuevoRegistro.mediciones.espalda);
-      agregarValor("talle_espalda_superior", nuevoRegistro.mediciones.talle_espalda);
-      agregarValor("ancho_espalda_superior", nuevoRegistro.mediciones.ancho_espalda);
-      agregarValor("talle_frente_superior", nuevoRegistro.mediciones.talle_frente);
-      agregarValor("separacion_busto_superior", nuevoRegistro.mediciones.separacion_busto);
-      agregarValor("busto_superior", nuevoRegistro.mediciones.busto);
-      agregarValor("cintura_superior", nuevoRegistro.mediciones.cintura);
-      agregarValor("cadera_superior", nuevoRegistro.mediciones.cadera);
-      agregarValor("alto_pinza_superior", nuevoRegistro.mediciones.alto_pinza);
-      agregarValor("hombros_superior", nuevoRegistro.mediciones.hombros);
-      agregarValor("largo_total_espalda_superior", nuevoRegistro.mediciones.largo_total_espalda);
-      agregarValor("largo_total_superior", nuevoRegistro.mediciones.largo_total_frente);
-      agregarValor("largo_manga_corta_superior", nuevoRegistro.mediciones.largo_manga_corta);
-      agregarValor("ancho_manga_corta_superior", nuevoRegistro.mediciones.ancho_manga_corta);
-      agregarValor("largo_manga_larga_superior", nuevoRegistro.mediciones.largo_manga_larga);
-      agregarValor("ancho_manga_larga_superior", nuevoRegistro.mediciones.ancho_manga_larga);
-      agregarValor("puno_superior", nuevoRegistro.mediciones.puno);
-      agregarValor("altura_cadera_inferior", nuevoRegistro.mediciones.altura_cadera);
-    }
-
-    if (medicionesSuperior.includes(nuevoRegistro.prenda)){
-      agregarValor("espalda_superior", nuevoRegistro.mediciones.espalda);
-      agregarValor("talle_espalda_superior", nuevoRegistro.mediciones.talle_espalda);
-      agregarValor("ancho_espalda_superior", nuevoRegistro.mediciones.ancho_espalda);
-      agregarValor("talle_frente_superior", nuevoRegistro.mediciones.talle_frente);
-      agregarValor("separacion_busto_superior", nuevoRegistro.mediciones.separacion_busto);
-      agregarValor("busto_superior", nuevoRegistro.mediciones.busto);
-      agregarValor("cintura_superior", nuevoRegistro.mediciones.cintura);
-      agregarValor("cadera_superior", nuevoRegistro.mediciones.cadera);
-      agregarValor("alto_pinza_superior", nuevoRegistro.mediciones.alto_pinza);
-      agregarValor("hombros_superior", nuevoRegistro.mediciones.hombros);
-      agregarValor("largo_total_espalda_superior", nuevoRegistro.mediciones.largo_total_espalda);
-      agregarValor("largo_total_superior", nuevoRegistro.mediciones.largo_total_frente);
-      agregarValor("largo_manga_corta_superior", nuevoRegistro.mediciones.largo_manga_corta);
-      agregarValor("ancho_manga_corta_superior", nuevoRegistro.mediciones.ancho_manga_corta);
-      agregarValor("largo_manga_larga_superior", nuevoRegistro.mediciones.largo_manga_larga);
-      agregarValor("ancho_manga_larga_superior", nuevoRegistro.mediciones.ancho_manga_larga);
-      agregarValor("puno_superior", nuevoRegistro.mediciones.puno);
-    }
-
-    // Si es una enagua
-    if (nuevoRegistro.prenda === "Enagua") {
-      agregarValor("largo_inferior", nuevoRegistro.mediciones.largo);
-      agregarValor("cintura_inferior", nuevoRegistro.mediciones.cintura);
-      agregarValor("cadera_inferior", nuevoRegistro.mediciones.cadera);
-      agregarValor("altura_cadera_inferior", nuevoRegistro.mediciones.altura_cadera);
-    }
-
-    console.log(nuevoRegistro.prenda);
-    console.log("Incluye en medicionesSuperior:", medicionesSuperior.includes(nuevoRegistro.prenda));
-    console.log("Datos de nuevoRegistro:", JSON.stringify(nuevoRegistro, null, 2));
-
-    // Verificar si hay valores en 0 y mostrar alerta
-    if (valoresCero.length > 0) {
-      let confirmar = await Swal.fire({
-        title: "⚠️ Hay valores en 0",
-        text: `Los siguientes campos tienen 0: ${valoresCero.join(", ")}. ¿Deseas continuar?`,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Sí, continuar",
-        cancelButtonText: "No, revisar",
-      });
-
-      if (!confirmar.isConfirmed) {
-        registrosFallidos = +1;
-        Swal.fire("INFO", "Mediciones canceladas, llenelas de nuevo", "info")
-        return;
-      }
-    }
-
-    const requestOptions = {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formdata,
-    };
-
-    await Swal.fire({
-      title: `Guardando la medición de ${nuevoRegistro.prenda}...`,
+    Swal.fire({
+      title: "Iniciando el registro de mediciones...",
       icon: "info",
       showConfirmButton: false,
       timer: 1500,
     });
 
-    try {
-      const response = await fetch("https://api.textechsolutionscr.com/api/v1/mediciones/agregar", requestOptions);
-      const result = await response.json();
+    const enviarMedicion = async (nuevoRegistro) => {
+      let valoresCero = [];
 
-      if (result.success) {
-        registrosEnviados++;
-        await Swal.fire({
-          title: `✅ ${nuevoRegistro.prenda} guardada con éxito!`,
-          icon: "success",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        throw new Error(result.message || "Error desconocido");
+      let fecha = obtenerFecha();
+      let formdata = new FormData();
+      formdata.append("id_cliente", nuevoRegistro.idCliente);
+      formdata.append("articulo", nuevoRegistro.prenda);
+      formdata.append("fecha", fecha);
+      formdata.append(
+        "observaciones",
+        nuevoRegistro.mediciones.observaciones || "NA"
+      );
+      formdata.append("talla", nuevoRegistro.mediciones.talla);
+      formdata.append("sastre", nuevoRegistro.mediciones.colaborador);
+
+      // Función auxiliar para agregar valores y detectar ceros
+      const agregarValor = (campo, valor) => {
+        let numero = parseFloat(valor) || 0;
+        if (numero === 0 && campo !== "tiro_largo_ya_inferior") {
+          valoresCero.push(campo);
+        }
+        formdata.append(campo, numero);
+      };
+
+      // Verifica si pertenece a mediciones inferiores
+      // Medicion del short
+      if (medicionesInferior.includes(nuevoRegistro.prenda)) {
+        agregarValor("largo_inferior", nuevoRegistro.mediciones.largo);
+        agregarValor(
+          "largo_entrepierna_inferior",
+          nuevoRegistro.mediciones.largo_entrepierna_inferior
+        );
+        agregarValor("cintura_inferior", nuevoRegistro.mediciones.cintura);
+        agregarValor("cadera_inferior", nuevoRegistro.mediciones.cadera);
+        agregarValor(
+          "altura_cadera_inferior",
+          nuevoRegistro.mediciones.altura_cadera
+        );
+        agregarValor("pierna_inferior", nuevoRegistro.mediciones.pierna);
+        agregarValor("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
+        agregarValor("tiro_inferior", nuevoRegistro.mediciones.tiro);
+        agregarValor(
+          "contorno_tiro_inferior",
+          nuevoRegistro.mediciones.contorno_tiro
+        );
       }
-    } catch (error) {
-      registrosFallidos.push(nuevoRegistro);
+
+      // Verifica si pertence a mediciones superiores.
+      // Camisa, Gabacha, Camiseta, Jackets, Chaleco, Gabacha Médica, Filipina, Vestido
+      if (medicionesSuperior.includes(nuevoRegistro.prenda)) {
+        agregarValor("espalda_superior", nuevoRegistro.mediciones.espalda);
+        agregarValor(
+          "talle_espalda_superior",
+          nuevoRegistro.mediciones.talle_espalda
+        );
+        agregarValor(
+          "ancho_espalda_superior",
+          nuevoRegistro.mediciones.ancho_espalda
+        );
+        agregarValor("hombros_superior", nuevoRegistro.mediciones.hombros);
+        agregarValor(
+          "talle_frente_superior",
+          nuevoRegistro.mediciones.talle_frente
+        );
+        agregarValor(
+          "alto_pinza_superior",
+          nuevoRegistro.mediciones.alto_pinza
+        );
+        agregarValor(
+          "alto_cadera_superior",
+          nuevoRegistro.mediciones.alto_cadera_superior
+        );
+        agregarValor(
+          "separacion_busto_superior",
+          nuevoRegistro.mediciones.separacion_busto
+        );
+        agregarValor(
+          "ancho_pecho_superior",
+          nuevoRegistro.mediciones.ancho_pecho_superior
+        );
+        agregarValor(
+          "boca_manga_superior",
+          nuevoRegistro.mediciones.boca_manga_superior
+        );
+        agregarValor(
+          "largo_costado_superior",
+          nuevoRegistro.mediciones.largo_costado_superior
+        );
+        agregarValor("busto_superior", nuevoRegistro.mediciones.busto);
+        agregarValor("cintura_superior", nuevoRegistro.mediciones.cintura);
+        agregarValor("cadera_superior", nuevoRegistro.mediciones.cadera);
+        agregarValor(
+          "contorno_cuello_superior",
+          nuevoRegistro.mediciones.contorno_cuello_superior
+        );
+        agregarValor(
+          "escote_superior",
+          nuevoRegistro.mediciones.escote_superior
+        );
+        agregarValor(
+          "largo_total_espalda_superior",
+          nuevoRegistro.mediciones.largo_total_espalda
+        );
+        agregarValor(
+          "largo_total_superior",
+          nuevoRegistro.mediciones.largo_total_frente
+        );
+        agregarValor(
+          "largo_manga_corta_superior",
+          nuevoRegistro.mediciones.largo_manga_corta
+        );
+        agregarValor(
+          "ancho_manga_corta_superior",
+          nuevoRegistro.mediciones.ancho_manga_corta
+        );
+        agregarValor(
+          "largo_manga_larga_superior",
+          nuevoRegistro.mediciones.largo_manga_larga
+        );
+        agregarValor(
+          "ancho_manga_larga_superior",
+          nuevoRegistro.mediciones.ancho_manga_larga
+        );
+        agregarValor("puno_superior", nuevoRegistro.mediciones.puno);
+      }
+
+      // Medicion de enagua
+      if (nuevoRegistro.prenda === "Enagua") {
+        agregarValor(
+          "separacion_busto_superior",
+          nuevoRegistro.mediciones.separacion_busto_superior
+        );
+        agregarValor("largo_inferior", nuevoRegistro.mediciones.largo);
+        agregarValor("cintura_inferior", nuevoRegistro.mediciones.cintura);
+        agregarValor("cadera_inferior", nuevoRegistro.mediciones.cadera);
+        agregarValor(
+          "altura_cadera_inferior",
+          nuevoRegistro.mediciones.altura_cadera
+        );
+      }
+
+      if (nuevoRegistro.prenda === "Pantalon") {
+        agregarValor("largo_inferior", nuevoRegistro.mediciones.largo);
+        agregarValor("largo_entrepierna_inferior",nuevoRegistro.mediciones.largo_entrepierna_inferior);
+        agregarValor("cintura_inferior", nuevoRegistro.mediciones.cintura);
+        agregarValor("cadera_inferior", nuevoRegistro.mediciones.cadera);
+        agregarValor("altura_cadera_inferior",nuevoRegistro.mediciones.altura_cadera);
+        agregarValor("altura_rodilla_inferior",nuevoRegistro.mediciones.altura_rodilla);
+        agregarValor("pierna_inferior", nuevoRegistro.mediciones.pierna);
+        agregarValor("rodilla_inferior", nuevoRegistro.mediciones.rodilla);
+        agregarValor("ruedo_inferior", nuevoRegistro.mediciones.ruedo);
+        agregarValor("tiro_inferior", nuevoRegistro.mediciones.tiro);
+        agregarValor("contorno_tiro_inferior",nuevoRegistro.mediciones.contorno_tiro);
+
+        if (nuevoRegistro.mediciones.tiroLargo === "on") {
+          agregarValor("tiro_largo_ya_inferior", 0);
+        }
+        else{
+          agregarValor("tiro_largo_ya_inferior", 1);
+        }
+      }
+
+      let debugData = {};
+      formdata.forEach((value, key) => {
+        debugData[key] = value;
+      });
+      console.log("FormData:", debugData);
+
+      // Verificar si hay valores en 0 y mostrar alerta
+      if (valoresCero.length > 0) {
+        let confirmar = await Swal.fire({
+          title: "⚠️ Hay valores en 0",
+          text: `Los siguientes campos tienen 0: ${valoresCero.join(
+            ", "
+          )}. ¿Deseas continuar?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, continuar",
+          cancelButtonText: "No, revisar",
+        });
+
+        if (!confirmar.isConfirmed) {
+          registrosFallidos = +1;
+          Swal.fire("INFO", "Mediciones canceladas, llenelas de nuevo", "info");
+          return;
+        }
+      }
+
+      const requestOptions = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formdata,
+      };
+
       await Swal.fire({
-        title: `❌ Error al guardar ${nuevoRegistro.prenda}`,
-        text: error.message,
-        icon: "error",
+        title: `Guardando la medición de ${nuevoRegistro.prenda}...`,
+        icon: "info",
         showConfirmButton: false,
-        timer: 2500,
+        timer: 1500,
+      });
+
+      try {
+        const response = await fetch(
+          "https://api.textechsolutionscr.com/api/v1/mediciones/agregar",
+          requestOptions
+        );
+        const result = await response.json();
+
+        if (result.success) {
+          registrosEnviados++;
+          await Swal.fire({
+            title: `✅ ${nuevoRegistro.prenda} guardada con éxito!`,
+            icon: "success",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } else {
+          throw new Error(result.message || "Error desconocido");
+        }
+      } catch (error) {
+        registrosFallidos.push(nuevoRegistro);
+        await Swal.fire({
+          title: `❌ Error al guardar ${nuevoRegistro.prenda}`,
+          text: error.message,
+          icon: "error",
+          showConfirmButton: false,
+          timer: 2500,
+        });
+      }
+    };
+
+    for (const nuevoRegistro of arrayMediciones) {
+      await enviarMedicion(nuevoRegistro);
+    }
+
+    if (Array.isArray(registrosFallidos) && registrosFallidos.length === 0) {
+      Swal.fire({
+        title: "🎉 Todas las mediciones se guardaron con éxito!",
+        icon: "success",
+        timer: 3000,
+        showConfirmButton: false,
+      }).then(() => {
+        localStorage.removeItem("nuevosRegistros");
+        limpiarEstados();
+        setMediciones([]);
+        limpiarCampos();
+        navigate("/mediciones");
+      });
+    } else if (registrosFallidos.length > 0) {
+      let fallos = registrosFallidos.map((r) => r.prenda).join(", ");
+      Swal.fire({
+        title: "⚠️ Algunas mediciones no se guardaron",
+        text: `Las siguientes mediciones fallaron: ${fallos}`,
+        icon: "warning",
+        timer: 5000,
+        showConfirmButton: true,
       });
     }
   };
 
-  for (const nuevoRegistro of arrayMediciones) {
-    await enviarMedicion(nuevoRegistro);
-  }
-
-  if (Array.isArray(registrosFallidos) && registrosFallidos.length === 0) {
-    Swal.fire({
-      title: "🎉 Todas las mediciones se guardaron con éxito!",
-      icon: "success",
-      timer: 3000,
-      showConfirmButton: false,
-    }).then(() => {
-      localStorage.removeItem("nuevosRegistros");
-      limpiarEstados();
-      setMediciones([]);
-      limpiarCampos();
-      navigate("/mediciones");
-    });
-  } else if (registrosFallidos.length > 0) {
-    let fallos = registrosFallidos.map((r) => r.prenda).join(", ");
-    Swal.fire({
-      title: "⚠️ Algunas mediciones no se guardaron",
-      text: `Las siguientes mediciones fallaron: ${fallos}`,
-      icon: "warning",
-      timer: 5000,
-      showConfirmButton: true,
-    });
-  }
-  
-};
-
-
-  
   /**
    * Funcion para agregar una medida
    */
@@ -494,8 +584,6 @@ const registrarMedicion = async () => {
     setArrayMediciones(nuevasMediciones);
   };
 
-
-
   return (
     <React.Fragment>
       <h2 className="titulo-encabezado">
@@ -538,176 +626,64 @@ const registrarMedicion = async () => {
 
           <hr className="division"></hr>
 
-          {prenda === "Vestido" && (
+          {prenda === "Enagua" && (
             <>
               <div className="div-inp">
-                <label htmlFor="espalda">Espalda:</label>
+                <label htmlFor="text">Separacion busto:</label>
                 <input
                   type="number"
-                  id="espalda"
-                  name="espalda"
+                  min={0}
+                  id="separacion_busto_superior"
+                  name="separacion_busto_superior"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="talle_espalda">Talle de espalda:</label>
+                <label htmlFor="text">Largo:</label>
                 <input
                   type="number"
-                  id="talle_espalda"
-                  name="talle_espalda"
+                  id="largo"
+                  name="largo"
+                  min={0}
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="ancho_espalda">Ancho de espalda:</label>
+                <label htmlFor="text">Cintura:</label>
                 <input
                   type="number"
-                  id="ancho_espalda"
-                  name="ancho_espalda"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="largo_total_espalda">
-                  Largo total espalda:
-                </label>
-                <input
-                  type="number"
-                  id="largo_total_espalda"
-                  name="largo_total_espalda"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="talle_frente">Talle de frente:</label>
-                <input
-                  type="number"
-                  id="talle_frente"
-                  name="talle_frente"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="alto_pinza">Alto de pinza:</label>
-                <input
-                  type="number"
-                  id="alto_pinza"
-                  name="alto_pinza"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="busto">Busto:</label>
-                <input
-                  type="number"
-                  id="busto"
-                  name="busto"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="separacion_busto">Separación busto:</label>
-                <input
-                  type="number"
-                  id="separacion_busto"
-                  name="separacion_busto"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="cintura">Cintura:</label>
-                <input
-                  type="number"
+                  min={0}
                   id="cintura"
                   name="cintura"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="largo_total_frente">Largo total frente:</label>
+                <label htmlFor="text">Cadera:</label>
                 <input
                   type="number"
-                  id="largo_total_frente"
-                  name="largo_total_frente"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="cadera">Cadera:</label>
-                <input
-                  type="number"
+                  min={0}
                   id="cadera"
                   name="cadera"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="hombros">Hombros:</label>
+                <label htmlFor="text">Altura cadera:</label>
                 <input
                   type="number"
-                  id="hombros"
-                  name="hombros"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="largo_manga_corta">Largo Manga Corta:</label>
-                <input
-                  type="number"
-                  id="largo_manga_corta"
-                  name="largo_manga_corta"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="ancho_manga_corta">Ancho Manga Corta:</label>
-                <input
-                  type="number"
-                  id="ancho_manga_corta"
-                  name="ancho_manga_corta"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="largo_manga_larga">Largo Manga Larga:</label>
-                <input
-                  type="number"
-                  id="largo_manga_larga"
-                  name="largo_manga_larga"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="ancho_manga_larga">Ancho Manga Larga:</label>
-                <input
-                  type="number"
-                  id="ancho_manga_larga"
-                  name="ancho_manga_larga"
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="puno">Puño:</label>
-                <input
-                  type="number"
-                  id="puno"
-                  name="puno"
+                  min={0}
+                  id="altura_cadera"
+                  name="altura_cadera"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
@@ -720,16 +696,6 @@ const registrarMedicion = async () => {
                   name="talla"
                   onChange={handleInputChange}
                   required
-                />
-              </div>
-
-              <div className="div-inp">
-                <label htmlFor="altura_cadera">Altura Cadera:</label>
-                <input
-                  type="number"
-                  id="altura_cadera"
-                  name="altura_cadera"
-                  onChange={handleInputChange}
                 />
               </div>
 
@@ -757,14 +723,27 @@ const registrarMedicion = async () => {
             </>
           )}
 
-          {prenda === "Enagua" && (
-            <>
+          {prenda === "Pantalon" && (
+            <div className="container opciones-medidas">
               <div className="div-inp">
                 <label htmlFor="text">Largo:</label>
                 <input
                   type="number"
                   id="largo"
                   name="largo"
+                  min={0}
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Largo entrepierna:</label>
+                <input
+                  type="number"
+                  id="largo_entrepierna_inferior"
+                  name="largo_entrepierna_inferior"
+                  min={0}
                   autoComplete="current-text"
                   onChange={handleInputChange}
                 />
@@ -777,6 +756,7 @@ const registrarMedicion = async () => {
                   id="cintura"
                   name="cintura"
                   autoComplete="current-text"
+                  min={0}
                   onChange={handleInputChange}
                 />
               </div>
@@ -787,6 +767,7 @@ const registrarMedicion = async () => {
                   type="number"
                   id="cadera"
                   name="cadera"
+                  min={0}
                   autoComplete="current-text"
                   onChange={handleInputChange}
                 />
@@ -798,55 +779,133 @@ const registrarMedicion = async () => {
                   type="number"
                   id="altura_cadera"
                   name="altura_cadera"
+                  min={0}
                   autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="text">Largo total:</label>
+                <label htmlFor="text">Altura rodilla:</label>
                 <input
                   type="number"
-                  id="largo_total"
-                  name="largo_total"
+                  id="altura_rodilla"
+                  name="altura_rodilla"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  min={0}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Pierna:</label>
+                <input
+                  type="number"
+                  id="pierna"
+                  name="pierna"
+                  min={0}
                   autoComplete="current-text"
                   onChange={handleInputChange}
                 />
               </div>
 
               <div className="div-inp">
-                <label htmlFor="talla">Talla:</label>
+                <label htmlFor="text">Rodilla:</label>
+                <input
+                  type="number"
+                  id="rodilla"
+                  name="rodilla"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  min={0}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Ruedo:</label>
+                <input
+                  type="number"
+                  id="ruedo"
+                  name="ruedo"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  min={0}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Tiro:</label>
+                <input
+                  type="number"
+                  id="tiro"
+                  name="tiro"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  min={0}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Contorno tiro:</label>
+                <input
+                  type="number"
+                  id="contorno_tiro"
+                  name="contorno_tiro"
+                  autoComplete="current-text"
+                  onChange={handleInputChange}
+                  min={0}
+                />
+              </div>
+
+              <div className="div-inp">
+                <label htmlFor="text">Talla:</label>
                 <input
                   type="text"
                   id="talla"
                   name="talla"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                   required
                 />
               </div>
 
+              <div className="form-check">
+                <input
+                  id="cbTela"
+                  className="form-check-input"
+                  name="tiroLargo"
+                  type="checkbox"
+                  onChange={handleInputChange}
+                />
+                <label className="form-check-label" htmlFor="cbTela">
+                  <strong>Tiro largo ya:</strong>
+                  <span className="custom-checkbox cbTiroLargoYa"></span>
+                </label>
+              </div>
+
               <div className="div-inp">
-                <label htmlFor="observaciones">Observaciones:</label>
+                <label htmlFor="text">Observaciones:</label>
                 <textarea
-                  id="txtArea"
                   name="observaciones"
+                  id="txtArea"
                   rows="5"
-                  cols="60"
+                  cols="10"
                   onChange={handleInputChange}
                 ></textarea>
               </div>
 
               <div className="div-inp">
-                <label htmlFor="colaborador">Sastre:</label>
+                <label htmlFor="text">Sastre:</label>
                 <input
                   type="text"
                   id="colaborador"
                   name="colaborador"
+                  autoComplete="current-text"
                   onChange={handleInputChange}
                   required
                 />
               </div>
-            </>
+            </div>
           )}
 
           {prendaSuperior && (

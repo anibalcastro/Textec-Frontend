@@ -103,12 +103,14 @@ const EditOrder = () => {
       .then((result) => {
         const { orden, detalles, facturas, status,  } = result;
         if (status === 200) {
+          
           setOrder(orden);
           setDetail(detalles);
           setInvoice(facturas);
-          setTotal(parseFloat(facturas[0].monto));
-          setTax(parseFloat(facturas[0].iva));
-          setSubtotal(parseFloat(facturas[0].subtotal));
+          setTotal(parseFloat(Number(facturas.monto)));
+          setTax(parseFloat(Number(facturas.iva)));
+          setSubtotal(parseFloat(Number(facturas.subtotal)));
+          
         } else {
           Swal.fire("Error, intentelo más tarde!", "error");
         }
@@ -304,7 +306,7 @@ const EditOrder = () => {
       fecha_orden: order.fecha_orden,
       precio_total: total,
       estado: order.estado,
-      comentario: order.comentario,
+      comentario: order.comentario || "NA",
       detalles: detail.map((detalle) => ({
         id: detalle.id,
         id_producto: detalle.id_producto,
@@ -321,8 +323,8 @@ const EditOrder = () => {
           iva: parseFloat(tax),
           monto: parseFloat(total),
           saldo_restante: parseFloat(total),
-          comentario: invoice[0].comentario,
-          cajero: invoice[0].cajero,
+          comentario: invoice.comentarioS,
+          cajero: invoice.cajero,
         },
       ],
       personas: Array.isArray(newCustomer) ? newCustomer.map((item) => ({
@@ -899,9 +901,9 @@ const EditOrder = () => {
         </thead>
 
         <tbody>
-          <td>{formatCurrencyCRC.format(subtotal)}</td>
-          <td>{formatCurrencyCRC.format(tax)}</td>
-          <td>{formatCurrencyCRC.format(total)}</td>
+          <td>{formatCurrencyCRC.format(Number(subtotal))}</td>
+          <td>{formatCurrencyCRC.format(Number(tax))}</td>
+          <td>{formatCurrencyCRC.format(Number(total))}</td>
         </tbody>
       </table>
 

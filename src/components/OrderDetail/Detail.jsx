@@ -12,6 +12,7 @@ const Detail = ({
   product,
   title,
   subtitle,
+  ordenIdentity
 }) => {
   const role = Cookies.get("role");
   const token = Cookies.get("jwtToken");
@@ -25,6 +26,7 @@ const Detail = ({
 
   useEffect(() => {
     getCustomersOrder();
+    /*console.log(invoice);*/
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -62,13 +64,18 @@ const Detail = ({
       redirect: "follow",
     };
 
+    let identity_order = Number(ordenId);
+    console.log(identity_order)
+
     fetch(
-      `https://api.textechsolutionscr.com/api/v1/orders/${ordenId}/files`,
+      `https://api.textechsolutionscr.com/api/v1/orders/${identity_order}/files`,
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
         const { data, status } = result;
+
+        console.log(data);
 
         if (status === 200) {
           setFiles(data);
@@ -455,7 +462,7 @@ const Detail = ({
               name="titulo"
               id="titulo"
               autoComplete="current-password"
-              value={order.id}
+              value={order.id || "0"}
               disabled
             />
           </div>
@@ -467,7 +474,7 @@ const Detail = ({
               name="titulo"
               id="titulo"
               autoComplete="current-password"
-              value={order.proforma}
+              value={order.proforma || "No existe proforma"}
               disabled
             />
           </div>
@@ -479,7 +486,7 @@ const Detail = ({
               name="proforma2"
               id="proforma2"
               autoComplete="current-password"
-              value={order.proforma2}
+              value={order.proforma2 || "No existe proforma"}
               disabled
             />
           </div>
@@ -491,7 +498,7 @@ const Detail = ({
               name="proforma3"
               id="proforma3"
               autoComplete="current-password"
-              value={order.proforma3}
+              value={order.proforma3 || "No existe proforma"}
               disabled
             />
           </div>
@@ -503,7 +510,7 @@ const Detail = ({
               name="titulo"
               id="titulo"
               autoComplete="current-password"
-              value={order.titulo}
+              value={order.titulo || "No se registra titulo"}
               disabled
             />
           </div>
@@ -515,7 +522,7 @@ const Detail = ({
               name="buscarEmpresa"
               id="cedula"
               autoComplete="current-password"
-              value={nameCompany(order.id_empresa)}
+              value={nameCompany(order.id_empresa) || "No se encuentra la empresa"}
               disabled
             />
           </div>
@@ -528,7 +535,7 @@ const Detail = ({
               id="titulo"
               autoComplete="current-password"
               disabled
-              value={order.estado}
+              value={order.estado || "Taller"}
               required
             />
           </div>
@@ -541,7 +548,7 @@ const Detail = ({
               id="titulo"
               autoComplete="current-password"
               disabled
-              value={formatDate(order.fecha_orden) || formatDate(order.fecha)}
+              value={formatDate(order.fecha_orden) || formatDate(order.fecha) || "No se registra fecha"}
               required
             />
           </div>
@@ -555,7 +562,7 @@ const Detail = ({
                 id="telefono"
                 autoComplete="current-password"
                 disabled
-                value={order.telefono}
+                value={order.telefono || "No hay telefonos registrados"}
                 required
               />
             ) : (
@@ -572,7 +579,7 @@ const Detail = ({
                 id="titulo"
                 autoComplete="current-password"
                 disabled
-                value={invoice[0].cajero}
+                value={invoice[0].cajero || "No hay vendedor registrado"}
                 required
               />
             ) : (
@@ -607,9 +614,7 @@ const Detail = ({
                   type="checkbox"
                   checked={inputTelasDisabled || order.tela === 1}
                   disabled={
-                    inputTelasDisabled ||
-                    order.tela === 1 ||
-                    role === "Visor"
+                    inputTelasDisabled || order.tela === 1 || role === "Visor"
                   }
                   onChange={handleCheckboxTelasChange}
                 />
@@ -643,9 +648,8 @@ const Detail = ({
         </thead>
 
         <tbody>
-          {Array.isArray(detail) &&
-            detail.map((item) => (
-              <tr key={item.id_producto}>
+          {detail.map((item, index) => (
+              <tr key={`${item.id_producto}-${index}`}>
                 <td>{nameProduct(item.id_producto)}</td>
                 <td className="dOrdenPedido">{item.descripcion}</td>
                 <td>{item.cantidad}</td>
@@ -692,13 +696,12 @@ const Detail = ({
             </thead>
 
             <tbody>
-              {Array.isArray(customerOrder) &&
-                customerOrder.map((item) => {
+              {customerOrder.map((item, index) => {
                   // Imprime el objeto 'item' en la consola
 
                   // Retorna los elementos JSX
                   return (
-                    <tr key={item.id}>
+                    <tr key={`${item.id}-${index}`}>
                       {/* Muestra la información de 'prenda', 'nombre' y 'cantidad' */}
                       <td>{item.prenda}</td>
                       <td>{item.nombre}</td>
@@ -759,17 +762,17 @@ const Detail = ({
               </tr>
             </thead>
             <tbody>
-              {files.map((item) => (
-                <tr key={item.file_path}>
+              {files.map((item, index) => (
+                <tr key={`${item.nombreArchivo}-${index}`}>
                   <td>
-                    <Link className="link-nombre" to={item.url}>
-                      {`${item.file_path}`}
+                    <Link className="link-nombre" to={item.download_url}>
+                      {`${item.nombreArchivo}`}
                     </Link>
                   </td>
                   <td>
                     <button
                       className="btn-eliminar"
-                      onClick={() => deleteFile(item.file_path)}
+                      onClick={() => deleteFile(item.nombreArchivo)}
                     >
                       Eliminar
                     </button>
@@ -782,39 +785,37 @@ const Detail = ({
       ) : null}
 
       <hr></hr>
-      {showAmount ? (
-        <>
-          <Header title="Facturación" />
-          <table className="tabla-medidas">
-            <thead>
-              <tr>
-                <th>Subtotal</th>
-                <th>IVA 13%</th>
-                <th>Total</th>
-                <th>Abono</th>
-                <th>Monto pendiente</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {Array.isArray(invoice) &&
-                invoice.map((item) => (
-                  <tr key={item.subtotal}>
-                    <td>{formatCurrencyCRC.format(item.subtotal)}</td>
-                    <td>{formatCurrencyCRC.format(item.iva)}</td>
-                    <td>{formatCurrencyCRC.format(item.monto)}</td>
-                    <td>
-                      {formatCurrencyCRC.format(
-                        item.monto - item.saldo_restante
-                      )}
-                    </td>
-                    <td>{formatCurrencyCRC.format(item.saldo_restante)}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        </>
-      ) : null}
+      {showAmount && invoice ? (
+  <>
+    <Header title="Facturación" />
+    <table className="tabla-medidas">
+      <thead>
+        <tr>
+          <th>Subtotal</th>
+          <th>IVA 13%</th>
+          <th>Total</th>
+          <th>Abono</th>
+          <th>Monto pendiente</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{formatCurrencyCRC.format(Number(invoice.subtotal))}</td>
+          <td>{formatCurrencyCRC.format(Number(invoice.iva))}</td>
+          <td>{formatCurrencyCRC.format(Number(invoice.monto))}</td>
+          <td>
+            {formatCurrencyCRC.format(
+              Number(invoice.monto) - Number(invoice.saldo_restante)
+            )}
+          </td>
+          <td>
+            {formatCurrencyCRC.format(Number(invoice.saldo_restante))}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </>
+) : null}
 
       <hr></hr>
     </React.Fragment>
