@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
 
 import Filtro from "../../components/Filters/Filtro-mediciones";
@@ -46,11 +45,6 @@ const Mediciones = () => {
     solicitudClientesApi();
   }, [token]); // Escucha cambios en el token
 
-  const validarPermisos = () => {
-    return role === "Admin" || role === "Colaborador";
-  };
-
-  const permisosColaborador = validarPermisos();
 
   return (
     <React.Fragment>

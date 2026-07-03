@@ -71,20 +71,21 @@ import CreatePerson from "./Pages/Personas/CreatePerson.jsx";
 import Calendar from "./Pages/Calendar/Calendar.jsx";
 import AddActivity from "./Pages/Calendar/AddActivity.jsx";
 
-
-
 import NoEncotrada from "./Pages/NoEncontrada";
 
-import { useEffect, useState } from "react";
+//import { useEffect, useState } from "react";
 
 function App() {
 
   const token = Cookies.get("jwtToken"); 
-  const [listaClientes, setListaClientes] = useState([]);
+  //const [listaClientes, setListaClientes] = useState([]);
   
+
+  /*
   useEffect(() => {
     const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
   
+    /*
     const solicitudClientesApi = async () => {
       try {
         var myHeaders = new Headers();
@@ -118,7 +119,7 @@ function App() {
   
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-
+  
    const intervaloValidacion = setInterval(validarToken(token), 6000); // Validar el token cada 1 minuto (60000 milisegundos)
 
     return () => {
@@ -126,6 +127,8 @@ function App() {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  */
 
   
 
